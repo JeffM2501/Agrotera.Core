@@ -36,9 +36,9 @@ namespace Agrotera.Core
             public double Mass = 0;
             public double Radius = 0;
 
-            public virtual Entity Create()
+            public virtual Entity Create(Areas.Zone map)
             {
-                return Setup(new Entity());
+                return Setup(new Entity(map));
             }
 
             protected virtual Entity Setup(Entity ent)
@@ -46,6 +46,11 @@ namespace Agrotera.Core
                 ent.ID = Entity.NewID();
                 ent.Template = this;
                 return ent;
+            }
+
+            public virtual void SetScienceItemFields(ScienceDatabaseItem item)
+            {
+                item.AddValue("Mass", Mass.ToString());
             }
         }
 
@@ -91,9 +96,12 @@ namespace Agrotera.Core
 
         public EntityEventArgs Args = new EntityEventArgs();
 
-        public Entity()
+        public readonly Areas.Zone Map = null;
+
+        public Entity(Areas.Zone map)
         {
             Args.AffectedEntity = this;
+            Map = map;
         }
 
         private static string MakeID()
@@ -114,9 +122,53 @@ namespace Agrotera.Core
         {
         }
 
+        protected double LastTick = double.MinValue;
+
         public virtual void Update(Tick tick)
         {
+            LastTick = tick.Now;
+        }
 
+        public virtual ScienceDatabaseItem.ItemGeneralizations GetScienceGeneralization()
+        {
+            if (Template == null)
+                return ScienceDatabaseItem.ItemGeneralizations.Unknown;
+
+            switch (Template.EntityClass)
+            {
+                case EntityTemplate.EntityClasses.Planet:
+                    return ScienceDatabaseItem.ItemGeneralizations.Planet;
+
+                case EntityTemplate.EntityClasses.Body:
+                    return ScienceDatabaseItem.ItemGeneralizations.Body;
+
+                case EntityTemplate.EntityClasses.Probe:
+                    return ScienceDatabaseItem.ItemGeneralizations.Probe;
+
+                case EntityTemplate.EntityClasses.Station:
+                    return ScienceDatabaseItem.ItemGeneralizations.Station;
+
+                case EntityTemplate.EntityClasses.Ship:
+                    return ScienceDatabaseItem.ItemGeneralizations.Ship;
+
+                case EntityTemplate.EntityClasses.Beam:
+                case EntityTemplate.EntityClasses.Missile:
+                    return ScienceDatabaseItem.ItemGeneralizations.Weapon;
+
+                default:
+                    return ScienceDatabaseItem.ItemGeneralizations.Unknown;
+            }
+        }
+
+        public virtual List<NamedFloatValue> GetScienceScanValues(float scanProgress)
+        {
+            List<NamedFloatValue> values = new List<NamedFloatValue>();
+            if (scanProgress > 0.25)
+                values.Add(new NamedFloatValue("Heading", Rotation));
+            if (scanProgress > 0.5)
+                values.Add(new NamedFloatValue("Angular Velocity", Spin));
+
+            return values;
         }
 
         public override string ToString()

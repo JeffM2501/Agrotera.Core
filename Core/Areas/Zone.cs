@@ -72,7 +72,7 @@ namespace Agrotera.Core.Areas
 
         public virtual Entity InitEntity(Entity.EntityTemplate template)
         {
-            Entity e = template.Create();
+            Entity e = template.Create(this);
             e.Init();
 
             if (EntityAdded != null)
@@ -80,12 +80,12 @@ namespace Agrotera.Core.Areas
             return e;
         }
 
-        public T InitEntity<T>(Entity.EntityTemplate template)  where T : Entity
+        public T InitEntity<T>(Entity.EntityTemplate template) where T : Entity
         {
             if (template == null)
                 return null;
 
-            T s = template.Create() as T;
+            T s = template.Create(this) as T;
             if (s != null)
             {
                 s.Init();
