@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Agrotera.Core;
 using Agrotera.Core.Types;
 using Agrotera.Core.Entities.Systems;
-using Agrotera.Core.AI;
 
 namespace Agrotera.Core.Entities
 {
@@ -255,7 +254,6 @@ namespace Agrotera.Core.Entities
 
         public bool IsCrewable = false;
         public string Owner = null;
-        public EntityAI AI = null;
 
         public double PowerBuffer = 0.0f;
         public double MaxPowerBuffer = 0.0f;

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{DB2C335C-0E92-43F6-AE25-FEAC0F620BFB}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scripting", "ScriptingSystem\Scripting.csproj", "{50771519-3D47-4EA6-A3A5-6B8178DF453C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StandardSetting", "StandardSetting\StandardSetting.csproj", "{F0DD743F-4E86-4B7F-85C1-C47F6EE8D81A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DefaultControllers", "Controllers\DefaultControllers.csproj", "{112B66D6-627D-4C7C-B6F9-EC274212C29E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{F0DD743F-4E86-4B7F-85C1-C47F6EE8D81A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0DD743F-4E86-4B7F-85C1-C47F6EE8D81A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F0DD743F-4E86-4B7F-85C1-C47F6EE8D81A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{112B66D6-627D-4C7C-B6F9-EC274212C29E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{112B66D6-627D-4C7C-B6F9-EC274212C29E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{112B66D6-627D-4C7C-B6F9-EC274212C29E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{112B66D6-627D-4C7C-B6F9-EC274212C29E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
