@@ -24,7 +24,7 @@ namespace AgroteraScripts.StandardCampaign
 
 		public void InitAgroteraScript()
 		{
-			Campaign campaign = Campaign.New("Standard");
+			Campaign campaign = Campaign.Get("Standard");
 
 			campaign.Configuration.Add(new BooleanConfigruationItem("UseWarp", "Enable Warp Drive", "When selected, allows ships to have warp drive as an option instead of just JumpDrives", true));
        

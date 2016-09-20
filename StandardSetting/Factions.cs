@@ -11,7 +11,7 @@ namespace AgroteraScripts.StandardCampaign
     {
         public void InitAgroteraScript()
         {
-            Campaign campaign = Campaign.New("Standard");
+            Campaign campaign = Campaign.Get("Standard");
 
 			campaign.QueryFactionFromGeneralization += GetFactionFromGeneralization;
 			campaign.CampaignLoaded += campaign_CampaignLoaded;

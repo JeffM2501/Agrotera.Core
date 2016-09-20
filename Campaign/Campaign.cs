@@ -14,7 +14,7 @@ namespace Agrotera.Setting
     {
         public static Dictionary<string, Campaign> CampaignList = new Dictionary<string, Campaign>();
 
-        public static Campaign New(string name)
+        public static Campaign Get(string name)
         {
             string upperName = name.ToUpperInvariant();
             if (CampaignList.ContainsKey(upperName))

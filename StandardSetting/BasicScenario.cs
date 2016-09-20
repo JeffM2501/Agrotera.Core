@@ -5,7 +5,6 @@ using System.Text;
 
 using Agrotera.Setting;
 using Agrotera.Core.Entities;
-using Agrotera.Core.Entities.Systems;
 using Agrotera.Core;
 using Agrotera.Core.Types;
 

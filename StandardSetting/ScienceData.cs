@@ -12,7 +12,7 @@ namespace AgroteraScripts.StandardCampaign
     {
 		public void InitAgroteraScript()
 		{
-            var campaign = Campaign.New("Standard");
+            var campaign = Campaign.Get("Standard");
 			campaign.CampaignLoaded += campaign_CampaignLoaded;
 		}
 
