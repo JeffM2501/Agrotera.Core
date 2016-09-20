@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,6 +12,45 @@ namespace Agrotera.Core
     {
         public double Now = 0;
         public double Delta = 0;
+
+        public Tick(){}
+        private Tick(double now) { Now = now; }
+
+        private static Stopwatch Timer = new Stopwatch();
+        private static double GetNowSeconds()
+        {
+            if (!Timer.IsRunning)
+                Timer.Start();
+
+            return Timer.ElapsedMilliseconds * 0.001;
+        }
+
+        private static Tick GloblalClock = new Tick(GetNowSeconds());
+
+        private static bool UseFixedTimes = false;
+
+        public static Tick UpdateGlobalClock()
+        {
+            double now = GetNowSeconds();
+
+            if (UseFixedTimes)
+            {
+                GloblalClock.Delta = 0.01;
+                GloblalClock.Now += GloblalClock.Delta;
+            }
+            else
+            {
+                GloblalClock.Delta = now - GloblalClock.Now;
+                GloblalClock.Now = now;
+            }
+
+            return GloblalClock;
+        }
+
+        public static void ShutdownGlobalClock()
+        {
+            Timer.Stop();
+        }
     }
 
     public class Entity
@@ -160,7 +199,7 @@ namespace Agrotera.Core
             }
         }
 
-        public virtual List<NamedFloatValue> GetScienceScanValues(float scanProgress)
+        public virtual List<NamedFloatValue> GetScienceScanValues(double scanProgress)
         {
             List<NamedFloatValue> values = new List<NamedFloatValue>();
             if (scanProgress > 0.25)

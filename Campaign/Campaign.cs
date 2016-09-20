@@ -6,6 +6,7 @@ using System.Xml.Serialization;
 
 using Agrotera.Core;
 using Agrotera.Core.Areas;
+using Agrotera.Core.Entities;
 
 namespace Agrotera.Setting
 {
@@ -160,6 +161,36 @@ namespace Agrotera.Setting
         }
 
         public event EventHandler<CampaignStringQueryEventArgs> QueryFactionFromGeneralization = null;
+
+        public Ship.ShipTemplate GetPlayerShipType(string factionName)
+        {
+            if (QueryPlayerShipType == null)
+                return null;
+
+            CampaignTemplateQueryEventArgs args = new CampaignTemplateQueryEventArgs();
+
+            args.Query = factionName;
+            args.RuntimeEventArgs = RuntimeEventArgs;
+            args.ReturnedTemplate = null;
+
+            QueryPlayerShipType(this, args);
+            return args.ReturnedTemplate as Ship.ShipTemplate;
+        }
+
+        public Ship.ShipTemplate GetShipForFaction(Faction faction, string[] args)
+        {
+            if (QueryShipForFaction == null)
+                return null;
+
+            CampaignTemplateQueryEventArgs eventArgs = new CampaignTemplateQueryEventArgs();
+
+            eventArgs.Query = faction.Name;
+            eventArgs.RuntimeEventArgs = RuntimeEventArgs;
+            eventArgs.ReturnedTemplate = null;
+            eventArgs.Arguments = args;
+            QueryShipForFaction(this, eventArgs);
+            return eventArgs.ReturnedTemplate as Ship.ShipTemplate;
+        }
 
         public Faction GetFactionByGeneralization(Faction.Generalizations generalization)
         {

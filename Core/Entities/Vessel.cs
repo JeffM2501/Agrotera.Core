@@ -424,6 +424,41 @@ namespace Agrotera.Core.Entities
             return Reactor.AddFuel(fuel);
         }
 
+        public override List<NamedFloatValue> GetScienceScanValues(double scanProgress)
+        {
+            List<NamedFloatValue> values = base.GetScienceScanValues(scanProgress);
+
+            if (scanProgress > 0.1)
+                values.Add(new NamedFloatValue("Power Level", PowerBuffer));
+
+            if (scanProgress > 0.2)
+                values.Add(new NamedFloatValue("Hull Integrity", CurrentHull / TemplateVessel.Hull));
+
+            if (scanProgress > 0.3)
+                values.Add(new NamedFloatValue("Max Power Level", MaxPowerBuffer));
+
+            if (scanProgress > 0.4 && BeamsSystem != null)
+                values.Add(new NamedFloatValue("Beam Power", BeamsSystem.ActualPowerLevel));
+
+            if (scanProgress > 0.45 && BeamsSystem != null)
+                values.Add(new NamedFloatValue("Beam Projectors", Beams.Count));
+
+            if (scanProgress > 0.5 && MissileSystem != null)
+                values.Add(new NamedFloatValue("Missile Power", MissileSystem.ActualPowerLevel));
+
+            if (scanProgress > 0.55 && MissileSystem != null)
+                values.Add(new NamedFloatValue("Missile Tubes", Tubes.Count));
+
+            if (scanProgress > 0.6 && Reactor != null)
+                values.Add(new NamedFloatValue("Reactor Heat", Reactor.HeatLevel));
+
+            if (scanProgress > 0.7 && Reactor != null)
+                values.Add(new NamedFloatValue("Reactor Damage", Reactor.Damage));
+
+
+            return values;
+        }
+
         public Dictionary<string, MapEntity> MappedItems = new Dictionary<string, MapEntity>();
 
         public event EventHandler<MapEntity.EventArgument> MapElementAdded = null;

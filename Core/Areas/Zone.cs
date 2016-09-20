@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Agrotera.Core.Types;
+using Agrotera.Core.Entities;
 
 namespace Agrotera.Core.Areas
 {
@@ -93,6 +94,34 @@ namespace Agrotera.Core.Areas
                     EntityAdded(this, s.Args);
             }
 
+            return s;
+        }
+
+        public virtual Ship AddPlayableShip(Ship.ShipTemplate template)
+        {
+            if (template == null)
+                return null;
+
+            Ship s = template.Create(this) as Ship;
+            s.Init();
+            DynamicEntities.Add(s);
+            s.IsCrewable = template.IsCrewable();
+            if (EntityAdded != null)
+                EntityAdded(this, s.Args);
+            return s;
+        }
+
+        public virtual Ship AddAIShip(Ship.ShipTemplate template)
+        {
+            if (template == null)
+                return null;
+
+            Ship s = template.Create(this) as Ship;
+            s.Init();
+            DynamicEntities.Add(s);
+            s.IsCrewable = false;
+            if (EntityAdded != null)
+                EntityAdded(this, s.Args);
             return s;
         }
 

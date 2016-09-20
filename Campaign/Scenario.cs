@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Agrotera.Core;
 using Agrotera.Core.Areas;
 using Agrotera.Core.Types;
+using Agrotera.Core.Entities;
 
 namespace Agrotera.Setting
 {
@@ -92,6 +93,18 @@ namespace Agrotera.Setting
             if (playerFaction == null)
                 return new Faction("Independent Mercenary #" + Utilities.RNG.Next().ToString());
             return playerFaction;
+        }
+
+        public virtual Ship GetPlayerShip()
+        {
+            Ship.ShipTemplate template = BoundCampaign.GetPlayerShipType(string.Empty);
+            if (template == null)
+                return new Ship(Map);
+
+            Ship ship = Map.AddPlayableShip(template);
+            if (ship != null)
+                ship.Owner = GetPlayerFaction().Name;
+            return ship;
         }
     }
 }
