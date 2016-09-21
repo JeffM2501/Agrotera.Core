@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 using Agrotera.Core.Types;
 
+using Agrotera.Core.Entities.Controllers;
+
 namespace Agrotera.Core
 {
     public class Tick
@@ -53,6 +55,7 @@ namespace Agrotera.Core
         }
     }
 
+
     public class Entity
     {
         public class EntityTemplate
@@ -75,6 +78,10 @@ namespace Agrotera.Core
             public double Mass = 0;
             public double Radius = 0;
 
+            public string ControllerName = "Default";
+
+            public List<Tuple<string, string>> ControllerArguments = new List<Tuple<string, string>>();
+
             public virtual Entity Create(Areas.Zone map)
             {
                 return Setup(new Entity(map));
@@ -84,6 +91,18 @@ namespace Agrotera.Core
             {
                 ent.ID = Entity.NewID();
                 ent.Template = this;
+                ent.SetController(ControllerCache.CreateController(this.ControllerName));
+                if (ent.Controller == null)
+                    ent.SetController(ControllerCache.CreateController("Default"));
+
+                if (ent.Controller != null)
+                {
+                    foreach (var a in ControllerArguments)
+                        ent.Controller.AddArgument(a.Item1, a.Item2);
+
+                    ent.Controller.Init(ent);
+                }
+
                 return ent;
             }
 
@@ -126,6 +145,15 @@ namespace Agrotera.Core
 
         public object Model = null;
 
+        private IEntityController EntController = null;
+
+        public IEntityController Controller {  get { return EntController; } }
+
+        public void SetController(IEntityController controller)
+        {
+            EntController = controller;
+        }
+
         public static Dictionary<string, Entity> EntityCache = new Dictionary<string, Entity>();
 
         public class EntityEventArgs : EventArgs
@@ -166,6 +194,8 @@ namespace Agrotera.Core
         public virtual void Update(Tick tick)
         {
             LastTick = tick.Now;
+            if (Controller != null)
+                Controller.Update(tick,this);
         }
 
         public virtual ScienceDatabaseItem.ItemGeneralizations GetScienceGeneralization()
