@@ -27,7 +27,23 @@ namespace Agrotera.Core.Types
             return (X * X + Y * Y);
         }
 
-        public static readonly Vector2F Zero = new Vector2F(0, 0);
+		public override string ToString()
+		{
+			return X.ToString("F0") + "," + Y.ToString("F0");
+		}
+
+		public bool Normailize()
+		{
+			double l = Length();
+			if(l == 0)
+				return false;
+
+			X /= l;
+			Y /= l;
+			return true;
+		}
+
+		public static readonly Vector2F Zero = new Vector2F(0, 0);
         public static readonly Vector2F UnitX = new Vector2F(1, 0);
         public static readonly Vector2F UnitY = new Vector2F(0, 1);
         public static readonly Vector2F UnitXY = new Vector2F(1, 1);
@@ -62,5 +78,16 @@ namespace Agrotera.Core.Types
         {
             return (p1 - p2).Length();
         }
-    }
+
+		public static bool TryParse(string text, out Vector2F vec)
+		{
+			vec = new Vector2F(0, 0);
+
+			string[] bits = text.Split(",".ToCharArray(), 3);
+			if(bits.Length != 3)
+				return false;
+
+			return double.TryParse(bits[0], out vec.X) && double.TryParse(bits[1], out vec.Y);
+		}
+	}
 }

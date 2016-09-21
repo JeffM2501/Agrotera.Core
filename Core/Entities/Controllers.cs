@@ -9,9 +9,11 @@ namespace Agrotera.Core.Entities.Controllers
 
     public interface IEntityController
     {
-        void Init(Entity entity);
+        void AddEntity(Entity entity);
 
-        void Update(Tick tick, Entity entity);
+		void RemoveEntity(Entity entity);
+
+        bool Update(Tick tick);
 
         void AddArgument(string arg, string value);
         int Version { get; }
@@ -28,6 +30,8 @@ namespace Agrotera.Core.Entities.Controllers
 
         private static Dictionary<string, ControllerFactory> Controllers = new Dictionary<string, ControllerFactory>();
 
+		private static List<IEntityController> MasterControllerList = new List<IEntityController>();
+
         public static IEntityController CreateController(string name)
         {
             Type t = null;
@@ -40,8 +44,33 @@ namespace Agrotera.Core.Entities.Controllers
             else
                 return null;
 
-            return Activator.CreateInstance(t) as IEntityController;
+			IEntityController c = Activator.CreateInstance(t) as IEntityController;
+
+			lock(MasterControllerList)
+				MasterControllerList.Add(c);
+
+			// TODO add it to a thread pool
+
+			return c;
         }
+
+		public static void UpdateControllers(Tick tick)
+		{
+			IEntityController[] l = new IEntityController[0];
+			lock(MasterControllerList)
+				l = MasterControllerList.ToArray();
+
+			// toDO, add thread pools to have multiple updates happen at the same time
+			List<IEntityController> toKill = new List<IEntityController>();
+			foreach( var c in l)
+			{
+				if(c.Update(tick))
+					toKill.Add(c);
+			}
+
+			lock(MasterControllerList)
+				MasterControllerList.RemoveAll(x => toKill.Contains(x));
+		}
 
         public static bool RegisterController(Type t)
         {

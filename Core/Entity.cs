@@ -56,7 +56,7 @@ namespace Agrotera.Core
     }
 
 
-    public class Entity
+    public class Entity : IDisposable
     {
         public class EntityTemplate
         {
@@ -100,7 +100,7 @@ namespace Agrotera.Core
                     foreach (var a in ControllerArguments)
                         ent.Controller.AddArgument(a.Item1, a.Item2);
 
-                    ent.Controller.Init(ent);
+                    ent.Controller.AddEntity(ent);
                 }
 
                 return ent;
@@ -194,9 +194,13 @@ namespace Agrotera.Core
         public virtual void Update(Tick tick)
         {
             LastTick = tick.Now;
-            if (Controller != null)
-                Controller.Update(tick,this);
         }
+
+		public virtual void Dispose()
+		{
+			if(Controller != null)
+				Controller.RemoveEntity(this);
+		}
 
         public virtual ScienceDatabaseItem.ItemGeneralizations GetScienceGeneralization()
         {

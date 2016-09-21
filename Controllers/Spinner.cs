@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using Agrotera.Core;
 
 namespace Agrotera.DefaultControllers
@@ -20,10 +18,10 @@ namespace Agrotera.DefaultControllers
                 double.TryParse(value, out SpinSpeed);
         }
 
-        public override void Update(Tick tick, Entity entity)
+        public override void UpdateEntity(Tick tick, Entity entity)
         {
-            base.Update(tick, entity);
-            entity.Rotation += SpinSpeed * tick.Delta;
+			entity.Rotation += SpinSpeed * tick.Delta;
+			entity.Update(tick);
         }
     }
 }

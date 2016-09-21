@@ -27,6 +27,18 @@ namespace Agrotera.Core.Types
             return (X * X + Y * Y + Z * Z);
         }
 
+		public bool Normailize()
+		{
+			double l = Length();
+			if(l == 0)
+				return false;
+
+			X /= l;
+			Y /= l;
+			Z /= l;
+			return true;
+		}
+
         public override string ToString()
         {
             return X.ToString("F0") + "," + Y.ToString("F0") + "," + Z.ToString("F0");
@@ -79,5 +91,16 @@ namespace Agrotera.Core.Types
         {
             return Math.Abs(p1.X - p2.X) <= tolerance && Math.Abs(p1.Y - p2.Y) <= tolerance && Math.Abs(p1.Z - p2.Z) <= tolerance;
         }
+
+		public static bool TryParse(string text, out Vector3F vec)
+		{
+			vec = new Vector3F(0, 0, 0);
+
+			string[] bits = text.Split(",".ToCharArray(),3);
+			if(bits.Length != 3)
+				return false;
+
+			return double.TryParse(bits[0], out vec.X) && double.TryParse(bits[1], out vec.Y) && double.TryParse(bits[2], out vec.Z);
+		}
     }
 }

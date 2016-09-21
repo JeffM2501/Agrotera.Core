@@ -15,6 +15,7 @@ namespace Agrotera.DefaultControllers
             // just register the default controllers
             ControllerCache.RegisterController(typeof(Default));
             ControllerCache.RegisterController(typeof(Spinner));
+			ControllerCache.RegisterController(typeof(Mover));
         }
     }
 }
