@@ -25,16 +25,30 @@ namespace Agrotera.DefaultControllers
                 Arguments.Add(arg, value);
         }
 
-        public virtual void AddEntity(Entity entity)
+        public void AddEntity(Entity entity)
         {
 			lock(ControlledEntities)
 				ControlledEntities.Add(entity);
+
+			EntityAdded(entity);
 		}
 
-		public virtual void RemoveEntity(Entity entity)
+		public virtual void EntityAdded(Entity entity)
+		{
+
+		}
+
+		public void RemoveEntity(Entity entity)
 		{
 			lock(ControlledEntities)
 				ControlledEntities.Remove(entity);
+
+			EntityRemoved(entity);
+		}
+
+		public virtual void EntityRemoved(Entity entity)
+		{
+
 		}
 
 		public virtual bool Update(Tick tick)

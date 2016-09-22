@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 
 using Agrotera.Core;
+using Agrotera.DefaultControllers.SubSystems;
 
-namespace Agrotera.DefaultControllers
+namespace Agrotera.DefaultControllers.Simple
 {
-    public class Spinner : Default
+    public class Spinner : SubSystemController
     {
         public override int Version {get{return 1;}}
 

@@ -375,45 +375,6 @@ namespace Agrotera.Core.Entities
 
         public override void Update(Tick tick)
         {
-            PowerSystems(tick);
-            UpdateSensors(tick);
-        }
-
-        protected virtual void PowerSystems(Tick tick)
-        {
-            double desiredPower = 0;
-            foreach (var s in Systems.Values)
-            {
-                if (s.Generates())
-                    PowerBuffer += tick.Delta * s.GetGeneratedPower();
-                else
-                    desiredPower += tick.Delta * s.GetDesiredPowerUse();
-
-                s.ActualPowerLevel = s.DesiredPowerLevel;
-            }
-
-            double actualPower = 0;
-            double scale = 1;
-            if (desiredPower < PowerBuffer)	// power starved, go an compute a scale factor
-            {
-                if (PowerBuffer <= 0)
-                    scale = 0;
-                else
-                    scale = desiredPower / PowerBuffer;
-            }
-
-            foreach (var s in Systems.Values)
-            {
-                s.ActualPowerLevel = s.DesiredPowerLevel * scale;
-                s.Update(tick);
-                actualPower += s.GetActualPowerUse();
-            }
-
-            PowerBuffer -= actualPower;
-            if (PowerBuffer < 0)
-                PowerBuffer = 0;
-            if (PowerBuffer > MaxPowerBuffer)
-                PowerBuffer = MaxPowerBuffer;
         }
 
         public double Refuel(double fuel, double power)
@@ -468,7 +429,7 @@ namespace Agrotera.Core.Entities
 
         public event EventHandler<ScienceDatabaseItem.EventArguments> DatabaseItemAdded = null;
 
-        protected MapEntity ActiveScanTarget = null;
+        public MapEntity ActiveScanTarget = null;
 
         public double ActiveTargetRescanTime = 5;
         public double ScanUpdateGranularity = 0.1f;
@@ -479,10 +440,9 @@ namespace Agrotera.Core.Entities
                 return ScienceDB[item.ID];
 
             ScienceDB.Add(item.ID, item);
-            if (DatabaseItemAdded != null)
-                DatabaseItemAdded(this, new ScienceDatabaseItem.EventArguments(item));
+			DatabaseItemAdded?.Invoke(this, new ScienceDatabaseItem.EventArguments(item));
 
-            return item;
+			return item;
         }
 
         public double GetEffectiveSensorRange()
@@ -536,9 +496,8 @@ namespace Agrotera.Core.Entities
             if (ActiveScanTarget.ScanProgress < 1)
                 ActiveScanTarget.LastUpdate = LastTick;
 
-            if (ScanTargetChanged != null)
-                ScanTargetChanged(this, new MapEntity.EventArgument(entity));
-        }
+			ScanTargetChanged?.Invoke(this, new MapEntity.EventArgument(entity));
+		}
 
         public void ClearScanTarget()
         {
@@ -547,72 +506,20 @@ namespace Agrotera.Core.Entities
 
             ActiveScanTarget = null;
 
-            if (ScanTargetChanged != null)
-                ScanTargetChanged(this, new MapEntity.EventArgument(null));
-        }
+			ScanTargetChanged?.Invoke(this, new MapEntity.EventArgument(null));
+		}
 
-        public void UpdateSensors(Tick tick)
-        {
-            double range = GetEffectiveSensorRange();
-            if (Map == null)
-                return;
+		public void AddMappedItem(Entity e)
+		{
+			var me = CreateMapEntity(e);
+			MappedItems.Add(e.ID, me);
 
-            foreach (var e in Map.FindEntitiesInRadiusOf(this, GetEffectiveSensorRange()))
-            {
-                if (!MappedItems.ContainsKey(e.ID))
-                {
-                    var me = CreateMapEntity(e);
-                    MappedItems.Add(e.ID, me);
+			MapElementAdded?.Invoke(this, new MapEntity.EventArgument(me));
+		}
 
-                    if (MapElementAdded != null)
-                        MapElementAdded(this, new MapEntity.EventArgument(me));
-                }
-            }
-
-            if (ActiveScanTarget != null)
-            {
-                if (ActiveScanTarget.ScanProgress < 1)
-                {
-                    double resolutionTime = Sensors.NominalResolutionTime * Sensors.ActualPowerLevel;
-                    if (resolutionTime > 0)
-                    {
-                        double paramPerSec = 1.0f / resolutionTime;
-                        double lastUpdateDelta = tick.Now - ActiveScanTarget.LastUpdate;
-                        if (lastUpdateDelta > ScanUpdateGranularity)
-                        {
-                            ActiveScanTarget.ScanProgress += paramPerSec * lastUpdateDelta;
-                            if (ActiveScanTarget.ScanProgress > 1)
-                                ActiveScanTarget.ScanProgress = 1;
-
-                            ActiveScanTarget.LastUpdate = tick.Now;
-                            ActiveScanTarget.ScienceScanValues = ActiveScanTarget.WorldEntity.GetScienceScanValues(1);
-
-                            if (ActiveScanTarget.WorldEntity as Vessel != null && ActiveScanTarget.ScanProgress > 0.75f)
-                                ActiveScanTarget.IdentifiedFaction = (ActiveScanTarget.WorldEntity as Vessel).Owner;
-
-                            if (ActiveScanTarget.ScanProgress >= 1 && !ScienceDB.ContainsKey(ActiveScanTarget.ScienceID))
-                            {
-                                // if the ship doesn't know about the thing they finished scanning, update the database
-                                AddScienceItem(ScienceDB[ActiveScanTarget.ScienceID]);
-                            }
-
-                            if (MapElementUpdated != null)
-                                MapElementUpdated(this, new MapEntity.EventArgument(ActiveScanTarget));
-                        }
-                    }
-                }
-                else
-                {
-                    if (tick.Now - ActiveScanTarget.LastUpdate > ActiveTargetRescanTime)
-                    {
-                        ActiveScanTarget.LastUpdate = tick.Now;
-                        ActiveScanTarget.ScienceScanValues = ActiveScanTarget.WorldEntity.GetScienceScanValues(1);
-
-                        if (MapElementUpdated != null)
-                            MapElementUpdated(this, new MapEntity.EventArgument(ActiveScanTarget));
-                    }
-                }
-            }
-        }
+		public void UpdateMapedItem(MapEntity ent)
+		{
+			MapElementUpdated?.Invoke(this, new MapEntity.EventArgument(ent));
+		}
     }
 }

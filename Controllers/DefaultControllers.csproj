@@ -41,11 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Complex\ShipController.cs" />
+    <Compile Include="Complex\StationController.cs" />
+    <Compile Include="Complex\VesselController.cs" />
     <Compile Include="Init.cs" />
     <Compile Include="Default.cs" />
-    <Compile Include="Mover.cs" />
+    <Compile Include="Simple\Mover.cs" />
+    <Compile Include="SubSystems\Multiplexer.cs" />
+    <Compile Include="SubSystems\PowerSystemController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Spinner.cs" />
+    <Compile Include="Simple\Spinner.cs" />
+    <Compile Include="SubSystems\SensorSystemController.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj">

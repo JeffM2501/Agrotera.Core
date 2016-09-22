@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using Agrotera.Core;
 using Agrotera.Core.Types;
 
-namespace Agrotera.DefaultControllers
+using Agrotera.DefaultControllers.SubSystems;
+
+namespace Agrotera.DefaultControllers.Simple
 {
-	public class Mover : Default
+	public class Mover : SubSystemController
 	{
 		public override int Version { get { return 1; } }
 

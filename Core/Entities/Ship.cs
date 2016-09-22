@@ -257,21 +257,9 @@ namespace Agrotera.Core.Entities
             return values;
         }
 
-        protected virtual void ProcessHeadingChange(Tick tick)
-        {
-            if (DesiredHeading != Rotation)
-            {
-                double newHeading = Utilities.LinInterpValue(Rotation, DesiredHeading, ManeuverSystem.GetEffectiveTurnSpeed(), tick.Delta);
-                Spin = (newHeading - Rotation) / tick.Delta;
-            }
-            else
-                Spin = 0;
-        }
-
         public override void Update(Tick tick)
         {
             base.Update(tick);
-            ProcessHeadingChange(tick);
         }
     }
 }
