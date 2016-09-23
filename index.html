@@ -2,7 +2,7 @@
 <html>
 
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="description" content="Agrotera.core : Core libraries for ship server and console clients.">
 
@@ -19,7 +19,7 @@
           <a id="forkme_banner" href="https://github.com/JeffM2501/Agrotera.Core">View on GitHub</a>
 
           <h1 id="project_title">Agrotera.core</h1>
-          <h2 id="project_tagline">Core libraries for ship server and console clients.</h2>
+          <h2 id="project_tagline">Core libraries for an interactive starship bridge simulation.</h2>
 
             <section id="downloads">
               <a class="zip_download_link" href="https://github.com/JeffM2501/Agrotera.Core/zipball/master">Download this project as a .zip file</a>
@@ -34,17 +34,47 @@
         <h1>
 <a id="agroteracore" class="anchor" href="#agroteracore" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Agrotera.Core</h1>
 
-<p>Core libraries for ship server and console clients.</p>
-
+<p>Agrotera Core is the set of open source libraries and core applications that service a multi-player bridge simulator Agrotera. </p>
+<p>Agrotera is a game where several individuals take on the roles of various officers and crew members of a simulatted starship bridge, allong the lines of <a href="http://artemis.eochu.com/" title="http://artemis.eochu.com/" target="new">Artemis</a>, <a href="http://daid.github.io/EmptyEpsilon/" title="http://daid.github.io/EmptyEpsilon/" target="new">Empty Epsilon</a>, and <a href="https://smcameron.github.io/space-nerds-in-space/" title="https://smcameron.github.io/space-nerds-in-space/" target="new">Space Nerds In Space</a>. Each player has a role and is in controll of some aspect of the simulated spaceship, and the entire crew must work together to complete game scenarios.<img src="images/SSP_Book.jpg" alt="" width="150" height="237" style="float: right;"/></p>
+<p>This  started as a capstone project for my Computer Science degree inspired by Roger Garrett's book, <a href="https://www.amazon.com/complete-Star-Ship-simulation-project/dp/091839810X" title="https://www.amazon.com/complete-Star-Ship-simulation-project/dp/091839810X" target="new">The complete Star Ship: A simulation projec</a>t, but has since been expanded with new goals.</p>
+<ul>
+  <li>Cross platform clients
+    <ul>
+      <li>Windows</li>
+      <li>Mac OS</li>
+      <li>Linux</li>
+      <li>Mobile devices if feasable</li>
+      </ul>
+  </li>
+  <li>Multiple viewports</li>
+  <li>True support for multiple ships/bridges in the same simulation
+    <ul>
+      <li>Use of seperate ship and simulation applicaitons so the simulation can persist</li>
+      </ul>
+  </li>
+  <li>Maximum extnsisblity
+    <ul>
+      <li>Use of a common API for Scripting and Plug-in Based extensions on servers and clients</li>
+      <li>Flexable simulation design with as much defined from external sources, scripts, XML, etc.. as possible.</li>
+      </ul>
+  </li>
+  </ul>
+<p>Belllow is some of the design documentation for this version of the project that will built into a playable game.</p>
 <h2>
-<a id="overall-system-archetecture" class="anchor" href="#overall-system-archetecture" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Overall System Archetecture</h2>
-
-<p><img src="https://github.com/JeffM2501/Agrotera.Core/raw/gh-pages/docs/images/Agrotera_Overall_System_Diagram.png" alt="System Layout"></p>
+  <a id="overall-system-archetecture" class="anchor" href="#overall-system-archetecture" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Overall System Archetecture</h2>
 
 <p>The overall system is designed to allow for both single ship and multi-ship play. The seperation of the ship server from the main simulation (Scenario) allows the global game "universe" to persist if desired.</p>
-
+<p><img src="https://github.com/JeffM2501/Agrotera.Core/raw/gh-pages/docs/images/Agrotera_Overall_System_Diagram.png" alt="System Layout"></p>
+<p>The Agrotera.Core project encompases the following components in the diagram above.</p>
+<ul>
+  <li>Ship Server</li>
+  <li>Simulation Server</li>
+  <li>Global Services</li>
+  <li>Libraries used by the Client Applicaiton (Agrotera.Client).</li>
+  </ul>
+<p>Agrotera.Client is kept as a seperate proejct due to the sizes of the graphical resources it uses.</p>
 <h2>
-<a id="console-layouts" class="anchor" href="#console-layouts" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Console Layouts</h2>
+  <a id="console-layouts" class="anchor" href="#console-layouts" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Console Layouts</h2>
 
 <h1>
 <a id="navigation" class="anchor" href="#navigation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Navigation</h1>
