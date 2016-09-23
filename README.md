@@ -3,6 +3,7 @@ Core libraries for ship server and console clients.
 
 Navigation
 ==========
+![Navigation Console Layout](https://github.com/JeffM2501/Agrotera.Core/raw/gh-pages/docs/images/Navigation_Layout.png)
 
 Responsibilities
 ----------------
@@ -92,6 +93,7 @@ When within range of an auto-dock compatible system, the auto dock button will a
 
 Weapons
 =======
+![Tactical Console Layout](https://github.com/JeffM2501/Agrotera.Core/raw/gh-pages/docs/images/Weapons_Layout.png)
 
 Responsibilities
 ----------------
@@ -137,6 +139,7 @@ Science information about the currently selected target is displayed in the lowe
 
 Engineering
 ===========
+![Engineering Console Layout](https://github.com/JeffM2501/Agrotera.Core/raw/gh-pages/docs/images/Enginering_Layout.png)
 
 Responsibilities
 ----------------
@@ -166,6 +169,7 @@ This controls how much power the ship produces and where it is directed. It also
 
 Sciences
 ========
+![Science Console Layout](https://github.com/JeffM2501/Agrotera.Core/raw/gh-pages/docs/images/Science_Layout.png)
 
 Responsibilities
 ----------------
