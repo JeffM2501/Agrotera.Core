@@ -1,6 +1,14 @@
 # Agrotera.Core
 Core libraries for ship server and console clients.
 
+## Overall System Archetecture
+![System Layout](https://github.com/JeffM2501/Agrotera.Core/raw/gh-pages/docs/images/Agrotera_Overall_System_Diagram.png)
+
+The overall system is designed to allow for both single ship and multi-ship play. The seperation of the ship server from the main simulation (Scenario) allows the global game "universe" to persist if desired.
+
+
+## Console Layouts
+
 Navigation
 ==========
 ![Navigation Console Layout](https://github.com/JeffM2501/Agrotera.Core/raw/gh-pages/docs/images/Navigation_Layout.png)
