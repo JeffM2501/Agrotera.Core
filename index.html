@@ -36,7 +36,270 @@
 
 <p>Core libraries for ship server and console clients.</p>
 
-<p><img src="https://github.com/JeffM2501/Agrotera.Core/raw/master/Agrotera%20Console%20GUIs.pdf" alt="Console layouts"></p>
+<h2>
+<a id="overall-system-archetecture" class="anchor" href="#overall-system-archetecture" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Overall System Archetecture</h2>
+
+<p><img src="https://github.com/JeffM2501/Agrotera.Core/raw/gh-pages/docs/images/Agrotera_Overall_System_Diagram.png" alt="System Layout"></p>
+
+<p>The overall system is designed to allow for both single ship and multi-ship play. The seperation of the ship server from the main simulation (Scenario) allows the global game "universe" to persist if desired.</p>
+
+<h2>
+<a id="console-layouts" class="anchor" href="#console-layouts" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Console Layouts</h2>
+
+<h1>
+<a id="navigation" class="anchor" href="#navigation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Navigation</h1>
+
+<p><img src="https://github.com/JeffM2501/Agrotera.Core/raw/gh-pages/docs/images/Navigation_Layout.png" alt="Navigation Console Layout"></p>
+
+<h2>
+<a id="responsibilities" class="anchor" href="#responsibilities" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Responsibilities</h2>
+
+<p>The nav station is responsible for how the ship moves through space.</p>
+
+<h2>
+<a id="controls" class="anchor" href="#controls" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Controls</h2>
+
+<h3>
+<a id="nav-view" class="anchor" href="#nav-view" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Nav View</h3>
+
+<p>The main circular nav view is a map based projection of the ship in space. Objects around the ship are shown at a selectable relative scale.</p>
+
+<p>The Nav view has 2 modes, map aligned and ship aligned. The main view mode can be toggled. When toggled the smaller view circle will show a simplified version of the unselected view mode, with simple direction vectors instead of actual map positions.</p>
+
+<h4>
+<a id="map-alignment" class="anchor" href="#map-alignment" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Map alignment</h4>
+
+<p>When the main view is in map aligned mode, the view is aligned to galactic north and does not move. The ship’s orientation will be represented by a rotation of the ship icon in the center of the view. All sensor and firing arcs will rotate to the correct orientation. This view is most useful for large scale maneuvers or long range navigation. When shields are active in this view, shield arcs will be presented around the ship icon. (also rotate the shield status display?)</p>
+
+<h4>
+<a id="ship-alignment" class="anchor" href="#ship-alignment" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ship Alignment</h4>
+
+<p>When the main view is ship aligned, the ship is always shown pointing in the Y+ direction (Up) on the screen. All objects around the ship are shown relative to this orientation. This view is most useful for close range combat maneuvers.</p>
+
+<h3>
+<a id="shield-status" class="anchor" href="#shield-status" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Shield Status</h3>
+
+<p>A shield status indicator is shown above the main nav view. This display is used to show the relative shield strength of the various shield sections.</p>
+
+<h3>
+<a id="ship-status" class="anchor" href="#ship-status" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ship Status</h3>
+
+<p>The upper right corner of the display shows a minimal ship status summary, with the two power settings the pilot will care about, engine and maneuver power. Additional displays for hull and fuel are available.</p>
+
+<h3>
+<a id="navigation-database" class="anchor" href="#navigation-database" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Navigation Database</h3>
+
+<p>Below the status display is the interface to the ship’s navigational database. Here the pilot can look up navigational information about known locations and entities. The coordinates of any database item can be transferred to the course plotter for further use.</p>
+
+<h3>
+<a id="ftl-controls" class="anchor" href="#ftl-controls" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>FTL Controls</h3>
+
+<p>The lower right corner of the nav display contains the FTL controls, including</p>
+
+<ul>
+<li><p>FTL status</p></li>
+<li><p>FTL distance and speed settings</p></li>
+<li><p>FTL waypoint List</p></li>
+<li><p>FTL autopilot</p></li>
+</ul>
+
+<h3>
+<a id="course-plotter" class="anchor" href="#course-plotter" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Course Plotter</h3>
+
+<p>This control helps the pilot build up a navigational course, with one or more waypoints. A course is a series of locations and maneuver types. FTL waypoints can be feed automatically to the FTL waypoint if desired.</p>
+
+<h3>
+<a id="course-history" class="anchor" href="#course-history" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Course History</h3>
+
+<p>This is a list of all specific destinations and sighted items during voyage. Any course history item can be reloaded into the course plotter. The current location of the vessel can be “bookmarked” in the course history, for later reuse, or inclusion into the navigational database.</p>
+
+<h3>
+<a id="movement-controls" class="anchor" href="#movement-controls" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Movement controls</h3>
+
+<p>The ship’s sub light movement is controlled by 4 control elements</p>
+
+<h4>
+<a id="heading" class="anchor" href="#heading" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Heading</h4>
+
+<p>The heading can be set in multiple ways</p>
+
+<ul>
+<li>
+<p>Direct Entry in the heading control at the top center of the display</p>
+
+<ul>
+<li><p>Direct heading</p></li>
+<li><p>Current Target</p></li>
+</ul>
+</li>
+<li><p>Clicking on the main view while in map centric mode.</p></li>
+<li><p>Manually Steering via the tiller control in the bottom center of the display</p></li>
+<li><p>Course Waypoints loaded from the course plotter</p></li>
+</ul>
+
+<h4>
+<a id="speed" class="anchor" href="#speed" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Speed</h4>
+
+<p>Speed is set by the speed slider to the left of the main view. This sets the thrust output of the main sub light engines.</p>
+
+<h4>
+<a id="thruster-controls" class="anchor" href="#thruster-controls" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Thruster controls</h4>
+
+<p>For combat maneuvers or precision docking, thrusters can be used to translate the ship for short bursts using the maneuvering thruster controls.</p>
+
+<h3>
+<a id="docking" class="anchor" href="#docking" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Docking</h3>
+
+<p>When within range of an auto-dock compatible system, the auto dock button will appear next to the FTL controls. This will turn control over to the docking station and automatically dock the ship.</p>
+
+<h1>
+<a id="weapons" class="anchor" href="#weapons" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Weapons</h1>
+
+<p><img src="https://github.com/JeffM2501/Agrotera.Core/raw/gh-pages/docs/images/Weapons_Layout.png" alt="Tactical Console Layout"></p>
+
+<h2>
+<a id="responsibilities-1" class="anchor" href="#responsibilities-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Responsibilities</h2>
+
+<p>The weapons station is responsible for managing the ships offensive and defensive systems.</p>
+
+<h2>
+<a id="controls-1" class="anchor" href="#controls-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Controls</h2>
+
+<h3>
+<a id="common-elements-from-navigation" class="anchor" href="#common-elements-from-navigation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Common elements from navigation</h3>
+
+<p>The weapons console shares the same main view and shield status system as the navigation console. Clicking on the main view does not seer the ship but instead selects targets for weapons.</p>
+
+<h3>
+<a id="ship-status-1" class="anchor" href="#ship-status-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ship Status</h3>
+
+<p>The upper right corner of the display shows a minimal ship status summary, with the two power settings the gunner will care about, beam and missile power. Additional displays for hull and fuel are available.</p>
+
+<h3>
+<a id="threat-board" class="anchor" href="#threat-board" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Threat Board</h3>
+
+<p>The threat board lists all objects within actionable range around the ship. Objects are broken into categories based on their type and then sorted by distance/speed.</p>
+
+<ul>
+<li><p>Targeted and Hostile objects</p></li>
+<li>
+<p>Munitions in flight</p>
+
+<ul>
+<li>  Munitions fired by the ship can be prematurely detonated here.</li>
+</ul>
+</li>
+<li><p>Unknown or unidentified objects</p></li>
+<li><p>Known friendly objects</p></li>
+</ul>
+
+<h3>
+<a id="beams" class="anchor" href="#beams" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Beams</h3>
+
+<p>The beams control allows the gunner to select the power and recharge rate of each beam weapon bank on the ship. When desired they can be fired on the currently selected target, or set to automatically track and fire on individual targets. Beam weapon frequencies can be set for the needs of specific targets.</p>
+
+<h3>
+<a id="missiles" class="anchor" href="#missiles" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Missiles</h3>
+
+<p>The missile control panel allows the gunner to load the missile tubes of the ship with specific munitions and fire them at selected targets. Tubes can be set to automatically reload with specific munitions or be manually loaded/unloaded as desired.</p>
+
+<h3>
+<a id="target-display" class="anchor" href="#target-display" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Target Display</h3>
+
+<p>Science information about the currently selected target is displayed in the lower left corner of the screen. If detailed scans of the target have been made, specific shield and weapon information on the subject will be shown.</p>
+
+<h1>
+<a id="engineering" class="anchor" href="#engineering" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Engineering</h1>
+
+<p><img src="https://github.com/JeffM2501/Agrotera.Core/raw/gh-pages/docs/images/Enginering_Layout.png" alt="Engineering Console Layout"></p>
+
+<h2>
+<a id="responsibilities-2" class="anchor" href="#responsibilities-2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Responsibilities</h2>
+
+<p>The engineering station is responsible for maintaining the operation and flight status of the ships mechanical systems.</p>
+
+<h2>
+<a id="controls-2" class="anchor" href="#controls-2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Controls</h2>
+
+<h3>
+<a id="ship-status-2" class="anchor" href="#ship-status-2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ship Status</h3>
+
+<p>The upper right corner of the display shows ship status, with hull and fuel displays. Total coolant and batter status are also shown along with controls for charging and discharging the battery from main power.</p>
+
+<p>When docked with a station or another vessel, any external inputs or outputs will be shown below the battery display.</p>
+
+<h3>
+<a id="shield-management" class="anchor" href="#shield-management" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Shield Management</h3>
+
+<p>Engineering maintains a more detailed shield status display and has additional controls to manage the energy levels of individual shield banks. Engineering can change the charge rate of specific shield capacitors or transfer shield buffers between banks.</p>
+
+<h3>
+<a id="damage-control" class="anchor" href="#damage-control" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Damage Control</h3>
+
+<p>The lower right of the display is dedicated to damaged systems and the options available to repair them. Damaged systems are displayed in a list as well as on the master systems display (MSD) image. Damage control crews can be assigned to specific repair tasks as needed. The amount of spare parts available for repairs is shown below the MSD as well as a list of jury rigged damage bypasses. Bypasses may restore some functionality to a system but at some cost, usually degraded performance of another system or increased power cost / heat generation.</p>
+
+<h3>
+<a id="power-distribution" class="anchor" href="#power-distribution" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Power Distribution</h3>
+
+<p>This controls how much power the ship produces and where it is directed. It also displays how much heat each system is producing and how the cooling system is performing. Power and coolant can be adjusted on a per system bases as needed.</p>
+
+<h1>
+<a id="sciences" class="anchor" href="#sciences" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sciences</h1>
+
+<p><img src="https://github.com/JeffM2501/Agrotera.Core/raw/gh-pages/docs/images/Science_Layout.png" alt="Science Console Layout"></p>
+
+<h2>
+<a id="responsibilities-3" class="anchor" href="#responsibilities-3" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Responsibilities</h2>
+
+<p>The science station is responsible for all long range sensor data. The science officer tells the crew what is around them.</p>
+
+<h2>
+<a id="controls-3" class="anchor" href="#controls-3" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Controls</h2>
+
+<h3>
+<a id="common-elements-from-navigation-1" class="anchor" href="#common-elements-from-navigation-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Common elements from navigation</h3>
+
+<p>The science console shares the same main view and status system as the navigation console. Clicking on the main view does not seer the ship but instead selects targets for sensor scans. The main view also has a much larger zoom range, able to pull map data from onboard databases.</p>
+
+<h3>
+<a id="long-range-passive-sensor-rings" class="anchor" href="#long-range-passive-sensor-rings" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Long range Passive sensor rings</h3>
+
+<p>Around the main view is a series of colored bands that show the direction and strength of various signals that are received by the long range sensor systems on the ship. Bands for Mass, Radiation, and EM emissions will spike based on the properties of the object generating the readings.</p>
+
+<h3>
+<a id="ship-status-3" class="anchor" href="#ship-status-3" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ship Status</h3>
+
+<p>The upper right corner of the display shows a minimal ship status summary, with the one power settings the science officer will care about, sensor power. Additional displays for hull and fuel are available.</p>
+
+<h3>
+<a id="map-overview" class="anchor" href="#map-overview" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Map Overview</h3>
+
+<p>Above the main view is a global map overview with icons for various points of interest. The main view can be moved to center on objects in this map view by clicking on it.</p>
+
+<h3>
+<a id="contacts-list" class="anchor" href="#contacts-list" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Contacts List</h3>
+
+<p>This control displays the list of objects that have been encountered using the ship’s onboard sensors. The last known position is displayed. Clicking on an item will center the main view on the last known coordinates.</p>
+
+<h3>
+<a id="database" class="anchor" href="#database" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Database</h3>
+
+<p>The science officer can search the ship’s database for items. Optionally the ship can suggest topics based on the current target. (allow multiple tabs? Bookmarks?)</p>
+
+<h3>
+<a id="scan-target" class="anchor" href="#scan-target" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Scan Target</h3>
+
+<p>Information about the currently selected target is shown here.</p>
+
+<h3>
+<a id="sensors-controls" class="anchor" href="#sensors-controls" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sensors Controls</h3>
+
+<p>Here the science officer manages the sensor inputs and analysis. The officer can control if active scans are used, or if only passive data is collected. For active detailed scans the officer uses controls in this area to gain additional data about an object.</p>
+
+<h4>
+<a id="probes" class="anchor" href="#probes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Probes</h4>
+
+<p>When probes or external sensors are available, they can be selected as data sources from this sub panel.</p>
       </section>
     </div>
 
