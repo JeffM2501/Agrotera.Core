@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DefaultControllers", "Contr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lidgren.Network", "Lidgren.Network\Lidgren.Network.csproj", "{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShipLink", "UDPListener\ShipLink.csproj", "{BD209926-33B2-4E31-8DF7-6C617564D38B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShipLink", "ShipLink\ShipLink.csproj", "{BD209926-33B2-4E31-8DF7-6C617564D38B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
