@@ -108,7 +108,7 @@ namespace Agrotera.Setting
             return playerFaction;
         }
 
-        public virtual Ship GetPlayerShip(string classType, string faction)
+        public virtual Ship SpawnPlayerShip(string classType, string faction)
         {
             Ship.ShipTemplate template = BoundCampaign.GetPlayerShipType(faction, classType);
             if (template == null)
@@ -116,7 +116,13 @@ namespace Agrotera.Setting
 
             Ship ship = Map.AddPlayableShip(template);
             if (ship != null)
+            {
+                ship.Position = Utilities.RandomPostion(Map.Bounds);
+                ship.Rotation = Utilities.RandomAngle();
+
                 ship.Owner = GetPlayerFaction().Name;
+            }
+               
             return ship;
         }
     }

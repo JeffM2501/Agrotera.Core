@@ -41,33 +41,60 @@ namespace AgroteraScripts.StandardCampaign
 		
 		}
 
-		public override void SetupZone()
+        protected int PlayerSpawnCount = 0;
+
+        public override Ship SpawnPlayerShip(string classType, string faction)
+        {
+            Ship.ShipTemplate template = BoundCampaign.GetPlayerShipType(faction, classType);
+            if (template == null)
+                return new Ship(Map);
+
+            Ship ship = Map.AddPlayableShip(template);
+            if (ship != null)
+            {
+                if (FriendlyStation == null)
+                {
+                    ship.Position = Utilities.RandomPostion(Map.Bounds);
+                    ship.Rotation = Utilities.RandomAngle();
+                }
+                else
+                {
+                    ship.Position = new Vector3F(Utilities.RandomPostionInbetween(new Vector2F(FriendlyStation.Position), 300, 800));
+                    ship.Rotation = Utilities.RandomAngle();
+                }
+  
+                ship.Name = "USS Constitution " + PlayerSpawnCount.ToString();
+
+                ship.Owner = GetPlayerFaction().Name;
+            }
+
+            return ship;
+        }
+
+        protected Station FriendlyStation = null;
+
+        public override void SetupZone()
 		{
 			base.SetupZone();
 
 			Map.Bounds = new Vector3F(10000, 10000, 10000);
 
             var playerFaction = GetPlayerFaction();
-			// some backup
-            Station friendlyStation = Map.AddStaticItem<Station>(BoundCampaign.FindTemplate("Medium Station") as Station.StationTemplate);
-            friendlyStation.Owner = playerFaction.Name;
-			friendlyStation.Position = Utilities.RandomPostion(Map.Bounds);
-			friendlyStation.Position.Z = 0;
-			friendlyStation.Name = friendlyStation.Owner + " Supply Depot";
+            // some backup
+            FriendlyStation = Map.AddStaticItem<Station>(BoundCampaign.FindTemplate("Medium Station") as Station.StationTemplate);
+            FriendlyStation.Owner = playerFaction.Name;
+            FriendlyStation.Position = Utilities.RandomPostion(Map.Bounds);
+            FriendlyStation.Position.Z = 0;
+            FriendlyStation.Name = FriendlyStation.Owner + " Supply Depot";
 
 			for (int i =0; i < Utilities.RNG.Next(10); i++)
 			{
                 Vessel friendlyShip = Map.AddAIShip(BoundCampaign.GetShipForFaction(playerFaction, null) as Ship.ShipTemplate);
-				friendlyShip.Owner = friendlyStation.Owner;
-				friendlyShip.Position = new Vector3F(Utilities.RandomPostionInbetween(new Vector2F(friendlyStation.Position),100,500));
+				friendlyShip.Owner = FriendlyStation.Owner;
+				friendlyShip.Position = new Vector3F(Utilities.RandomPostionInbetween(new Vector2F(FriendlyStation.Position),100,500));
                 friendlyShip.Rotation = Utilities.RandomAngle();
                 friendlyShip.Name = playerFaction.Name + " Patrol Ship " + (i + 1).ToString();
 			}
-
-// 			Vessel initalPlayerShip = Map.AddPlayableShip(BoundCampaign.GetPlayerShipType(friendlyStation.Owner)) as Vessel;
-// 			initalPlayerShip.Owner = GetPlayerFaction().Name;
-// 			initalPlayerShip.Name = "USS Constellation";
-// 			initalPlayerShip.Rotation = Utilities.RandomAngle(); 
 
 			// some baddies
             var baddieFaction = BoundCampaign.GetFactionByGeneralization(Faction.Generalizations.Hostile);

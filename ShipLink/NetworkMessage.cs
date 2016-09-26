@@ -38,5 +38,8 @@ namespace Agrotera.ShipLink
     public class CustomPackedNetworkMessage : NetworkMessage
     {
 		public override PackingTypes Packing { get { return PackingTypes.Custom; } }
+
+        public override NetOutgoingMessage Pack(NetOutgoingMessage msg) { throw new NotImplementedException(); }    // implement me!
+        public override void Unpack(NetIncomingMessage msg) { throw new NotImplementedException(); }                // implement me!
     }
 }

@@ -47,12 +47,18 @@
     <Compile Include="Messages\Join\CreateShipMessage.cs" />
     <Compile Include="Messages\Join\RejoinShipMessage.cs" />
     <Compile Include="Messages\Join\ShipLinkedMessage.cs" />
+    <Compile Include="Messages\ShipInfo\UpdateShipStatusMessages.cs" />
+    <Compile Include="Messages\ShipInfo\UpdateShipTemplateMessage.cs" />
     <Compile Include="NetworkMessage.cs" />
     <Compile Include="Peer.cs" />
     <Compile Include="PersistentListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj">
+      <Project>{db2c335c-0e92-43f6-ae25-feac0f620bfb}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Lidgren.Network\Lidgren.Network.csproj">
       <Project>{49ba1c69-6104-41ac-a5d8-b54fa9f696e8}</Project>
       <Name>Lidgren.Network</Name>
@@ -60,7 +66,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Messages\ShipControl\" />
-    <Folder Include="Messages\ShipInfo\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

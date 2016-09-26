@@ -46,27 +46,31 @@ namespace AgroteraScripts.StandardCampaign
 			smallStation.Hull = 150;
 			smallStation.Shields = 300;
 			smallStation.Radius = 50;
+            smallStation.ControllerName = "StationController";
 
             Station.StationTemplate mediumStation = campaign.NewTemplate<Station.StationTemplate>("Medium Station");
 			mediumStation.Model = "space_station_3";
 			mediumStation.Hull = 400;
 			mediumStation.Shields = 800;
 			mediumStation.Radius = 75;
+            mediumStation.ControllerName = "StationController";
 
             Station.StationTemplate largeStation = campaign.NewTemplate<Station.StationTemplate>("Large Station");
 			largeStation.Model = "space_station_2";
 			largeStation.Hull = 500;
 			largeStation.Shields = 1000;
 			largeStation.Radius = 100;
+            largeStation.ControllerName = "StationController";
 
             Station.StationTemplate hugeStation = campaign.NewTemplate<Station.StationTemplate>("Huge Station");
 			hugeStation.Model = "space_station_1";
 			hugeStation.Hull = 800;
 			hugeStation.Shields = 1200;
 			hugeStation.Radius = 150;
+            hugeStation.ControllerName = "StationController";
 
-			// player ships
-			SetupPlayerCruiser(campaign.NewTemplate<Ship.ShipTemplate>("Player Cruiser"), campaign);
+            // player ships
+            SetupPlayerCruiser(campaign.NewTemplate<Ship.ShipTemplate>("Player Cruiser"), campaign);
             SetupPlayerMissileCruiser(campaign.NewTemplate<Ship.ShipTemplate>("Player Missile Cruiser"), campaign);
             SetupPlayerFighter(campaign.NewTemplate<Ship.ShipTemplate>("Player Fighter"), campaign);
 

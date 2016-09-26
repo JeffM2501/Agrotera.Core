@@ -19,7 +19,7 @@ namespace SimulationServer
 			if(!msg.Valid() || msg.Ship.LinkedShip != null)
 				return;
 
-			msg.Ship.LinkedShip = TheScenario.GetPlayerShip(msg.Msg.ShipClass, string.Empty);
+			msg.Ship.LinkedShip = TheScenario.SpawnPlayerShip(msg.Msg.ShipClass, string.Empty);
 
 			msg.Ship.LinkedShip.SetController(msg.Ship.ShipController);
 			msg.Ship.ShipController.LinkToPeer(msg.Ship);
@@ -52,7 +52,7 @@ namespace SimulationServer
 			}
 
 			if(ship == null)
-				TheScenario.GetPlayerShip(string.Empty, string.Empty);
+				TheScenario.SpawnPlayerShip(string.Empty, string.Empty);
 
 			msg.Ship.LinkedShip = ship;
 			msg.Ship.LinkedShip.SetController(msg.Ship.ShipController);
@@ -64,7 +64,6 @@ namespace SimulationServer
 			responce.ShipRejoinToken = ship.ShipServerOwnerID;
 
 			peer.SendMessage(responce);
-
 		}
 	}
 }

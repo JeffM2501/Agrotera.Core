@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Agrotera.DefaultControllers.Complex;
 
 using Agrotera.ShipLink;
+using Agrotera.ShipLink.Messages.ShipInfo;
 
 
 namespace SimulationServer.Peers
@@ -27,8 +28,12 @@ namespace SimulationServer.Peers
 		{
 			NetworkPeer = peer;
 
-			// TODO, DUMP data to the peer about our wonderfull ship
+            UpdateShipTemplateMessage msg = new UpdateShipTemplateMessage();
+            msg.Template = NetworkPeer.LinkedShip.TemplateShip;
+
+            NetworkPeer.SendMessage(msg);
 		}
+
 
 		public void ProcessMessage(NetworkMessage msg)
 		{
