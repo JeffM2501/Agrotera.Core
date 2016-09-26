@@ -64,10 +64,10 @@ namespace AgroteraScripts.StandardCampaign
                 friendlyShip.Name = playerFaction.Name + " Patrol Ship " + (i + 1).ToString();
 			}
 
-			Vessel initalPlayerShip = Map.AddPlayableShip(BoundCampaign.GetPlayerShipType(friendlyStation.Owner)) as Vessel;
-			initalPlayerShip.Owner = GetPlayerFaction().Name;
-			initalPlayerShip.Name = "USS Constellation";
-			initalPlayerShip.Rotation = Utilities.RandomAngle(); 
+// 			Vessel initalPlayerShip = Map.AddPlayableShip(BoundCampaign.GetPlayerShipType(friendlyStation.Owner)) as Vessel;
+// 			initalPlayerShip.Owner = GetPlayerFaction().Name;
+// 			initalPlayerShip.Name = "USS Constellation";
+// 			initalPlayerShip.Rotation = Utilities.RandomAngle(); 
 
 			// some baddies
             var baddieFaction = BoundCampaign.GetFactionByGeneralization(Faction.Generalizations.Hostile);
@@ -104,16 +104,5 @@ namespace AgroteraScripts.StandardCampaign
 				coopShip.Name = coopShip.Owner + " Trade Ship " + (i + 1).ToString();
 			}
 		}
-
-		protected override Faction GetPlayerFaction()
-		{
-			return base.GetPlayerFaction();
-		}
-
-		public override Ship GetPlayerShip()
-		{
-			return base.GetPlayerShip();
-		}
-
 	}
 }

@@ -152,6 +152,8 @@ namespace Agrotera.Core.Entities
 
         public ShipTemplate TemplateShip = null;
 
+		public string ShipServerOwnerID = string.Empty;
+
         public double DesiredHeading = 0;
         public double DesiredSublightSpeed = 0;
 

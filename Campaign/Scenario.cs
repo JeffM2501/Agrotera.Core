@@ -20,7 +20,20 @@ namespace Agrotera.Setting
             Scenarios.Add(scenario);
         }
 
-        public ConfigurationData Configuration = new ConfigurationData();
+		public static Scenario GetAnyScenario()
+		{
+			if(Scenarios.Count == 0)
+				return null;
+
+			return Scenarios[0];
+		}
+
+		public static Scenario FindScenario(string name)
+		{
+			return Scenarios.Find(x=>x.Name == name);
+		}
+
+		public ConfigurationData Configuration = new ConfigurationData();
 
         public Zone Map = new Zone();
         public string Name = string.Empty;
@@ -95,9 +108,9 @@ namespace Agrotera.Setting
             return playerFaction;
         }
 
-        public virtual Ship GetPlayerShip()
+        public virtual Ship GetPlayerShip(string classType, string faction)
         {
-            Ship.ShipTemplate template = BoundCampaign.GetPlayerShipType(string.Empty);
+            Ship.ShipTemplate template = BoundCampaign.GetPlayerShipType(faction, classType);
             if (template == null)
                 return new Ship(Map);
 

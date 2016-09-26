@@ -168,7 +168,7 @@ namespace Agrotera.ShipLink
 							return;
 
 						// tell our handler we got some data
-						peer.Handler.PeerReceiveData(im, peer);
+						peer.Handler.PeerReceiveData(MessageFactory.ParseMessage(im), peer);
 
 						break;
 

@@ -12,7 +12,7 @@ namespace Agrotera.ShipLink
 	{
 		Peer AddPeer(NetIncomingMessage msg);
 
-		void PeerReceiveData(NetIncomingMessage msg, Peer peer);
+		void PeerReceiveData(NetworkMessage msg, Peer peer);
 		void PeerDisconnected(string reason, Peer peer);
 
 		void DisconnectPeer(string reason, Peer peer);

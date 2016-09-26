@@ -9,6 +9,34 @@ using Lidgren.Network;
 
 namespace Agrotera.ShipLink
 {
+	public class MessageProcessor
+	{
+		public delegate void MessageProcessorCallback(NetworkMessage message, Peer peer);
+
+		private Dictionary<int, MessageProcessorCallback> InboundMessageCallbacks = new Dictionary<int, MessageProcessorCallback>();
+
+		public  void RegisterProcessor(Type t, MessageProcessorCallback callback)
+		{
+			int code = t.GetHashCode();
+			if(InboundMessageCallbacks.ContainsKey(code))
+				InboundMessageCallbacks[code] = callback;
+			else
+				InboundMessageCallbacks.Add(code, callback);
+		}
+
+		public  bool CallProcessor(Peer peer, NetworkMessage msg)
+		{
+			Type msgType = msg.GetType();
+
+			int code = msgType.GetHashCode();
+			if(!InboundMessageCallbacks.ContainsKey(code))
+				return false;
+
+			InboundMessageCallbacks[code](msg, peer);
+			return true;
+		}
+	}
+
 	public static class MessageFactory
 	{
 		public static string ProtocolVersionString = "Agrotera Ship Link 0.0.1";

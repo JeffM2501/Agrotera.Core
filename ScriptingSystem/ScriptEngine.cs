@@ -24,11 +24,25 @@ namespace Agrotera.Scripting
         }
 
         internal static List<ScriptInfo> Scripts = new List<ScriptInfo>();
+
+		internal static bool ScriptDirIsLoaded(DirectoryInfo dir)
+		{
+			return Scripts.Find(x => x.ScriptDir != null && (x.ScriptDir.FullName.ToLower() == dir.FullName.ToLower())) != null;
+		}
+
+		internal static bool AssemblyIsLoaded(FileInfo file)
+		{
+			return Scripts.Find(x => x.ScriptAssembly != null && (x.ScriptAssembly.Location.ToLower() == file.FullName.ToLower())) != null;
+		}
+
 		public static void ScanFolder(string dirName)
 		{
 			DirectoryInfo dir = new DirectoryInfo(dirName);
 			foreach (DirectoryInfo subdir in dir.GetDirectories())
 			{
+				if(ScriptDirIsLoaded(subdir))
+					continue;
+
 				ScriptInfo info = new ScriptInfo();
 				info.Load(subdir);
 				if (info.Valid)
@@ -45,6 +59,9 @@ namespace Agrotera.Scripting
 
 			foreach (FileInfo file in dir.GetFiles("*.dll"))
 			{
+				if(AssemblyIsLoaded(file))
+					continue;
+
 				try
 				{
 					LoadAssembly(Assembly.LoadFile(file.FullName));
@@ -87,6 +104,10 @@ namespace Agrotera.Scripting
 		{
 			foreach(ScriptInfo script in Scripts)
 			{
+				if(script.Inited)
+					continue;
+
+				script.Inited = true;
 				try
 				{
 					if (script.ScriptDir != null)
@@ -131,6 +152,8 @@ namespace Agrotera.Scripting
 			public List<IScript> ScriptInterfaces = new List<IScript>();
 
 			public bool Valid = false;
+
+			public bool Inited = false;
 
 			public List<string> Errors = new List<string>();
 

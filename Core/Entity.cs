@@ -49,11 +49,16 @@ namespace Agrotera.Core
             return GloblalClock;
         }
 
-        public static void ShutdownGlobalClock()
+        public static void StartGlobalClock()
         {
             Timer.Stop();
         }
-    }
+
+		public static void ShutdownGlobalClock()
+		{
+			Timer.Stop();
+		}
+	}
 
 
     public class Entity : IDisposable
@@ -91,16 +96,16 @@ namespace Agrotera.Core
             {
                 ent.ID = Entity.NewID();
                 ent.Template = this;
-                ent.SetController(ControllerCache.CreateController(this.ControllerName));
-                if (ent.Controller == null)
-                    ent.SetController(ControllerCache.CreateController("Default"));
+                IEntityController ctl = ControllerCache.CreateController(this.ControllerName);
+                if (ctl == null)
+					ctl = ControllerCache.CreateController("Default");
 
-                if (ent.Controller != null)
+                if (ctl != null)
                 {
                     foreach (var a in ControllerArguments)
-                        ent.Controller.AddArgument(a.Item1, a.Item2);
+						ctl.AddArgument(a.Item1, a.Item2);
 
-                    ent.Controller.AddEntity(ent);
+					ent.SetController(ctl);
                 }
 
                 return ent;
@@ -152,6 +157,7 @@ namespace Agrotera.Core
         public void SetController(IEntityController controller)
         {
             EntController = controller;
+			controller.AddEntity(this);
         }
 
         public static Dictionary<string, Entity> EntityCache = new Dictionary<string, Entity>();

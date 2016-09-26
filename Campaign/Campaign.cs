@@ -35,6 +35,14 @@ namespace Agrotera.Setting
             return null;
         }
 
+		public static Campaign GetDefaultCampaign()
+		{
+			foreach(var c in CampaignList.Values)
+				return c;
+
+			return null;
+		}
+
         public string Name = string.Empty;
 
         [XmlIgnore]
@@ -114,7 +122,7 @@ namespace Agrotera.Setting
         public event EventHandler<CampaignRuntimeEventInfo> ScenarioStarted;
         public event EventHandler<CampaignRuntimeEventInfo> ZoneStarted;
 
-        internal void Load()
+        public void Load()
         {
             if (CampaignLoaded == null)
                 return;
@@ -122,7 +130,7 @@ namespace Agrotera.Setting
             CampaignLoaded(this, RuntimeEventArgs);
         }
 
-        internal void ScenarioStartup()
+		public void ScenarioStartup()
         {
             if (ScenarioStarted == null)
                 return;
@@ -130,7 +138,7 @@ namespace Agrotera.Setting
             ScenarioStarted(this, RuntimeEventArgs);
         }
 
-        internal void ZoneStartup()
+		public void ZoneStartup()
         {
             if (ZoneStarted == null)
                 return;
@@ -162,22 +170,24 @@ namespace Agrotera.Setting
 
         public event EventHandler<CampaignStringQueryEventArgs> QueryFactionFromGeneralization = null;
 
-        public Ship.ShipTemplate GetPlayerShipType(string factionName)
-        {
-            if (QueryPlayerShipType == null)
-                return null;
+		public Ship.ShipTemplate GetPlayerShipType(string factionName, string classType)
+		{
+			if(QueryPlayerShipType == null)
+				return null;
 
-            CampaignTemplateQueryEventArgs args = new CampaignTemplateQueryEventArgs();
+			CampaignTemplateQueryEventArgs args = new CampaignTemplateQueryEventArgs();
 
-            args.Query = factionName;
-            args.RuntimeEventArgs = RuntimeEventArgs;
-            args.ReturnedTemplate = null;
+			args.Query = "GetPlayerShipType";
+			args.Arguments = new string[]{ classType, factionName};
 
-            QueryPlayerShipType(this, args);
-            return args.ReturnedTemplate as Ship.ShipTemplate;
-        }
+			args.RuntimeEventArgs = RuntimeEventArgs;
+			args.ReturnedTemplate = null;
 
-        public Ship.ShipTemplate GetShipForFaction(Faction faction, string[] args)
+			QueryPlayerShipType(this, args);
+			return args.ReturnedTemplate as Ship.ShipTemplate;
+		}
+
+		public Ship.ShipTemplate GetShipForFaction(Faction faction, string[] args)
         {
             if (QueryShipForFaction == null)
                 return null;

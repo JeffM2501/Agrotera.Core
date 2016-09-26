@@ -4,16 +4,18 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BD209926-33B2-4E31-8DF7-6C617564D38B}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{D14F5B15-7364-418D-9E66-CBBB6ADB5463}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Agrotera.ShipLink</RootNamespace>
-    <AssemblyName>Agrotera.ShipLink</AssemblyName>
+    <RootNamespace>SimulationServer</RootNamespace>
+    <AssemblyName>SimulationServer</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,6 +25,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -41,26 +44,46 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Client.cs" />
-    <Compile Include="Host.cs" />
-    <Compile Include="MessageFactory.cs" />
-    <Compile Include="Messages\Join\CreateShipMessage.cs" />
-    <Compile Include="Messages\Join\RejoinShipMessage.cs" />
-    <Compile Include="Messages\Join\ShipLinkedMessage.cs" />
-    <Compile Include="NetworkMessage.cs" />
-    <Compile Include="Peer.cs" />
-    <Compile Include="PersistentListener.cs" />
+    <Compile Include="Peers\NetworkShipController.cs" />
+    <Compile Include="Server.NewShipHandler.cs" />
+    <Compile Include="Peers\ShipPeer.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Server.cs" />
+    <Compile Include="ScenarioConfig.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Campaign\Setting.csproj">
+      <Project>{5c9d2b2b-05d7-41bf-8421-3db18b08ed6f}</Project>
+      <Name>Setting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Controllers\DefaultControllers.csproj">
+      <Project>{112b66d6-627d-4c7c-b6f9-ec274212c29e}</Project>
+      <Name>DefaultControllers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\Core.csproj">
+      <Project>{db2c335c-0e92-43f6-ae25-feac0f620bfb}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Lidgren.Network\Lidgren.Network.csproj">
       <Project>{49ba1c69-6104-41ac-a5d8-b54fa9f696e8}</Project>
       <Name>Lidgren.Network</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Messages\ShipControl\" />
-    <Folder Include="Messages\ShipInfo\" />
+    <ProjectReference Include="..\ScriptingSystem\Scripting.csproj">
+      <Project>{50771519-3d47-4ea6-a3a5-6b8178df453c}</Project>
+      <Name>Scripting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ShipLink\ShipLink.csproj">
+      <Project>{bd209926-33b2-4e31-8df7-6c617564d38b}</Project>
+      <Name>ShipLink</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\StandardSetting\StandardSetting.csproj">
+      <Project>{f0dd743f-4e86-4b7f-85c1-c47f6ee8d81a}</Project>
+      <Name>StandardSetting</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -94,7 +94,14 @@ namespace AgroteraScripts.StandardCampaign
 
 		void GetPlayerShipType(object sender, Campaign.CampaignTemplateQueryEventArgs args)
 		{
-			args.ReturnedTemplate = args.RuntimeEventArgs.CurrentCampaign.FindTemplate("Player Cruiser");
+			string desiredShip = string.Empty;
+			if(args.Arguments.Length > 0)
+				desiredShip = args.Arguments[0];
+
+			args.ReturnedTemplate = args.RuntimeEventArgs.CurrentCampaign.FindTemplate(desiredShip);
+
+			if (args.ReturnedTemplate == null)
+				args.ReturnedTemplate = args.RuntimeEventArgs.CurrentCampaign.FindTemplate("Player Cruiser");
 		}
 
 		void GetShipForFaction(object sender, Campaign.CampaignTemplateQueryEventArgs args)
