@@ -12,7 +12,7 @@ namespace Agrotera.ShipLink
 	{
 		Peer AddPeer(NetIncomingMessage msg);
 
-		void PeerReceiveData(NetworkMessage msg, Peer peer);
+		void PeerReceiveData(InboundNetworkMessage msg, Peer peer);
 		void PeerDisconnected(string reason, Peer peer);
 
 		void DisconnectPeer(string reason, Peer peer);
@@ -116,7 +116,11 @@ namespace Agrotera.ShipLink
 		{
 			if(SocketConnection == null)
 				return;
-			SocketConnection.SendMessage(MessageFactory.PackMessage(SocketConnection.Peer.CreateMessage(), msg), method, channel);
+
+			var packet = SocketConnection.Peer.CreateMessage();
+			packet.WriteTime(true);
+
+			SocketConnection.SendMessage(MessageFactory.PackMessage(packet, msg), method, channel);
 		}
 	}
 }

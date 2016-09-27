@@ -16,11 +16,13 @@ namespace SimulationServer.Peers
 		public class Message<M> where M : NetworkMessage
 		{
 			public M Msg = null;
+			public double Timestamp = 0;
 			public ShipPeer Ship = null;
 
-			public Message(NetworkMessage msg, Peer p)
+			public Message(InboundNetworkMessage msg, Peer p)
 			{
-				Msg = msg as M;
+				Msg = msg.Message as M;
+				Timestamp = msg.Timestamp;
 				Ship = p as ShipPeer;
 			}
 

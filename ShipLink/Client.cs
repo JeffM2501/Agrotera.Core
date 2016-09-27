@@ -91,16 +91,16 @@ namespace Agrotera.ShipLink
 		public event EventHandler HostConnected = null;
 		public event EventHandler HostDisconnected = null;
 
-		protected List<NetworkMessage> PendingInboundMessages = new List<NetworkMessage>();
+		protected List<InboundNetworkMessage> PendingInboundMessages = new List<InboundNetworkMessage>();
 
-		protected NetworkMessage PopMessage()
+		protected InboundNetworkMessage PopMessage()
 		{
 			lock(PendingInboundMessages)
 			{
 				if(PendingInboundMessages.Count == 0)
 					return null;
 
-				NetworkMessage msg = PendingInboundMessages[0];
+				InboundNetworkMessage msg = PendingInboundMessages[0];
 				PendingInboundMessages.RemoveAt(0);
 				return msg;
 			}
@@ -115,9 +115,10 @@ namespace Agrotera.ShipLink
 		{
 			if(SocketClient == null)
 				return;
-			SocketClient.SendMessage(MessageFactory.PackMessage(SocketClient.CreateMessage(), msg), method, channel);
+			var packet = SocketClient.CreateMessage();
+			packet.WriteTime(true);
+			SocketClient.SendMessage(MessageFactory.PackMessage(packet, msg), method, channel);
 		}
-
 
 		private object ExitLocker = new object();
 		private bool ExitFlag = false;
@@ -175,9 +176,9 @@ namespace Agrotera.ShipLink
 						break;
 					case NetIncomingMessageType.Data:
 						{
-							NetworkMessage msg = MessageFactory.ParseMessage(im);
+							InboundNetworkMessage ibm = new InboundNetworkMessage(im.ReadTime(true), MessageFactory.ParseMessage(im));
 							lock(PendingInboundMessages)
-								PendingInboundMessages.Add(msg);
+								PendingInboundMessages.Add(ibm);
 						}
 						break;
 					default:

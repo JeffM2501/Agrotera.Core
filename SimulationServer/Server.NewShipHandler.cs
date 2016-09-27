@@ -13,7 +13,7 @@ namespace SimulationServer
 {
 	internal partial class Server
 	{
-		void ProcessCreateShip(NetworkMessage m, Peer peer)
+		void ProcessCreateShip(InboundNetworkMessage m, Peer peer)
 		{
 			var msg = new ShipPeer.Message<CreateShipMessage>(m, peer);
 			if(!msg.Valid() || msg.Ship.LinkedShip != null)
@@ -35,7 +35,7 @@ namespace SimulationServer
 			peer.SendMessage(responce);
 		}
 
-		void ProcessRejoinShip(NetworkMessage m, Peer peer)
+		void ProcessRejoinShip(InboundNetworkMessage m, Peer peer)
 		{
 			var msg = new ShipPeer.Message<RejoinShipMessage>(m, peer);
 			if(!msg.Valid() || msg.Ship.LinkedShip != null)

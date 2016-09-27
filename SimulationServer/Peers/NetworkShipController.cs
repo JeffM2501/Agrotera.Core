@@ -34,8 +34,7 @@ namespace SimulationServer.Peers
             NetworkPeer.SendMessage(msg);
 		}
 
-
-		public void ProcessMessage(NetworkMessage msg)
+		public void ProcessMessage(InboundNetworkMessage msg)
 		{
 			MessageCallbacks.CallProcessor(NetworkPeer, msg);
 		}

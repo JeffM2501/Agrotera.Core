@@ -8,6 +8,7 @@ using Lidgren.Network;
 
 namespace Agrotera.ShipLink
 {
+
 	public class Host
 	{
 		private NetServer SocketServer = null;
@@ -167,8 +168,10 @@ namespace Agrotera.ShipLink
 						if(peer == null || peer.Handler == null)   // not one of ours
 							return;
 
+						InboundNetworkMessage msg = new InboundNetworkMessage(im.ReadTime(true), MessageFactory.ParseMessage(im));
+
 						// tell our handler we got some data
-						peer.Handler.PeerReceiveData(MessageFactory.ParseMessage(im), peer);
+						peer.Handler.PeerReceiveData(msg, peer);
 
 						break;
 

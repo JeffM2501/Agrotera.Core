@@ -11,7 +11,7 @@ namespace Agrotera.ShipLink
 {
 	public class MessageProcessor
 	{
-		public delegate void MessageProcessorCallback(NetworkMessage message, Peer peer);
+		public delegate void MessageProcessorCallback(InboundNetworkMessage message, Peer peer);
 
 		private Dictionary<int, MessageProcessorCallback> InboundMessageCallbacks = new Dictionary<int, MessageProcessorCallback>();
 
@@ -24,7 +24,7 @@ namespace Agrotera.ShipLink
 				InboundMessageCallbacks.Add(code, callback);
 		}
 
-		public  bool CallProcessor(Peer peer, NetworkMessage msg)
+		public  bool CallProcessor(Peer peer, InboundNetworkMessage msg)
 		{
 			Type msgType = msg.GetType();
 

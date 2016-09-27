@@ -78,7 +78,7 @@ namespace SimulationServer
 		{
 		}
 
-		public void PeerReceiveData(NetworkMessage msg, Peer peer)
+		public void PeerReceiveData(InboundNetworkMessage msg, Peer peer)
 		{
 			if (!NewClientProcessor.CallProcessor(peer,msg))
 			{

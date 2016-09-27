@@ -8,7 +8,19 @@ using Lidgren.Network;
 
 namespace Agrotera.ShipLink
 {
-    public class NetworkMessage
+	public class InboundNetworkMessage
+	{
+		public NetworkMessage Message = null;
+		public double Timestamp = double.MinValue;
+
+		public InboundNetworkMessage(double t, NetworkMessage msg)
+		{
+			Message = msg;
+			Timestamp = t;
+		}
+	}
+
+	public class NetworkMessage
     {
         public static readonly NetworkMessage Empty = new NetworkMessage();
 
