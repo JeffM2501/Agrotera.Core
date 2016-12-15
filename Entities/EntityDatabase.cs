@@ -40,7 +40,10 @@ namespace Entities
 
         public void InterpMotion(double delta)
         {
-
+			foreach(var entity in Ents.Values)
+			{
+				entity.Position += entity.Velocity * delta;
+			}
         }
     }
 }
