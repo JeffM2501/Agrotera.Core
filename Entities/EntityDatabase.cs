@@ -45,5 +45,14 @@ namespace Entities
 				entity.Position += entity.Velocity * delta;
 			}
         }
+
+        public void ThinkEntityControllers(double delta)
+        {
+            foreach (var entity in Ents.Values)
+            {
+                if (entity.Controller != null)
+                    entity.Controller.Update(entity, delta);
+            }
+        }
     }
 }

@@ -4,14 +4,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ScenarioServer.Classes;
+
+using Entities;
+using Entities.Classes;
 using ScenarioServer.Interfaces;
+
+using Core.Types;
+
 
 namespace ScenarioServer.Scenarios
 {
     public class Default : IScenarioController
     {
         public ScenarioState State = null;
+
+        protected Vector3F ZoneSize = new Vector3F(1000, 1000, 1000);
 
         public bool Defaultable
         {
@@ -32,6 +39,15 @@ namespace ScenarioServer.Scenarios
         public void Init(ScenarioState state)
         {
             State = state;
+
+            
+        }
+
+        protected Entity AddRandomeEntity<T>() where T: Entity, new()
+        {
+            T e = State.MapItems.New<T>();
+
+            return e;
         }
 
         public void Shutdown()
@@ -41,14 +57,11 @@ namespace ScenarioServer.Scenarios
 
         public void Update(double delta)
         {
-           
         }
 
-        public UserShip AddPlayerShip(int playerID, List<string> requestParams)
+        public Ship AddPlayerShip(int playerID, List<string> requestParams)
         {
-            UserShip s = State.MapItems.New<UserShip>();
-            s.ControllerConnection = playerID;
-            return s;
+            return State.NewUserShip(playerID);
         }
     }
 }

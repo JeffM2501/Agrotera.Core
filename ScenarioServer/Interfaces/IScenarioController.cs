@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using ScenarioServer.Classes;
+using Entities.Classes;
 
 namespace ScenarioServer.Interfaces
 {
@@ -13,6 +13,6 @@ namespace ScenarioServer.Interfaces
 
         void Update(double delta);
 
-        UserShip AddPlayerShip(int playerID, List<string> requestParams);
+        Ship AddPlayerShip(int playerID, List<string> requestParams);
     }
 }

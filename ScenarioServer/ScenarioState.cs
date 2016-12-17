@@ -38,9 +38,20 @@ namespace ScenarioServer
         {
             double delta = time - LastTime;
             Controller.Update(delta);
+
+            MapItems.ThinkEntityControllers(delta);
             MapItems.InterpMotion(delta);
 
             LastTime = time;
+        }
+
+
+        public Ship NewUserShip(int playerID)
+        {
+            var s =  MapItems.New<UserShip>();
+            s.ControllerConnection = playerID;
+            PlayerShips.Add(s);
+            return s;
         }
     }
 }
