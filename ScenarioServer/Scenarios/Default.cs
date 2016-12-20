@@ -19,6 +19,7 @@ namespace ScenarioServer.Scenarios
         public ScenarioState State = null;
 
         protected Vector3F ZoneSize = new Vector3F(1000, 1000, 1000);
+        protected Random RNG = new Random();
 
         public bool Defaultable
         {
@@ -43,9 +44,44 @@ namespace ScenarioServer.Scenarios
             
         }
 
-        protected Entity AddRandomeEntity<T>() where T: Entity, new()
+        protected Vector3F RandomPostion()
+        {
+            return new Vector3F(RandomVectorParam() * ZoneSize.X,
+                                RandomVectorParam() * ZoneSize.Y,
+                                RandomVectorParam() * ZoneSize.Z);
+        }
+
+        protected Vector3F RandomVector(double magitude)
+        {
+            return new Vector3F(RandomVectorParam() * magitude,
+                                RandomVectorParam() * magitude,
+                                RandomVectorParam() * magitude);
+        }
+
+        protected double RandomVectorParam()
+        {
+            return (RNG.NextDouble() - 0.5) * 2.0;
+        }
+
+        protected double RandomInRange( float max)
+        {
+            return (RNG.NextDouble() * max);
+        }
+
+        protected Entity AddRandomEntity<T>() where T: Entity, new()
         {
             T e = State.MapItems.New<T>();
+
+            e.Position = RandomPostion();
+
+            return e;
+        }
+
+        protected Entity AddRandomEntity<T>( double speed ) where T : Entity, new()
+        {
+            Entity e = AddRandomEntity<T>();
+
+            e.Velocity = RandomVector(speed);
 
             return e;
         }
