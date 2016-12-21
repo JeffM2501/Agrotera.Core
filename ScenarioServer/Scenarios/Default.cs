@@ -40,7 +40,6 @@ namespace ScenarioServer.Scenarios
         public void Init(ScenarioState state)
         {
             State = state;
-
             
         }
 
