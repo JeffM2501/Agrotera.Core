@@ -5,6 +5,8 @@ using System.Text;
 using System.Reflection;
 
 using ScenarioServer.Interfaces;
+using System.Diagnostics;
+using System.Threading;
 
 namespace ScenarioServer
 {
@@ -20,6 +22,28 @@ namespace ScenarioServer
                 LoadScenarios(dir, loader);
 
             ScenarioState state = new ScenarioState(loader.GetDefaultScenario());
+
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            double last = timer.ElapsedMilliseconds * 0.001;
+
+            state.Startup(last);
+
+            var hauler1 = state.MapItems.GetByName("Cargo Transport 1");
+
+            while (state != null)
+            {
+                double now = timer.ElapsedMilliseconds * 0.001;
+
+                state.Update(now);
+
+                if (hauler1 != null)
+                {
+                    Console.WriteLine(string.Format("Hauler 1 {0}, {1}, {2}", hauler1.Position.X, hauler1.Position.Y, hauler1.Position.Z));
+                }
+
+                Thread.Sleep(100);
+            }
         }
 
         static void LoadScenarios(DirectoryInfo dir, ScenarioControllerLoader loader)

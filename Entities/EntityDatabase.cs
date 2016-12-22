@@ -32,6 +32,17 @@ namespace Entities
             return item;
         }
 
+        public Entity GetByName(string name)
+        {
+            foreach(var e in Ents.Values)
+            {
+                if (e.Name == name)
+                    return e;
+            }
+
+            return null;
+        }
+
         public void Remove(int id)
         {
             if (Ents.ContainsKey(id))
@@ -49,10 +60,7 @@ namespace Entities
         public void ThinkEntityControllers(double delta)
         {
             foreach (var entity in Ents.Values)
-            {
-                if (entity.Controller != null)
-                    entity.Controller.Update(entity, delta);
-            }
+                entity.UpdateController(delta);
         }
     }
 }

@@ -72,6 +72,25 @@ namespace Core.Types
             return new Vector3F(v1.X - v2.X, v1.Y - v2.Y, v1.Z - v2.Z);
         }
 
+        public static double DotProduct(Vector3F p1, Vector3F p2)
+        {
+            return p1.X * p2.X + p1.Y * p2.Y + p1.Z * p2.Z;
+        }
+
+        public static Vector3F CrossProduct(Vector3F p1, Vector3F p2)
+        {
+            return new Vector3F(p1.Y * p2.Z - p1.Z * p2.Y,
+                p1.Z * p2.X - p1.X * p2.Z,
+                p1.X * p2.Y - p1.Y * p2.X);
+        }
+
+        public static Vector3F Normalize(Vector3F p1)
+        {
+            Vector3F v = new Vector3F(p1);
+            v.Normailize();
+            return v;
+        }
+
         public static double Distance(Vector3F p1, Vector3F p2)
         {
             return (p1 - p2).Length();
@@ -102,5 +121,6 @@ namespace Core.Types
 
 			return double.TryParse(bits[0], out vec.X) && double.TryParse(bits[1], out vec.Y) && double.TryParse(bits[2], out vec.Z);
 		}
+
     }
 }

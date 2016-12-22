@@ -49,8 +49,8 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScenarioState.cs" />
+    <Compile Include="Scenarios\Controller\CargoHauler.cs" />
     <Compile Include="Scenarios\Controller\Fixed.cs" />
-    <Compile Include="Scenarios\Controller\Orbiter.cs" />
     <Compile Include="Scenarios\Default.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -10,14 +10,16 @@ namespace ScenarioServer.Scenarios.Controller
 {
     public class Fixed : IEntityContorller
     {
-        void IEntityContorller.Init(Entity ent)
+        void IEntityContorller.AddEntity(Entity ent)
         {
             
         }
 
-        void IEntityContorller.Update(Entity ent, double delta)
+        void IEntityContorller.UpdateEntity(Entity ent, double delta)
         {
    
         }
+
+        public static readonly Fixed Default = new Fixed();
     }
 }

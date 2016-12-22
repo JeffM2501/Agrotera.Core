@@ -10,8 +10,8 @@ namespace Entities
 {
     public interface IEntityContorller
     {
-        void Init(Entity ent);
-        void Update(Entity ent, double delta);
+        void AddEntity(Entity ent);
+        void UpdateEntity(Entity ent, double delta);
     }
 
     public class Entity
@@ -23,7 +23,48 @@ namespace Entities
         public Vector3F Position = Vector3F.Zero;
         public Vector3F Velocity = Vector3F.Zero;
 
-        public object ExtraData = string.Empty;
-        public IEntityContorller Controller = null;
+        public object Tag = string.Empty;
+        protected IEntityContorller Controller = null;
+
+        public void SetController(IEntityContorller ctl)
+        {
+            Controller = ctl;
+            ctl.AddEntity(this);
+        }
+
+        public void UpdateController(double delta)
+        {
+            if (Controller != null)
+                Controller.UpdateEntity(this, delta);
+        }
+
+        protected Dictionary<int, double> Paramaters = new Dictionary<int, double>();
+
+        public int SetParam(string keyName, double val)
+        {
+            int key = keyName.GetHashCode();
+            SetParam(key, val);
+            return key;
+        }
+
+        public void SetParam(int key, double val)
+        {
+            if (Paramaters.ContainsKey(key))
+                Paramaters[key] = val;
+            else
+                Paramaters.Add(key, val);
+        }
+
+        public double GetParam(int key)
+        {
+            if (Paramaters.ContainsKey(key))
+                return Paramaters[key];
+            return 0;
+        }
+
+        public double GetParam(string keyName)
+        {
+            return GetParam(keyName.GetHashCode());
+        }
     }
 }
