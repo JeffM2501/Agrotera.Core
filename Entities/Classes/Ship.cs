@@ -28,21 +28,26 @@ namespace Entities.Classes
                 BaseEntity = ent;
             }
 
-            public void Refresh(double timeStamp)
+            public bool Refresh(double timeStamp)
             {
-                LastPosition = new Vector3F(BaseEntity.Position);
-                LastVelocity = new Vector3F(BaseEntity.Velocity);
-
-                LastTimestamp = timeStamp;
+                if (Vector3F.DistanceSquared(LastPosition, BaseEntity.Position) > 0.01 || Vector3F.DistanceSquared(LastVelocity, BaseEntity.Velocity) > 0.01)
+                {
+                    LastPosition = new Vector3F(BaseEntity.Position);
+                    LastVelocity = new Vector3F(BaseEntity.Velocity);
+                    LastTimestamp = timeStamp;
+                    return true;
+                }
+                return false;
             }
         }
 
         public event EventHandler<KnownEntity> SensorEntityAppeared = null;
+        public event EventHandler<KnownEntity> SensorEntityUpdated = null;
         public event EventHandler<KnownEntity> SensorEntityRemoved = null;
 
         public Dictionary<int, KnownEntity> KnownEntities = new Dictionary<int, KnownEntity>();
 
-        public void UpdateEntity(Entity ent, double timeStamp)
+        public void UpdateEntity(Entity ent)
         {
             if (!KnownEntities.ContainsKey(ent.ID))
             {
@@ -50,13 +55,16 @@ namespace Entities.Classes
                 var ke = new KnownEntity(ent);
 
                 KnownEntities.Add(ent.ID, new KnownEntity(ent));
-                ke.Refresh(timeStamp);
+                ke.Refresh(Timer.Now);
 
                 if (SensorEntityAppeared != null)
                     SensorEntityAppeared.Invoke(this, ke);
             }
             else
-                KnownEntities[ent.ID].Refresh(timeStamp);
+            {
+                if (KnownEntities[ent.ID].Refresh(Timer.Now) && SensorEntityUpdated != null)
+                    SensorEntityUpdated.Invoke(this, KnownEntities[ent.ID]);
+            }
         }
 
         private void Entity_Deleted(object sender, EventArgs e)

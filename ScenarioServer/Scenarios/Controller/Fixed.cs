@@ -15,7 +15,7 @@ namespace ScenarioServer.Scenarios.Controller
             
         }
 
-        void IEntityContorller.UpdateEntity(Entity ent, double delta)
+        void IEntityContorller.UpdateEntity(Entity ent)
         {
    
         }

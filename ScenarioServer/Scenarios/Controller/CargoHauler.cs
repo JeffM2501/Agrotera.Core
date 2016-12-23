@@ -28,7 +28,7 @@ namespace ScenarioServer.Scenarios.Controller
             TimeWaitedKey = ent.SetParam("CargoHauler.TimeAtDestination", 0);
         }
 
-        void IEntityContorller.UpdateEntity(Entity ent, double delta)
+        void IEntityContorller.UpdateEntity(Entity ent)
         {
             if (Destinations.Count == 0)
                 return;
@@ -59,7 +59,7 @@ namespace ScenarioServer.Scenarios.Controller
 
                 if ( speed < MoveMaxSpeed)
                 {
-                    speed += (MoveAcceleration * delta);
+                    speed += (MoveAcceleration * Timer.Delta);
                     if (speed > MoveMaxSpeed)
                         speed = MoveMaxSpeed;
 
@@ -72,7 +72,7 @@ namespace ScenarioServer.Scenarios.Controller
 
                 if (speed > 0)
                 {
-                    speed -= (MoveAcceleration * delta);
+                    speed -= (MoveAcceleration * Timer.Delta);
                     if (speed <= 0)
                         ent.Velocity = Vector3F.Zero;
                     else
@@ -83,7 +83,7 @@ namespace ScenarioServer.Scenarios.Controller
                     double timeWaited = ent.GetParam(TimeWaitedKey);
                     if (timeWaited < DestinationDelay)
                     {
-                        ent.SetParam(TimeWaitedKey, timeWaited + delta);
+                        ent.SetParam(TimeWaitedKey, timeWaited + Timer.Delta);
                     }
                     else // set off for the next location
                     {

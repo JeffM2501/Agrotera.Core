@@ -11,7 +11,7 @@ namespace Entities
     public interface IEntityContorller
     {
         void AddEntity(Entity ent);
-        void UpdateEntity(Entity ent, double delta);
+        void UpdateEntity(Entity ent);
     }
 
     public class Entity
@@ -40,10 +40,10 @@ namespace Entities
             ctl.AddEntity(this);
         }
 
-        public void UpdateController(double delta)
+        public void UpdateController()
         {
             if (Controller != null)
-                Controller.UpdateEntity(this, delta);
+                Controller.UpdateEntity(this);
         }
 
         protected Dictionary<int, double> Paramaters = new Dictionary<int, double>();

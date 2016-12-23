@@ -11,7 +11,7 @@ namespace ScenarioServer.Interfaces
         void Init(ScenarioState state);
         void Shutdown();
 
-        void Update(double delta);
+        void Update();
 
         Ship AddPlayerShip(long playerID, List<string> requestParams);
     }

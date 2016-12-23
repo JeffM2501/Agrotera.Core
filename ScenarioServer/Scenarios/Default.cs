@@ -140,7 +140,7 @@ namespace ScenarioServer.Scenarios
             
         }
 
-        public void Update(double delta)
+        public void Update()
         {
         }
 
@@ -150,7 +150,7 @@ namespace ScenarioServer.Scenarios
 
             ship.Position = RandomPostionRelativeTo(DefaultStation.Position, 100, 250);
 
-            ship.UpdateEntity(DefaultStation, State.LastTime); // add known locations
+            ship.UpdateEntity(DefaultStation); // add known locations
 
             return ship;
         }

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Core.Types;
+
 using Entities;
 using Entities.Classes;
 
@@ -20,13 +22,10 @@ namespace ScenarioServer
         public List<UserShip> PlayerShips = new List<UserShip>();
         public List<Ship> Ships = new List<Ship>();
 
-        public double LastTime { get; protected set; }
-
         protected ShipListener Listener = null;
 
         public ScenarioState(IScenarioController c)
         {
-            LastTime = 0;
             Controller = c;
             Controller.Init(this);
 
@@ -65,30 +64,29 @@ namespace ScenarioServer
             e.ShipID = e.Ship.ID;
         }
 
-        public void Startup(double time)
+        public void Startup()
         {
-            LastTime = time;
         }
 
-        public void Update(double time)
+        public void Update()
         {
-            double delta = time - LastTime;
-            Controller.Update(delta);
+            Timer.Advance();
 
-            MapItems.ThinkEntityControllers(delta);
-            MapItems.InterpMotion(delta);
+ 
+            Controller.Update();
 
-            ProcessShipSensors(time);
+            MapItems.ThinkEntityControllers();
+            MapItems.InterpMotion();
 
-            LastTime = time;
+            ProcessShipSensors();
         }
 
-        protected void ProcessShipSensors(double time)
+        protected void ProcessShipSensors()
         {
             foreach(var ship in Ships)
             {
                 foreach (var e in MapItems.GetInSphere(ship.Position,ship.SensorRadius()))
-                    ship.UpdateEntity(e, time);
+                    ship.UpdateEntity(e);
             }
         }
 

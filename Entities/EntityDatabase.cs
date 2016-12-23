@@ -68,18 +68,20 @@ namespace Entities
             }
         }
 
-        public void InterpMotion(double delta)
+        public void InterpMotion()
         {
-			foreach(var entity in Ents.Values)
+            double delta = Timer.Delta;
+
+            foreach (var entity in Ents.Values)
 			{
 				entity.Position += entity.Velocity * delta;
 			}
         }
 
-        public void ThinkEntityControllers(double delta)
+        public void ThinkEntityControllers()
         {
             foreach (var entity in Ents.Values)
-                entity.UpdateController(delta);
+                entity.UpdateController();
         }
     }
 }

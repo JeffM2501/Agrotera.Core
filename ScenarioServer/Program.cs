@@ -23,28 +23,12 @@ namespace ScenarioServer
 
             ScenarioState state = new ScenarioState(loader.GetDefaultScenario());
 
-            Stopwatch timer = new Stopwatch();
-            timer.Start();
-            double last = timer.ElapsedMilliseconds * 0.001;
-
-            state.Startup(last);
-
-            var hauler1 = state.MapItems.GetByName("Cargo Transport 1");
+            state.Startup();
 
             while (state != null)
             {
-                double now = timer.ElapsedMilliseconds * 0.001;
-
-                state.Update(now);
-
-                if (hauler1 != null)
-                {
-                    double dist = hauler1.GetParam("CargoHauler.DistanceToDestination");
-                    int destination = (int)hauler1.GetParam("CargoHauler.DestinationIndex");
-                    Console.WriteLine(string.Format("Hauler 1  {0} from destination {1}", dist,destination));
-                }
-
-                Thread.Sleep(100);
+                state.Update();
+                Thread.Sleep(10);
             }
         }
 
@@ -61,6 +45,7 @@ namespace ScenarioServer
         {
             return new DirectoryInfo(Path.Combine(GetExeDir().FullName, "scenarios"));
         }
+
         static DirectoryInfo GetExeDir()
         {
             return new DirectoryInfo(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
