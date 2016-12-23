@@ -18,7 +18,7 @@ namespace ScenarioServer
 
         public EntityDatabase MapItems = new EntityDatabase();
         public List<UserShip> PlayerShips = new List<UserShip>();
-        public List<Ship> AIShips = new List<Ship>();
+        public List<Ship> Ships = new List<Ship>();
 
         double LastTime = double.MinValue;
 
@@ -42,16 +42,33 @@ namespace ScenarioServer
             MapItems.ThinkEntityControllers(delta);
             MapItems.InterpMotion(delta);
 
+            ProcessShipSensors();
+
             LastTime = time;
         }
 
+        protected void ProcessShipSensors()
+        {
+            foreach(var ship in Ships)
+            {
+
+            }
+        }
 
         public Ship NewUserShip(int playerID)
         {
-            var s =  MapItems.New<UserShip>();
+            var s = NewEntity<UserShip>();
             s.ControllerConnection = playerID;
             PlayerShips.Add(s);
             return s;
+        }
+
+        public T NewEntity<T>() where T : Entity, new()
+        {
+            T i = MapItems.New<T>();
+            if (i as Ship != null)
+                Ships.Add(i as Ship);
+            return i;
         }
     }
 }

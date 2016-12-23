@@ -39,7 +39,9 @@ namespace ScenarioServer
 
                 if (hauler1 != null)
                 {
-                    Console.WriteLine(string.Format("Hauler 1 {0}, {1}, {2}", hauler1.Position.X, hauler1.Position.Y, hauler1.Position.Z));
+                    double dist = hauler1.GetParam("CargoHauler.DistanceToDestination");
+                    int destination = (int)hauler1.GetParam("CargoHauler.DestinationIndex");
+                    Console.WriteLine(string.Format("Hauler 1  {0} from destination {1}", dist,destination));
                 }
 
                 Thread.Sleep(100);

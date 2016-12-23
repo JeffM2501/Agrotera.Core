@@ -45,7 +45,11 @@ namespace ScenarioServer.Scenarios.Controller
                     return;
             }
 
+            ent.SetParam(AtDestKey, destIndex);
+
             double dist = Vector3F.Distance(ent.Position, Destinations[destIndex].Position);
+
+            ent.SetParam("CargoHauler.DistanceToDestination", dist);
             if (dist > DestinationArivalRadius)
             {
                 Vector3F targetVector = Destinations[destIndex].Position - ent.Position;
@@ -66,7 +70,7 @@ namespace ScenarioServer.Scenarios.Controller
             {
                 double speed = ent.Velocity.Length();
 
-                if (speed < 0)
+                if (speed > 0)
                 {
                     speed -= (MoveAcceleration * delta);
                     if (speed <= 0)

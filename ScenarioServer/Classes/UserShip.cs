@@ -4,16 +4,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Core.Types;
 
 using Entities.Classes;
+using Entities;
 
 namespace ScenarioServer.Classes
 {
-    public class UserShip : Ship
+    public class UserShip : Ship, IEntityContorller
     {
         public int ControllerConnection = -1;
+ 
+        public UserShip()
+        {
+            Controller = this;
+        }
 
-        public Dictionary<int, double> LastEntityUpdates = new Dictionary<int, double>();
-        public List<int> KnownEntities = new List<int>();
+        void IEntityContorller.AddEntity(Entity ent)
+        {
+        }
+
+        void IEntityContorller.UpdateEntity(Entity ent, double delta)
+        {
+            
+        }
     }
 }

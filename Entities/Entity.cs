@@ -26,6 +26,14 @@ namespace Entities
         public object Tag = string.Empty;
         protected IEntityContorller Controller = null;
 
+        public event EventHandler Deleted = null;
+
+        public void Delete()
+        {
+            if (Deleted != null)
+                Deleted.Invoke(this, EventArgs.Empty);
+        }
+
         public void SetController(IEntityContorller ctl)
         {
             Controller = ctl;

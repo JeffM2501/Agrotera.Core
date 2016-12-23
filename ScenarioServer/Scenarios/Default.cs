@@ -42,7 +42,7 @@ namespace ScenarioServer.Scenarios
         {
             State = state;
 
-            var station = AddRandomEntity<Entity>();
+            var station = State.MapItems.New<Entity>();
             station.Name = "Default Station";
             station.SetController(Fixed.Default);
 
@@ -54,22 +54,26 @@ namespace ScenarioServer.Scenarios
             CargoHauler haulerRoute = new CargoHauler();
             haulerRoute.Destinations.Add(cargo);
             haulerRoute.Destinations.Add(station);
-            haulerRoute.MoveMaxSpeed = 10;
-            haulerRoute.MoveAcceleration = 5;
-            haulerRoute.DestinationArivalRadius = 20;
-            haulerRoute.DestinationDelay = 30;
+            haulerRoute.Loop = true;
+            haulerRoute.MoveMaxSpeed = 50;
+            haulerRoute.MoveAcceleration = 50;
+            haulerRoute.DestinationArivalRadius = 50;
+            haulerRoute.DestinationDelay = 5;
 
-            var cargoOne = AddRandomEntity<Entity>();
+            var cargoOne = AddRandomEntity<Ship>();
+            cargoOne.ClassName = "Simple Cargo Hauler";
             cargoOne.Name = "Cargo Transport 1";
             cargoOne.Position = RandomPostionRelativeTo(cargo.Position, 50, 1000);
             cargoOne.SetController(haulerRoute);
 
-            var cargoTwo = AddRandomEntity<Entity>();
+            var cargoTwo = AddRandomEntity<Ship>();
+            cargoTwo.ClassName = cargoOne.ClassName;
             cargoTwo.Name = "Cargo Transport 2";
             cargoTwo.Position = RandomPostionRelativeTo(cargo.Position, 50, 1000);
             cargoTwo.SetController(haulerRoute);
 
-            var cargoThree = AddRandomEntity<Entity>();
+            var cargoThree = AddRandomEntity<Ship>();
+            cargoThree.ClassName = cargoOne.ClassName;
             cargoThree.Name = "Cargo Transport 2";
             cargoThree.Position = RandomPostionRelativeTo(station.Position, 50, 1000);
             cargoThree.SetParam(haulerRoute.AtDestKey, 1); // you go to the station first
@@ -111,18 +115,18 @@ namespace ScenarioServer.Scenarios
             return min + RandomInRange(max - min);
         }
 
-        protected Entity AddRandomEntity<T>() where T: Entity, new()
+        protected T AddRandomEntity<T>() where T: Entity, new()
         {
-            T e = State.MapItems.New<T>();
+            T e = State.NewEntity<T>();
 
             e.Position = RandomPostion();
 
             return e;
         }
 
-        protected Entity AddRandomEntity<T>( double speed ) where T : Entity, new()
+        protected T AddRandomEntity<T>( double speed ) where T : Entity, new()
         {
-            Entity e = AddRandomEntity<T>();
+            T e = AddRandomEntity<T>();
 
             e.Velocity = RandomVector(speed);
 

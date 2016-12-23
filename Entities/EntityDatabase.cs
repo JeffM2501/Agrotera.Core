@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Types;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -43,10 +44,28 @@ namespace Entities
             return null;
         }
 
+        public List<Entity> GetInSphere(Vector3F center, double radius)
+        {
+            List<Entity> inRad = new List<Entity>();
+
+            double rad2 = radius * radius;
+            foreach(var e in Ents.Values)
+            {
+                if (Vector3F.DistanceSquared(center, e.Position) <= rad2)
+                    inRad.Add(e);
+            }
+
+            return inRad;
+        }
+
         public void Remove(int id)
         {
             if (Ents.ContainsKey(id))
+            {
+                var ent = Ents[id];
+                ent.Delete();
                 Ents.Remove(id);
+            }
         }
 
         public void InterpMotion(double delta)
