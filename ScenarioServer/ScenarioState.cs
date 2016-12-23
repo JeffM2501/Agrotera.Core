@@ -20,13 +20,49 @@ namespace ScenarioServer
         public List<UserShip> PlayerShips = new List<UserShip>();
         public List<Ship> Ships = new List<Ship>();
 
-        double LastTime = double.MinValue;
+        public double LastTime { get; protected set; }
+
+        protected ShipListener Listener = null;
 
         public ScenarioState(IScenarioController c)
         {
+            LastTime = 0;
             Controller = c;
-
             Controller.Init(this);
+
+            Listener = new ShipListener(2501);
+            Listener.PeerDisconnected += Listener_PeerDisconnected;
+            Listener.PeerWantsNewShip += Listener_PeerWantsNewShip;
+            Listener.PeerWantsOldShip += Listener_PeerWantsOldShip;
+        }
+
+        private void Listener_PeerDisconnected(object sender, ShipListener.Peer e)
+        {
+            if (e.Ship != null)
+            {
+                e.Ship.RemoteDisconnect();
+                e.ShipID = int.MinValue;
+                e.Ship = null;
+            }
+        }
+
+        private void Listener_PeerWantsOldShip(object sender, ShipListener.Peer e)
+        {
+            foreach(var s in PlayerShips)
+            {
+                if (s.ID == e.ShipID && s.RemoteConnectionID == long.MinValue)
+                {
+                    s.RemoteReconnect(e.ID);
+                    e.Ship = s;
+                    return;
+                }
+            }
+        }
+
+        private void Listener_PeerWantsNewShip(object sender, ShipListener.Peer e)
+        {
+            e.Ship = Controller.AddPlayerShip(e.ID, new List<string>()) as UserShip;
+            e.ShipID = e.Ship.ID;
         }
 
         public void Startup(double time)
@@ -42,23 +78,24 @@ namespace ScenarioServer
             MapItems.ThinkEntityControllers(delta);
             MapItems.InterpMotion(delta);
 
-            ProcessShipSensors();
+            ProcessShipSensors(time);
 
             LastTime = time;
         }
 
-        protected void ProcessShipSensors()
+        protected void ProcessShipSensors(double time)
         {
             foreach(var ship in Ships)
             {
-
+                foreach (var e in MapItems.GetInSphere(ship.Position,ship.SensorRadius()))
+                    ship.UpdateEntity(e, time);
             }
         }
 
-        public Ship NewUserShip(int playerID)
+        public UserShip NewUserShip(long playerID)
         {
             var s = NewEntity<UserShip>();
-            s.ControllerConnection = playerID;
+            s.RemoteConnectionID = playerID;
             PlayerShips.Add(s);
             return s;
         }

@@ -11,7 +11,7 @@ using ScenarioServer.Interfaces;
 
 using Core.Types;
 using ScenarioServer.Scenarios.Controller;
-
+using ScenarioServer.Classes;
 
 namespace ScenarioServer.Scenarios
 {
@@ -38,22 +38,24 @@ namespace ScenarioServer.Scenarios
             }
         }
 
+        protected Entity DefaultStation = null;
+
         public void Init(ScenarioState state)
         {
             State = state;
 
-            var station = State.MapItems.New<Entity>();
-            station.Name = "Default Station";
-            station.SetController(Fixed.Default);
+            DefaultStation = State.MapItems.New<Entity>();
+            DefaultStation.Name = "Default Station";
+            DefaultStation.SetController(Fixed.Default);
 
             var cargo = AddRandomEntity<Entity>();
             cargo.Name = "Default Cargo Stack";
-            cargo.Position = RandomPostionRelativeTo(station.Position, 100, 1000);
+            cargo.Position = RandomPostionRelativeTo(DefaultStation.Position, 100, 1000);
             cargo.SetController(Fixed.Default);
 
             CargoHauler haulerRoute = new CargoHauler();
             haulerRoute.Destinations.Add(cargo);
-            haulerRoute.Destinations.Add(station);
+            haulerRoute.Destinations.Add(DefaultStation);
             haulerRoute.Loop = true;
             haulerRoute.MoveMaxSpeed = 50;
             haulerRoute.MoveAcceleration = 50;
@@ -75,7 +77,7 @@ namespace ScenarioServer.Scenarios
             var cargoThree = AddRandomEntity<Ship>();
             cargoThree.ClassName = cargoOne.ClassName;
             cargoThree.Name = "Cargo Transport 2";
-            cargoThree.Position = RandomPostionRelativeTo(station.Position, 50, 1000);
+            cargoThree.Position = RandomPostionRelativeTo(DefaultStation.Position, 50, 1000);
             cargoThree.SetParam(haulerRoute.AtDestKey, 1); // you go to the station first
             cargoThree.SetController(haulerRoute);
 
@@ -142,9 +144,15 @@ namespace ScenarioServer.Scenarios
         {
         }
 
-        public Ship AddPlayerShip(int playerID, List<string> requestParams)
+        public Ship AddPlayerShip(long playerID, List<string> requestParams)
         {
-            return State.NewUserShip(playerID);
+            UserShip ship = State.NewUserShip(playerID);
+
+            ship.Position = RandomPostionRelativeTo(DefaultStation.Position, 100, 250);
+
+            ship.UpdateEntity(DefaultStation, State.LastTime); // add known locations
+
+            return ship;
         }
     }
 }

@@ -13,6 +13,6 @@ namespace ScenarioServer.Interfaces
 
         void Update(double delta);
 
-        Ship AddPlayerShip(int playerID, List<string> requestParams);
+        Ship AddPlayerShip(long playerID, List<string> requestParams);
     }
 }
