@@ -7,6 +7,8 @@ using Core.Types;
 
 using Entities.Classes;
 using Entities;
+using NetworkMessages;
+using NetworkMessages.ShipMessages;
 
 namespace ScenarioServer.Classes
 {
@@ -14,8 +16,8 @@ namespace ScenarioServer.Classes
     {
         public long RemoteConnectionID = long.MinValue;
 
-        public List<ShipMessage> InboundMessages = new List<ShipMessage>();
-        public List<ShipMessage> OutboundMessages = new List<ShipMessage>();
+        public List<ShipInboundMessage> InboundMessages = new List<ShipInboundMessage>();
+        public List<ShipOutboundMessage> OutboundMessages = new List<ShipOutboundMessage>();
 
         public double LastPositionUpdate = double.MinValue;
  
@@ -25,6 +27,7 @@ namespace ScenarioServer.Classes
 
             SensorEntityUpdated += UserShip_SensorEntityUpdated;
             SensorEntityAppeared += UserShip_SensorEntityUpdated;
+
         }
 
         private void UserShip_SensorEntityUpdated(object sender, KnownEntity e)
@@ -40,7 +43,8 @@ namespace ScenarioServer.Classes
         public virtual void RemoteReconnect(long id)
         {
             RemoteConnectionID = id;
-        }
+			SendCourseAndPosition();
+		}
 
         void IEntityContorller.AddEntity(Entity ent)
         {
@@ -59,11 +63,11 @@ namespace ScenarioServer.Classes
                 SendCourseAndPosition();
         }
 
-        protected ShipMessage[] PopOffNInbound(int count)
+        protected ShipInboundMessage[] PopOffNInbound(int count)
         {
             if (count <= InboundMessages.Count)
             {
-                ShipMessage[] t = InboundMessages.ToArray();
+				ShipInboundMessage[] t = InboundMessages.ToArray();
                 InboundMessages.Clear();
                 return t;
             }
@@ -80,16 +84,14 @@ namespace ScenarioServer.Classes
 
             foreach(var msg in PopOffNInbound(10))
             {
-                if (msg.Code == ShipMessage.SetCourseCode)
+                if (msg.Code == MessageCodes.SetCourse)
                     SetCourse(msg);
             }
         }
 
-        protected void SetCourse(ShipMessage msg)
+        protected void SetCourse(ShipInboundMessage msg)
         {
-            Vector3F newHeading = Vector3F.Zero;
-            if (Vector3F.TryParse(msg.Payload, out newHeading))
-                SetCourse(newHeading);
+			SetCourse(msg.Payload.ReadVector3F());
         }
 
         public void SetCourse(Vector3F newHeading)
@@ -104,13 +106,10 @@ namespace ScenarioServer.Classes
 
         public void SendCourseAndPosition()
         {
-            ShipMessage sm = new ShipMessage();
-            sm.Code = ShipMessage.SetSelfPositionCode;
-            sm.Payload += Position.ToString();
-            sm.Payload += "|";
-            sm.Payload += Velocity.ToString();
-            sm.Payload += "|";
-            sm.Payload += Timer.Now.ToString();
+			SetSelfPosition sm = new SetSelfPosition();
+            sm.Position = Position;
+            sm.Velocity = Velocity;
+            sm.TimeStamp = Timer.Now;
 
             OutboundMessages.Add(sm);
 
@@ -119,15 +118,11 @@ namespace ScenarioServer.Classes
 
         public void SendSensorEntityUpdate(KnownEntity ent)
         {
-            ShipMessage sm = new ShipMessage();
-            sm.Code = ShipMessage.UpdateEntityCode;
-            sm.Payload += ent.BaseEntity.ID.ToString();
-            sm.Payload += "|";
-            sm.Payload += ent.LastPosition.ToString();
-            sm.Payload += "|";
-            sm.Payload += ent.LastVelocity.ToString();
-            sm.Payload += "|";
-            sm.Payload += ent.LastTimestamp.ToString();
+            SensorEntityUpdate sm = new SensorEntityUpdate();
+            sm.ID = ent.BaseEntity.ID;
+            sm.Position = ent.LastPosition;
+			sm.Velocity = ent.LastVelocity;
+            sm.TimeStamp = ent.LastTimestamp;
 
             OutboundMessages.Add(sm);
 

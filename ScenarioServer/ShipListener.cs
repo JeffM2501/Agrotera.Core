@@ -6,6 +6,8 @@ using System.Text;
 using Lidgren.Network;
 using ScenarioServer.Classes;
 using Entities;
+using NetworkMessages;
+using NetworkMessages.ShipMessages;
 
 namespace ScenarioServer
 {
@@ -17,6 +19,7 @@ namespace ScenarioServer
             public NetConnection SocketPeer = null;
 
             public int ShipID = -1;
+			public List<string> DesiredShipAttributes = new List<string>();
             public UserShip Ship = null;
 
             public Peer(NetConnection p)
@@ -37,7 +40,7 @@ namespace ScenarioServer
 
         public ShipListener(int port)
         {
-            NetPeerConfiguration config = new NetPeerConfiguration("Simple Ship Host.0.0.1");
+            NetPeerConfiguration config = new NetPeerConfiguration(ProtocollDefinition.ProtoString);
             config.AutoFlushSendQueue = true;
             config.MaximumConnections = 32;
             config.ConnectionTimeout = 100;
@@ -83,8 +86,7 @@ namespace ScenarioServer
                 for(int i = 0; i < count; i++)
                 {
                     NetOutgoingMessage msg = p.SocketPeer.Peer.CreateMessage();
-                    msg.Write(p.Ship.OutboundMessages[i].Code);
-                    msg.Write(p.Ship.OutboundMessages[i].Payload);
+					p.Ship.OutboundMessages[i].Pack(msg);
                     p.SocketPeer.SendMessage(msg, NetDeliveryMethod.ReliableOrdered, 0);
                 }
 
@@ -150,12 +152,15 @@ namespace ScenarioServer
                         if (peer == null)
                             break;
 
-                        int code = im.ReadInt32();
+						ShipInboundMessage msg = new ShipInboundMessage(im);
 
                         if (peer.Ship == null)
                         {
-                            if (code == ShipMessage.NewShipCode)
+                            if (msg.Code == MessageCodes.NewShip)
                             {
+								WantNewShip ns = WantNewShip.Unpack(im);
+								peer.DesiredShipAttributes = ns.Requirements;
+
                                 if (PeerWantsNewShip != null)
                                     PeerWantsNewShip.Invoke(this, peer);
 
@@ -164,16 +169,22 @@ namespace ScenarioServer
                                 else
                                 {
                                     NetOutgoingMessage responce = peer.SocketPeer.Peer.CreateMessage();
-                                    responce.Write(ShipMessage.NewShipCode);
-                                    responce.Write(peer.ShipID);
+									AssignShip s = new AssignShip();
+									s.ShipID = peer.ShipID;
+									s.Name = peer.Ship.Name;
+									s.ClassName = peer.Ship.ClassName;
+									s.Pack(responce);
                                     peer.SocketPeer.SendMessage(responce, NetDeliveryMethod.ReliableOrdered, 0);
                                 }
                             }
-                            else if (code == ShipMessage.ExistingShipCode)
+                            else if (msg.Code == MessageCodes.ExistingShip)
                             {
-                                peer.ShipID = im.ReadInt32();
+								WantExistingShip es = WantExistingShip.Unpack(im);
 
-                                if (PeerWantsOldShip != null)
+                                peer.ShipID = es.ShipID;
+								peer.DesiredShipAttributes = es.Requirements;
+
+								if (PeerWantsOldShip != null)
                                     PeerWantsOldShip.Invoke(this, peer);
 
                                 if (peer.Ship == null)
@@ -181,19 +192,18 @@ namespace ScenarioServer
                                 else
                                 {
                                     NetOutgoingMessage responce = peer.SocketPeer.Peer.CreateMessage();
-                                    responce.Write(ShipMessage.NewShipCode);
-                                    responce.Write(peer.ShipID);
-                                    peer.SocketPeer.SendMessage(responce, NetDeliveryMethod.ReliableOrdered, 0);
+									AssignShip s = new AssignShip();
+									s.ShipID = peer.ShipID;
+									s.Name = peer.Ship.Name;
+									s.ClassName = peer.Ship.ClassName;
+									s.Pack(responce);
+									peer.SocketPeer.SendMessage(responce, NetDeliveryMethod.ReliableOrdered, 0);
                                 }
                             }
                         }
                         else
                         {
-                            ShipMessage msg = new ShipMessage();
-                            msg.Timestamp = timestamp;
-                            msg.Code = code;
-                            msg.Payload = im.ReadString();
-                            peer.Ship.InboundMessages.Add(msg);
+                            peer.Ship.InboundMessages.Add(new ShipInboundMessage(im));
                         }
                         break;
                 }

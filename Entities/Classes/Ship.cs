@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-
+using NetworkMessages.ShipMessages;
 using Entities;
 using Core.Types;
 
@@ -38,7 +38,19 @@ namespace Entities.Classes
                 }
                 return false;
             }
-        }
+
+			public bool Refresh(SensorEntityUpdate upd)
+			{
+				if(Vector3F.DistanceSquared(LastPosition, upd.Position) > 0.01 || Vector3F.DistanceSquared(LastVelocity, upd.Velocity) > 0.01)
+				{
+					LastPosition = new Vector3F(upd.Position);
+					LastVelocity = new Vector3F(upd.Velocity);
+					LastTimestamp = upd.TimeStamp;
+					return true;
+				}
+				return false;
+			}
+		}
 
         public event EventHandler<KnownEntity> SensorEntityAppeared = null;
         public event EventHandler<KnownEntity> SensorEntityUpdated = null;
@@ -46,7 +58,7 @@ namespace Entities.Classes
 
         public Dictionary<int, KnownEntity> KnownEntities = new Dictionary<int, KnownEntity>();
 
-        public void UpdateEntity(Entity ent)
+        public void UpdateSensorEntity(Entity ent)
         {
             if (!KnownEntities.ContainsKey(ent.ID))
             {
@@ -66,7 +78,31 @@ namespace Entities.Classes
             }
         }
 
-        private void Entity_Deleted(object sender, EventArgs e)
+		public void UpdateSensorEntity(SensorEntityUpdate update)
+		{
+			if(!KnownEntities.ContainsKey(update.ID))
+			{
+				Entity ent = new Entity();
+				ent.ID = update.ID;
+				ent.Deleted += Entity_Deleted;
+				var ke = new KnownEntity(ent);
+
+				KnownEntities.Add(ent.ID, new KnownEntity(ent));
+				ke.Refresh(update);
+
+				if(SensorEntityAppeared != null)
+					SensorEntityAppeared.Invoke(this, ke);
+			}
+			else
+			{
+				KnownEntities[update.ID].Refresh(update);
+
+				if(SensorEntityUpdated != null)
+					SensorEntityUpdated.Invoke(this, KnownEntities[update.ID]);
+			}
+		}
+
+		private void Entity_Deleted(object sender, EventArgs e)
         {
             Entity ent = sender as Entity;
 

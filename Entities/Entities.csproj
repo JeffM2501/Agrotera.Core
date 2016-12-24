@@ -43,9 +43,12 @@
     <Compile Include="Entity.cs" />
     <Compile Include="EntityDatabase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ShipMessage.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NetworkMessages\NetworkMessages.csproj">
+      <Project>{87d87573-776f-4f83-9afa-4da6aaee9c91}</Project>
+      <Name>NetworkMessages</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ScenarioServer\Core\Core.csproj">
       <Project>{dfc56a4a-ed95-41ff-8418-7802f5222fd0}</Project>
       <Name>Core</Name>

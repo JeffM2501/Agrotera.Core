@@ -55,13 +55,15 @@ namespace ScenarioServer
                     return;
                 }
             }
-        }
+			Listener_PeerWantsNewShip(sender, e);
+		}
 
         private void Listener_PeerWantsNewShip(object sender, ShipListener.Peer e)
         {
-            e.Ship = Controller.AddPlayerShip(e.ID, new List<string>()) as UserShip;
+            e.Ship = Controller.AddPlayerShip(e.ID, e.DesiredShipAttributes) as UserShip;
             e.ShipID = e.Ship.ID;
-        }
+			e.Ship.RemoteReconnect(e.ID);
+		}
 
         public void Startup()
         {
@@ -85,7 +87,7 @@ namespace ScenarioServer
             foreach(var ship in Ships)
             {
                 foreach (var e in MapItems.GetInSphere(ship.Position,ship.SensorRadius()))
-                    ship.UpdateEntity(e);
+                    ship.UpdateSensorEntity(e);
             }
         }
 

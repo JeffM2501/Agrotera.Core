@@ -149,7 +149,7 @@ namespace ScenarioServer.Scenarios
 
             ship.Position = RandomPostionRelativeTo(DefaultStation.Position, 100, 250);
 
-            ship.UpdateEntity(DefaultStation); // add known locations
+            ship.UpdateSensorEntity(DefaultStation); // add known locations
 
             return ship;
         }
