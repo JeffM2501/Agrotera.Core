@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entiti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "ScenarioServer\Core\Core.csproj", "{DFC56A4A-ED95-41FF-8418-7802F5222FD0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShipClient", "ShipClient\ShipClient.csproj", "{D9828E6E-11AE-4BE6-8446-1310B1B6000D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lidgren.Network", "lidgren-network-gen3-.net35\Lidgren.Network\Lidgren.Network.csproj", "{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{DFC56A4A-ED95-41FF-8418-7802F5222FD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DFC56A4A-ED95-41FF-8418-7802F5222FD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DFC56A4A-ED95-41FF-8418-7802F5222FD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9828E6E-11AE-4BE6-8446-1310B1B6000D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9828E6E-11AE-4BE6-8446-1310B1B6000D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9828E6E-11AE-4BE6-8446-1310B1B6000D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9828E6E-11AE-4BE6-8446-1310B1B6000D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
