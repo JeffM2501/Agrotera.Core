@@ -12,11 +12,14 @@ namespace ShipClient
 {
 	public class UserShip : Entities.Classes.Ship
 	{
+		protected Vector3F LastUpdatePosition = Vector3F.Zero;
+		protected Vector3F LastUpdateVelocity = Vector3F.Zero;
+		public double LastPositionUpdate = double.MinValue;
+
 		public List<ShipInboundMessage> InboundMessages = new List<ShipInboundMessage>();
 		public List<ShipOutboundMessage> OutboundMessages = new List<ShipOutboundMessage>();
 
-		public double LastPositionUpdate = double.MinValue;
-
+		
 		protected ShipInboundMessage[] PopOffNInbound(int count)
 		{
 			if(count <= InboundMessages.Count)
@@ -28,6 +31,17 @@ namespace ShipClient
 			else
 			{
 				return InboundMessages.GetRange(0, count).ToArray();
+			}
+		}
+
+		public void UpdatePositions()
+		{
+			Position += (Velocity * Timer.Delta);
+
+			foreach(var item in KnownEntities.Values)
+			{
+				item.BaseEntity.Position = item.LastPosition + (item.LastVelocity * (Timer.Now - item.LastTrasmitUpdate));
+				item.BaseEntity.Velocity = item.LastVelocity;
 			}
 		}
 
@@ -49,8 +63,11 @@ namespace ShipClient
 		{
 			LastPositionUpdate = sp.TimeStamp;
 
-			Position = sp.Position;
-			Velocity = sp.Velocity;
+			LastUpdatePosition = sp.Position;
+			LastUpdateVelocity = sp.Velocity;
+
+			Position = LastUpdatePosition + (LastUpdateVelocity * (Timer.Now - LastPositionUpdate));
+			Velocity = LastUpdateVelocity;
 		}
 	}
 }

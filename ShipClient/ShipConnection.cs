@@ -41,8 +41,10 @@ namespace ShipClient
 
 		public void Update()
 		{
+			Timer.Advance();
 			UpdateInbound();
 			PlayerShip.ProcessMessages();
+			PlayerShip.UpdatePositions();
 			UpdateOutbound();
 		}
 
