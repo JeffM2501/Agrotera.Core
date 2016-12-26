@@ -12,8 +12,8 @@ namespace NetworkMessages.ShipMessages
 	public class SensorEntityUpdate : ShipOutboundMessage
 	{
 		public int ID = int.MinValue;
-		public Vector3F Position = Vector3F.Zero;
-		public Vector3F Velocity = Vector3F.Zero;
+		public Vector3D Position = Vector3D.Zero;
+		public Vector3D Velocity = Vector3D.Zero;
 		public double TimeStamp = double.MinValue;
 
 		public SensorEntityUpdate() : base(MessageCodes.UpdateEntityCode)
@@ -34,8 +34,8 @@ namespace NetworkMessages.ShipMessages
 		{
 			SensorEntityUpdate p = new SensorEntityUpdate();
 			p.ID = msg.ReadInt32();
-			p.Position = msg.ReadVector3F();
-			p.Velocity = msg.ReadVector3F();
+			p.Position = msg.ReadVector3D();
+			p.Velocity = msg.ReadVector3D();
 			p.TimeStamp = msg.ReadDouble();
 			return p;
 		}

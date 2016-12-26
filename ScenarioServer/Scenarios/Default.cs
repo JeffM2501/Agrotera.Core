@@ -18,7 +18,7 @@ namespace ScenarioServer.Scenarios
     {
         public ScenarioState State = null;
 
-        protected Vector3F ZoneSize = new Vector3F(1000, 1000, 1000);
+        protected Vector3D ZoneSize = new Vector3D(1000, 1000, 1000);
         protected Random RNG = new Random();
 
         public bool Defaultable
@@ -82,21 +82,21 @@ namespace ScenarioServer.Scenarios
 
         }
 
-        protected Vector3F RandomPostion()
+        protected Vector3D RandomPostion()
         {
-            return new Vector3F(RandomVectorParam() * ZoneSize.X,
+            return new Vector3D(RandomVectorParam() * ZoneSize.X,
                                 RandomVectorParam() * ZoneSize.Y,
                                 RandomVectorParam() * ZoneSize.Z);
         }
 
-        protected Vector3F RandomVector(double magitude)
+        protected Vector3D RandomVector(double magitude)
         {
-            return new Vector3F(RandomVectorParam() * magitude,
+            return new Vector3D(RandomVectorParam() * magitude,
                                 RandomVectorParam() * magitude,
                                 RandomVectorParam() * magitude);
         }
 
-        protected Vector3F RandomPostionRelativeTo(Vector3F position, double minDistance, double maxDistance)
+        protected Vector3D RandomPostionRelativeTo(Vector3D position, double minDistance, double maxDistance)
         {
             return  position +  RandomVector(RandomInRange(minDistance,maxDistance));
         }

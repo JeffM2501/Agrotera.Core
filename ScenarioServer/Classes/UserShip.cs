@@ -91,15 +91,15 @@ namespace ScenarioServer.Classes
 
         protected void SetCourse(ShipInboundMessage msg)
         {
-			SetCourse(msg.Payload.ReadVector3F());
+			SetCourse(msg.Payload.ReadVector3D());
         }
 
-        public void SetCourse(Vector3F newHeading)
+        public void SetCourse(Vector3D newHeading)
         {
             Velocity = newHeading;
 
             if (Velocity.Length() > 100)
-                Velocity = Vector3F.Normalize(Velocity) * 100;
+                Velocity = Vector3D.Normalize(Velocity) * 100;
 
             SendCourseAndPosition();
         }

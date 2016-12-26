@@ -19,8 +19,8 @@ namespace Entities
 
         public string Name = string.Empty;
 
-        public Vector3F Position = Vector3F.Zero;
-        public Vector3F Velocity = Vector3F.Zero;
+        public Vector3D Position = Vector3D.Zero;
+        public Vector3D Velocity = Vector3D.Zero;
 
         public object Tag = string.Empty;
         protected IEntityContorller Controller = null;

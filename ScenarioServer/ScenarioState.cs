@@ -86,7 +86,7 @@ namespace ScenarioServer
         {
             foreach(var ship in Ships)
             {
-                foreach (var e in MapItems.GetInSphere(ship.Position,ship.SensorRadius()))
+                foreach (var e in MapItems.GetInSphere(ship.Position,ship.VisualRadius()))
                     ship.UpdateSensorEntity(e);
             }
         }

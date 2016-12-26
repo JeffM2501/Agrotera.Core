@@ -23,7 +23,7 @@ namespace NetworkMessages
 			{
 				Code = (MessageCodes)c;
 			}
-			catch (System.Exception ex)
+			catch (System.Exception /*ex*/)
 			{
 				
 			}

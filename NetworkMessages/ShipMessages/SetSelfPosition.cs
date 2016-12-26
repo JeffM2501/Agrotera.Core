@@ -10,8 +10,8 @@ namespace NetworkMessages.ShipMessages
 {
 	public class SetSelfPosition : ShipOutboundMessage
 	{
-		public Vector3F Position = Vector3F.Zero;
-		public Vector3F Velocity = Vector3F.Zero;
+		public Vector3D Position = Vector3D.Zero;
+		public Vector3D Velocity = Vector3D.Zero;
 		public double TimeStamp = double.MinValue;
 
 		public SetSelfPosition() : base(MessageCodes.SetSelfPosition)
@@ -30,8 +30,8 @@ namespace NetworkMessages.ShipMessages
 		public static SetSelfPosition Unpack(NetIncomingMessage msg)
 		{
 			SetSelfPosition p = new SetSelfPosition();
-			p.Position = msg.ReadVector3F();
-			p.Velocity = msg.ReadVector3F();
+			p.Position = msg.ReadVector3D();
+			p.Velocity = msg.ReadVector3D();
 			p.TimeStamp = msg.ReadDouble();
 			return p;
 		}

@@ -43,7 +43,8 @@
     <Compile Include="Types\NamedFloatValue.cs" />
     <Compile Include="Types\NamedStringValue.cs" />
     <Compile Include="Types\Time.cs" />
-    <Compile Include="Types\Vector2F.cs" />
+    <Compile Include="Types\Vector2D.cs" />
+    <Compile Include="Types\Vector3D.cs" />
     <Compile Include="Types\Vector3F.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

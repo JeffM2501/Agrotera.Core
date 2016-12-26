@@ -7,18 +7,31 @@ using Entities;
 using Core.Types;
 using NetworkMessages;
 using NetworkMessages.ShipMessages;
+using Entities.Classes;
 
 namespace ShipClient
 {
 	public class UserShip : Entities.Classes.Ship
 	{
-		protected Vector3F LastUpdatePosition = Vector3F.Zero;
-		protected Vector3F LastUpdateVelocity = Vector3F.Zero;
+		protected Vector3D LastUpdatePosition = Vector3D.Zero;
+		protected Vector3D LastUpdateVelocity = Vector3D.Zero;
 		public double LastPositionUpdate = double.MinValue;
 
 		public List<ShipInboundMessage> InboundMessages = new List<ShipInboundMessage>();
 		public List<ShipOutboundMessage> OutboundMessages = new List<ShipOutboundMessage>();
 
+		public class ShipCentricSensorEntity : KnownEntity
+		{
+			public Vector3F ShipRelativePosition = Vector3F.Zero;
+			public Vector3F ShipRelativeVelocity = Vector3F.Zero;
+
+			public bool Visible = false;
+
+			public ShipCentricSensorEntity(Entity ent) : base(ent)
+			{
+
+			}
+		}
 		
 		protected ShipInboundMessage[] PopOffNInbound(int count)
 		{
@@ -38,10 +51,22 @@ namespace ShipClient
 		{
 			Position += (Velocity * Timer.Delta);
 
+			double visSquared = VisualRadius() * VisualRadius();
+
 			foreach(var item in KnownEntities.Values)
 			{
 				item.BaseEntity.Position = item.LastPosition + (item.LastVelocity * (Timer.Now - item.LastTrasmitUpdate));
 				item.BaseEntity.Velocity = item.LastVelocity;
+
+				ShipCentricSensorEntity ent = item as ShipCentricSensorEntity;
+				if(ent == null)
+					continue;
+
+				// for 32 bit rendering
+				ent.ShipRelativePosition = Vector3F.FromRelativeDobules(ent.BaseEntity.Position, Position);
+				ent.ShipRelativeVelocity = new Vector3F(item.BaseEntity.Velocity);
+
+				ent.Visible = ent.ShipRelativePosition.LengthSquared() <= visSquared;
 			}
 		}
 
@@ -59,14 +84,21 @@ namespace ShipClient
 			}
 		}
 
+
+		protected override KnownEntity NewSensorEnity(Entity ent)
+		{
+			return new ShipCentricSensorEntity(ent);
+		}
+
 		protected void UpdateSelfPosition(SetSelfPosition sp)
 		{
-			LastPositionUpdate = sp.TimeStamp;
+			LastPositionUpdate = Timer.Now; // update to use synced clock and sp.TimeStamp;
 
 			LastUpdatePosition = sp.Position;
 			LastUpdateVelocity = sp.Velocity;
 
-			Position = LastUpdatePosition + (LastUpdateVelocity * (Timer.Now - LastPositionUpdate));
+			// TODO, use a synced clock and do proper DR
+			Position = LastUpdatePosition;// + (LastUpdateVelocity * (Timer.Now - LastPositionUpdate));
 			Velocity = LastUpdateVelocity;
 		}
 	}

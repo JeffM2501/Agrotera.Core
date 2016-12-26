@@ -43,14 +43,14 @@ namespace Entities
             return null;
         }
 
-        public List<Entity> GetInSphere(Vector3F center, double radius)
+        public List<Entity> GetInSphere(Vector3D center, double radius)
         {
             List<Entity> inRad = new List<Entity>();
 
             double rad2 = radius * radius;
             foreach(var e in Ents.Values)
             {
-                if (Vector3F.DistanceSquared(center, e.Position) <= rad2)
+                if (Vector3D.DistanceSquared(center, e.Position) <= rad2)
                     inRad.Add(e);
             }
 

@@ -16,8 +16,8 @@ namespace Entities.Classes
         public class KnownEntity : EventArgs
         {
             public Entity BaseEntity = null;
-            public Vector3F LastPosition = Vector3F.Zero;
-            public Vector3F LastVelocity = Vector3F.Zero;
+            public Vector3D LastPosition = Vector3D.Zero;
+            public Vector3D LastVelocity = Vector3D.Zero;
 
             public double LastTimestamp = 0;
             public double LastTrasmitUpdate = 0;
@@ -29,10 +29,10 @@ namespace Entities.Classes
 
             public bool Refresh(double timeStamp)
             {
-                if (Vector3F.DistanceSquared(LastPosition, BaseEntity.Position) > 0.01 || Vector3F.DistanceSquared(LastVelocity, BaseEntity.Velocity) > 0.01)
+                if (Vector3D.DistanceSquared(LastPosition, BaseEntity.Position) > 0.01 || Vector3D.DistanceSquared(LastVelocity, BaseEntity.Velocity) > 0.01)
                 {
-                    LastPosition = new Vector3F(BaseEntity.Position);
-                    LastVelocity = new Vector3F(BaseEntity.Velocity);
+                    LastPosition = new Vector3D(BaseEntity.Position);
+                    LastVelocity = new Vector3D(BaseEntity.Velocity);
                     LastTimestamp = timeStamp;
                     return true;
                 }
@@ -41,10 +41,10 @@ namespace Entities.Classes
 
 			public bool Refresh(SensorEntityUpdate upd)
 			{
-				if(Vector3F.DistanceSquared(LastPosition, upd.Position) > 0.01 || Vector3F.DistanceSquared(LastVelocity, upd.Velocity) > 0.01)
+				if(Vector3D.DistanceSquared(LastPosition, upd.Position) > 0.01 || Vector3D.DistanceSquared(LastVelocity, upd.Velocity) > 0.01)
 				{
-					LastPosition = new Vector3F(upd.Position);
-					LastVelocity = new Vector3F(upd.Velocity);
+					LastPosition = new Vector3D(upd.Position);
+					LastVelocity = new Vector3D(upd.Velocity);
 					LastTimestamp = upd.TimeStamp;
 					return true;
 				}
@@ -63,7 +63,7 @@ namespace Entities.Classes
             if (!KnownEntities.ContainsKey(ent.ID))
             {
                 ent.Deleted += Entity_Deleted;
-                var ke = new KnownEntity(ent);
+                var ke = NewSensorEnity(ent);
 
                 KnownEntities.Add(ent.ID, new KnownEntity(ent));
                 ke.Refresh(Timer.Now);
@@ -76,30 +76,46 @@ namespace Entities.Classes
                 if (KnownEntities[ent.ID].Refresh(Timer.Now) && SensorEntityUpdated != null)
                     SensorEntityUpdated.Invoke(this, KnownEntities[ent.ID]);
             }
+
+			if (Vector3D.Distance(ent.Position,Position) < SensorRadius())
+			{
+				// detailed sensor info
+				
+			}
         }
 
-		public void UpdateSensorEntity(SensorEntityUpdate update)
+		public virtual void RefreshEntity(KnownEntity ke, SensorEntityUpdate update)
+		{
+			ke.Refresh(update);
+		}
+
+		public virtual void UpdateSensorEntity(SensorEntityUpdate update)
 		{
 			if(!KnownEntities.ContainsKey(update.ID))
 			{
 				Entity ent = new Entity();
 				ent.ID = update.ID;
 				ent.Deleted += Entity_Deleted;
-				var ke = new KnownEntity(ent);
+				var ke = NewSensorEnity(ent);
 
 				KnownEntities.Add(ent.ID, new KnownEntity(ent));
-				ke.Refresh(update);
+				RefreshEntity(ke, update);
 
 				if(SensorEntityAppeared != null)
 					SensorEntityAppeared.Invoke(this, ke);
 			}
 			else
 			{
-				KnownEntities[update.ID].Refresh(update);
+				RefreshEntity(KnownEntities[update.ID], update);
 
 				if(SensorEntityUpdated != null)
 					SensorEntityUpdated.Invoke(this, KnownEntities[update.ID]);
 			}
+		}
+
+		protected virtual KnownEntity NewSensorEnity(Entity ent)
+		{
+			return new KnownEntity(ent);
 		}
 
 		private void Entity_Deleted(object sender, EventArgs e)
@@ -120,5 +136,10 @@ namespace Entities.Classes
         {
             return 100;
         }
-    }
+
+		public virtual double VisualRadius()
+		{
+			return 1000;
+		}
+	}
 }
