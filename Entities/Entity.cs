@@ -19,6 +19,8 @@ namespace Entities
 
         public string Name = string.Empty;
 
+        public string VisualGraphics = string.Empty;
+
         public Vector3D Position = Vector3D.Zero;
         public Vector3D Velocity = Vector3D.Zero;
 

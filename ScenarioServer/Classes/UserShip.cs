@@ -118,13 +118,27 @@ namespace ScenarioServer.Classes
 
         public void SendSensorEntityUpdate(KnownEntity ent)
         {
-            SensorEntityUpdate sm = new SensorEntityUpdate();
-            sm.ID = ent.BaseEntity.ID;
-            sm.Position = ent.LastPosition;
-			sm.Velocity = ent.LastVelocity;
-            sm.TimeStamp = ent.LastTimestamp;
+            if (ent.LastTrasmitUpdate < 0)
+            {
+                SensorEntityDetails sd = new SensorEntityDetails();
 
-            OutboundMessages.Add(sm);
+                sd.ID = ent.BaseEntity.ID;
+                sd.Position = ent.LastPosition;
+                sd.Velocity = ent.LastVelocity;
+                sd.TimeStamp = ent.LastTimestamp;
+                sd.Name = ent.BaseEntity.Name;
+                sd.VisualGraphics = ent.BaseEntity.VisualGraphics;
+            }
+            else
+            {
+                SensorEntityUpdate sm = new SensorEntityUpdate();
+                sm.ID = ent.BaseEntity.ID;
+                sm.Position = ent.LastPosition;
+                sm.Velocity = ent.LastVelocity;
+                sm.TimeStamp = ent.LastTimestamp;
+
+                OutboundMessages.Add(sm);
+            }
 
             ent.LastTrasmitUpdate = Timer.Now;
         }

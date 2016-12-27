@@ -26,6 +26,7 @@ namespace NetworkMessages
 		SetSelfPosition,
 
 		// sensor update messages
-		UpdateEntityCode,
+		UpdateEntity,
+        UpdateEnityDetails,
 	}
 }

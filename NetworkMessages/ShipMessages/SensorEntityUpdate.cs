@@ -16,7 +16,7 @@ namespace NetworkMessages.ShipMessages
 		public Vector3D Velocity = Vector3D.Zero;
 		public double TimeStamp = double.MinValue;
 
-		public SensorEntityUpdate() : base(MessageCodes.UpdateEntityCode)
+		public SensorEntityUpdate() : base(MessageCodes.UpdateEntity)
 		{
 
 		}

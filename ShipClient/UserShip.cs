@@ -79,9 +79,11 @@ namespace ShipClient
 			{
 				if(msg.Code == MessageCodes.SetSelfPosition)
 					UpdateSelfPosition(SetSelfPosition.Unpack(msg.Payload));
-				else if(msg.Code == MessageCodes.UpdateEntityCode)
+				else if(msg.Code == MessageCodes.UpdateEntity)
 					UpdateSensorEntity(SensorEntityUpdate.Unpack(msg.Payload));
-			}
+                else if (msg.Code == MessageCodes.UpdateEnityDetails)
+                    UpdateSensorEntity(SensorEntityDetails.UnpackDeets(msg.Payload));
+            }
 		}
 
 

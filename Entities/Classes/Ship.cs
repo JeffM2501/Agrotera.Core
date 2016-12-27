@@ -115,7 +115,42 @@ namespace Entities.Classes
 			}
 		}
 
-		protected virtual KnownEntity NewSensorEnity(Entity ent)
+        public virtual void UpdateSensorEntity(SensorEntityDetails details)
+        {
+            if (!KnownEntities.ContainsKey(details.ID))
+            {
+                Entity ent = new Entity();
+                ent.ID = details.ID;
+                ent.Deleted += Entity_Deleted;
+                var ke = NewSensorEnity(ent);
+
+                KnownEntities.Add(ent.ID, new KnownEntity(ent));
+                RefreshEntity(ke, details);
+
+                ke.BaseEntity.Name = details.Name;
+                ke.BaseEntity.VisualGraphics = details.VisualGraphics;
+                ke.BaseEntity.Tag = null;
+
+                if (SensorEntityAppeared != null)
+                    SensorEntityAppeared.Invoke(this, ke);
+            }
+            else
+            {
+                var ke = KnownEntities[details.ID];
+
+                RefreshEntity(ke, details);
+
+                ke.BaseEntity.Name = details.Name;
+                ke.BaseEntity.VisualGraphics = details.VisualGraphics;
+                ke.BaseEntity.Tag = null;
+
+                if (SensorEntityUpdated != null)
+                    SensorEntityUpdated.Invoke(this, KnownEntities[details.ID]);
+            }
+        }
+
+
+        protected virtual KnownEntity NewSensorEnity(Entity ent)
 		{
 			return new KnownEntity(ent);
 		}
