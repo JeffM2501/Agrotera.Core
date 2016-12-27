@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class ShipConnector : MonoBehaviour
 {
 	public InputField AddressField = null;
 
 
-	public static string SelectedHost = string.Empty;
+	public static string SelectedHost = "127.0.0.1";
+	public string GameScene = string.Empty;
 
 	// Use this for initialization
 	void Start ()
@@ -30,8 +32,10 @@ public class ShipConnector : MonoBehaviour
 
 		SelectedHost = AddressField.text;
 
-		// connect shit and load basic sceene
+		// connect shit and load basic scene
 
 		Debug.Log("Connecting to address " + SelectedHost);
+
+		SceneManager.LoadScene(GameScene);
 	}
 }
