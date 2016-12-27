@@ -15,6 +15,8 @@ namespace Entities.Classes
 
         public class KnownEntity : EventArgs
         {
+			public object Tag = null;
+
             public Entity BaseEntity = null;
             public Vector3D LastPosition = Vector3D.Zero;
             public Vector3D LastVelocity = Vector3D.Zero;
