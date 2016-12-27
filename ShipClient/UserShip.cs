@@ -57,6 +57,7 @@ namespace ShipClient
 			{
 				item.BaseEntity.Position = item.LastPosition + (item.LastVelocity * (Timer.Now - item.LastTrasmitUpdate));
 				item.BaseEntity.Velocity = item.LastVelocity;
+                item.BaseEntity.Orientation = item.LastOrientation;
 
 				ShipCentricSensorEntity ent = item as ShipCentricSensorEntity;
 				if(ent == null)

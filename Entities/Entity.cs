@@ -23,6 +23,7 @@ namespace Entities
 
         public Vector3D Position = Vector3D.Zero;
         public Vector3D Velocity = Vector3D.Zero;
+        public QuaternionD Orientation = QuaternionD.Identity;
 
         public object Tag = string.Empty;
         protected IEntityContorller Controller = null;

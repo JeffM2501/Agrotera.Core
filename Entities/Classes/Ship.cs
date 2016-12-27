@@ -18,8 +18,10 @@ namespace Entities.Classes
 			public object Tag = null;
 
             public Entity BaseEntity = null;
+
             public Vector3D LastPosition = Vector3D.Zero;
             public Vector3D LastVelocity = Vector3D.Zero;
+            public QuaternionD LastOrientation = QuaternionD.Identity;
 
             public double LastTimestamp = 0;
             public double LastTrasmitUpdate = 0;
@@ -35,6 +37,7 @@ namespace Entities.Classes
                 {
                     LastPosition = new Vector3D(BaseEntity.Position);
                     LastVelocity = new Vector3D(BaseEntity.Velocity);
+                    LastOrientation = new QuaternionD(BaseEntity.Orientation);
                     LastTimestamp = timeStamp;
                     return true;
                 }
@@ -47,7 +50,8 @@ namespace Entities.Classes
 				{
 					LastPosition = new Vector3D(upd.Position);
 					LastVelocity = new Vector3D(upd.Velocity);
-					LastTimestamp = upd.TimeStamp;
+                    LastOrientation = new QuaternionD(upd.Orientation);
+                    LastTimestamp = upd.TimeStamp;
 					return true;
 				}
 				return false;

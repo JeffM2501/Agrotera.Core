@@ -23,6 +23,7 @@ namespace NetworkMessages.ShipMessages
             msg.Write(ID);
             msg.Write(Position);
             msg.Write(Velocity);
+            msg.Write(Orientation);
             msg.Write(TimeStamp);
 
             msg.Write(Name);
@@ -35,6 +36,7 @@ namespace NetworkMessages.ShipMessages
             p.ID = msg.ReadInt32();
             p.Position = msg.ReadVector3D();
             p.Velocity = msg.ReadVector3D();
+            p.Orientation = msg.ReadQuaternionD();
             p.TimeStamp = msg.ReadDouble();
             p.Name = msg.ReadString();
             p.VisualGraphics = msg.ReadString();

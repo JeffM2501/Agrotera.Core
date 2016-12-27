@@ -43,7 +43,6 @@ namespace ScenarioServer.Scenarios.Controller
                 else
                     return;
             }
-
             ent.SetParam(AtDestKey, destIndex);
 
             double dist = Vector3D.Distance(ent.Position, Destinations[destIndex].Position);
@@ -64,6 +63,8 @@ namespace ScenarioServer.Scenarios.Controller
 
                     ent.Velocity = targetVector * speed;
                 }
+
+                ent.Orientation = new QuaternionD(targetVector, 0);
             }
             else
             {
@@ -92,6 +93,7 @@ namespace ScenarioServer.Scenarios.Controller
                             destIndex = 0;
 
                         ent.SetParam(AtDestKey, destIndex); 
+
                     }
                 }
             }

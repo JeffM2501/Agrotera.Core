@@ -56,6 +56,21 @@ namespace Core.Types
             return new Vector3D(v.X * f, v.Y * f, v.Z * f);
         }
 
+        public static Vector3D operator *(double f, Vector3D v)
+        {
+            return new Vector3D(v.X * f, v.Y * f, v.Z * f);
+        }
+
+        public static Vector3D operator /(Vector3D v, double f)
+        {
+            return new Vector3D(v.X / f, v.Y / f, v.Z / f);
+        }
+
+        public static Vector3D operator /(double f,Vector3D v)
+        {
+            return new Vector3D(v.X / f, v.Y / f, v.Z / f);
+        }
+
         public static Vector3D operator +(Vector3D v, double f)
         {
             return new Vector3D(v.X + f, v.Y + f, v.Z + f);

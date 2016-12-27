@@ -15,12 +15,17 @@ namespace NetworkMessages
 			return new Vector3D(msg.ReadDouble(), msg.ReadDouble(), msg.ReadDouble());
 		}
 
-		public static Vector2D ReadVector2F(this NetIncomingMessage msg)
+		public static Vector2D ReadVector2D(this NetIncomingMessage msg)
 		{
 			return new Vector2D(msg.ReadDouble(), msg.ReadDouble());
 		}
 
-		public static void Write(this NetOutgoingMessage msg, Vector3D vec)
+        public static QuaternionD ReadQuaternionD(this NetIncomingMessage msg)
+        {
+            return new QuaternionD(msg.ReadDouble(), msg.ReadDouble(), msg.ReadDouble(), msg.ReadDouble());
+        }
+
+        public static void Write(this NetOutgoingMessage msg, Vector3D vec)
 		{
 			msg.Write(vec.X);
 			msg.Write(vec.Y);
@@ -32,5 +37,11 @@ namespace NetworkMessages
 			msg.Write(vec.X);
 			msg.Write(vec.Y);
 		}
-	}
+
+        public static void Write(this NetOutgoingMessage msg, QuaternionD q)
+        {
+            msg.Write(q.XYZ);
+            msg.Write(q.W);
+        }
+    }
 }
