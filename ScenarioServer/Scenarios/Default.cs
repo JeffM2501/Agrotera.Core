@@ -45,10 +45,12 @@ namespace ScenarioServer.Scenarios
 
             DefaultStation = State.MapItems.New<Entity>();
             DefaultStation.Name = "Default Station";
+            DefaultStation.VisualGraphics = "Station";
             DefaultStation.SetController(Fixed.Default);
 
             var cargo = AddRandomEntity<Entity>();
             cargo.Name = "Default Cargo Stack";
+            cargo.VisualGraphics = "CargoStack";
             cargo.Position = RandomPostionRelativeTo(DefaultStation.Position, 100, 1000);
             cargo.SetController(Fixed.Default);
 
@@ -64,18 +66,21 @@ namespace ScenarioServer.Scenarios
             var cargoOne = AddRandomEntity<Ship>();
             cargoOne.ClassName = "Simple Cargo Hauler";
             cargoOne.Name = "Cargo Transport 1";
+            cargoOne.VisualGraphics = "Shuttle";
             cargoOne.Position = RandomPostionRelativeTo(cargo.Position, 50, 1000);
             cargoOne.SetController(haulerRoute);
 
             var cargoTwo = AddRandomEntity<Ship>();
             cargoTwo.ClassName = cargoOne.ClassName;
             cargoTwo.Name = "Cargo Transport 2";
+            cargoTwo.VisualGraphics = "Shuttle";
             cargoTwo.Position = RandomPostionRelativeTo(cargo.Position, 50, 1000);
             cargoTwo.SetController(haulerRoute);
 
             var cargoThree = AddRandomEntity<Ship>();
             cargoThree.ClassName = cargoOne.ClassName;
             cargoThree.Name = "Cargo Transport 2";
+            cargoThree.VisualGraphics = "Shuttle";
             cargoThree.Position = RandomPostionRelativeTo(DefaultStation.Position, 50, 1000);
             cargoThree.SetParam(haulerRoute.AtDestKey, 1); // you go to the station first
             cargoThree.SetController(haulerRoute);
@@ -148,6 +153,7 @@ namespace ScenarioServer.Scenarios
             UserShip ship = State.NewUserShip(playerID);
 
             ship.Position = RandomPostionRelativeTo(DefaultStation.Position, 100, 250);
+            ship.VisualGraphics = "PlayerShip";
 
             ship.UpdateSensorEntity(DefaultStation); // add known locations
 
