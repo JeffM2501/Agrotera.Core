@@ -84,17 +84,21 @@ namespace ScenarioServer.Classes
 
             foreach(var msg in PopOffNInbound(10))
             {
-                if (msg.Code == MessageCodes.SetCourse)
-                    SetCourse(msg);
+                switch(msg.Code)
+                {
+                    case MessageCodes.SetCourse:
+                        SetCourse(SetShipCourse.Unpack(msg.Payload));
+                        break;
+                } 
             }
         }
 
-        protected void SetCourse(ShipInboundMessage msg)
+        protected void SetCourse(SetShipCourse msg)
         {
-			SetCourse(msg.Payload.ReadVector3D());
+			SetCourse(msg.Velocity,msg.Orientation);
         }
 
-        public void SetCourse(Vector3D newHeading)
+        public void SetCourse(Vector3D newHeading, QuaternionD orientation)
         {
             Velocity = newHeading;
 

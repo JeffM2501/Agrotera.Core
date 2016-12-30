@@ -104,5 +104,11 @@ namespace ShipClient
 			Position = LastUpdatePosition;// + (LastUpdateVelocity * (Timer.Now - LastPositionUpdate));
 			Velocity = LastUpdateVelocity;
 		}
+
+
+        public void SetCourse(Vector3D velocity, QuaternionD orientation)
+        {
+            Setc
+        }
 	}
 }
