@@ -18,7 +18,7 @@ namespace ScenarioServer.Scenarios
     {
         public ScenarioState State = null;
 
-        protected Vector3D ZoneSize = new Vector3D(1000, 1000, 1000);
+        protected Vector3D ZoneSize = new Vector3D(10000, 10000, 10000);
         protected Random RNG = new Random();
 
         public bool Defaultable
@@ -44,14 +44,16 @@ namespace ScenarioServer.Scenarios
             State = state;
 
             DefaultStation = State.MapItems.New<Entity>();
-            DefaultStation.Name = "Default Station";
+			DefaultStation.Position = new Vector3D(0, 0, 0);
+
+			DefaultStation.Name = "Default Station";
             DefaultStation.VisualGraphics = "Station";
             DefaultStation.SetController(Fixed.Default);
 
-            var cargo = AddRandomEntity<Entity>();
+            var cargo = State.MapItems.New<Entity>();
             cargo.Name = "Default Cargo Stack";
             cargo.VisualGraphics = "CargoStack";
-            cargo.Position = RandomPostionRelativeTo(DefaultStation.Position, 100, 1000);
+			cargo.Position = new Vector3D(800, 0, 0);
             cargo.SetController(Fixed.Default);
 
             CargoHauler haulerRoute = new CargoHauler();
@@ -152,7 +154,7 @@ namespace ScenarioServer.Scenarios
         {
             UserShip ship = State.NewUserShip(playerID);
 
-            ship.Position = RandomPostionRelativeTo(DefaultStation.Position, 100, 250);
+            ship.Position = RandomPostionRelativeTo(DefaultStation.Position, 500, 800);
             ship.VisualGraphics = "PlayerShip";
 
             ship.UpdateSensorEntity(DefaultStation); // add known locations

@@ -24,7 +24,7 @@ namespace Entities.Classes
             public QuaternionD LastOrientation = QuaternionD.Identity;
 
             public double LastTimestamp = 0;
-            public double LastTrasmitUpdate = 0;
+            public double LastTrasmitUpdate = double.MinValue;
 
             public KnownEntity(Entity ent)
             {
@@ -104,7 +104,7 @@ namespace Entities.Classes
 				ent.Deleted += Entity_Deleted;
 				var ke = NewSensorEnity(ent);
 
-				KnownEntities.Add(ent.ID, new KnownEntity(ent));
+				KnownEntities.Add(ent.ID, ke);
 				RefreshEntity(ke, update);
 
 				if(SensorEntityAppeared != null)
@@ -128,7 +128,7 @@ namespace Entities.Classes
                 ent.Deleted += Entity_Deleted;
                 var ke = NewSensorEnity(ent);
 
-                KnownEntities.Add(ent.ID, new KnownEntity(ent));
+                KnownEntities.Add(ent.ID, ke);
                 RefreshEntity(ke, details);
 
                 ke.BaseEntity.Name = details.Name;
@@ -180,7 +180,7 @@ namespace Entities.Classes
 
 		public virtual double VisualRadius()
 		{
-			return 1000;
+			return 5000;
 		}
 	}
 }

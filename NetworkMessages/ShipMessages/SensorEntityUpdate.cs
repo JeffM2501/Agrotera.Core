@@ -25,7 +25,7 @@ namespace NetworkMessages.ShipMessages
 		public override void Pack(NetOutgoingMessage msg)
 		{
 			base.Pack(msg);
-			msg.Write(ID);
+			msg.Write((Int32)ID);
 			msg.Write(Position);
 			msg.Write(Velocity);
             msg.Write(Orientation);

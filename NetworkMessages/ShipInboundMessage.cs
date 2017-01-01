@@ -10,6 +10,8 @@ namespace NetworkMessages
 {
 	public class ShipInboundMessage
 	{
+		public bool Processed = false;
+
 		public double Timestamp = double.MinValue;
 		public MessageCodes Code = MessageCodes.Unknown;
 		public NetIncomingMessage Payload = null;

@@ -35,7 +35,7 @@ namespace ShipClient
 		
 		protected ShipInboundMessage[] PopOffNInbound(int count)
 		{
-			if(count <= InboundMessages.Count)
+			if(InboundMessages.Count < count)
 			{
 				ShipInboundMessage[] t = InboundMessages.ToArray();
 				InboundMessages.Clear();
@@ -43,7 +43,9 @@ namespace ShipClient
 			}
 			else
 			{
-				return InboundMessages.GetRange(0, count).ToArray();
+				var a = InboundMessages.GetRange(0, count).ToArray();
+				InboundMessages.RemoveRange(0, count);
+				return a;
 			}
 		}
 
@@ -78,13 +80,18 @@ namespace ShipClient
 
 			foreach(var msg in PopOffNInbound(10))
 			{
+				if(msg.Processed)
+					continue;
+
 				if(msg.Code == MessageCodes.SetSelfPosition)
 					UpdateSelfPosition(SetSelfPosition.Unpack(msg.Payload));
 				else if(msg.Code == MessageCodes.UpdateEntity)
 					UpdateSensorEntity(SensorEntityUpdate.Unpack(msg.Payload));
                 else if (msg.Code == MessageCodes.UpdateEnityDetails)
                     UpdateSensorEntity(SensorEntityDetails.UnpackDeets(msg.Payload));
-            }
+
+				msg.Processed = true;
+			}
 		}
 
 

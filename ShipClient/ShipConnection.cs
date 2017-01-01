@@ -43,8 +43,12 @@ namespace ShipClient
 		{
 			Timer.Advance();
 			UpdateInbound();
-			PlayerShip.ProcessMessages();
-			PlayerShip.UpdatePositions();
+			if (PlayerShip != null)
+			{
+				PlayerShip.ProcessMessages();
+				PlayerShip.UpdatePositions();
+			}
+
 			UpdateOutbound();
 		}
 
@@ -63,7 +67,7 @@ namespace ShipClient
 				PlayerShip.OutboundMessages[i].Pack(msg);
 				SocketClient.SendMessage(msg, NetDeliveryMethod.ReliableOrdered, 0);
 			}
-
+			SocketClient.FlushSendQueue();
 			PlayerShip.OutboundMessages.RemoveRange(0, count);
 		}
 
@@ -122,6 +126,7 @@ namespace ShipClient
 									ns.Pack(hail);
 								}
 								SocketClient.SendMessage(hail, NetDeliveryMethod.ReliableOrdered, 0);
+								
 							}
 							else
 							{
@@ -170,6 +175,7 @@ namespace ShipClient
 						break;
 				}
 			}
+			SocketClient.FlushSendQueue();
 			PendingMessages.RemoveRange(0, toProcess);
 		}
     }

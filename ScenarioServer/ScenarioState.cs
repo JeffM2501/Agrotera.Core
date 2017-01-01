@@ -32,7 +32,7 @@ namespace ScenarioServer
             Listener.PeerDisconnected += Listener_PeerDisconnected;
             Listener.PeerWantsNewShip += Listener_PeerWantsNewShip;
             Listener.PeerWantsOldShip += Listener_PeerWantsOldShip;
-        }
+		}
 
         private void Listener_PeerDisconnected(object sender, ShipListener.Peer e)
         {
@@ -73,6 +73,7 @@ namespace ScenarioServer
         {
             Timer.Advance();
 
+			Listener.UpdateInbound();
  
             Controller.Update();
 
@@ -80,6 +81,7 @@ namespace ScenarioServer
             MapItems.InterpMotion();
 
             ProcessShipSensors();
+			Listener.UpdateOutbound();
         }
 
         protected void ProcessShipSensors()

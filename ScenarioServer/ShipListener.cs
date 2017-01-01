@@ -96,7 +96,7 @@ namespace ScenarioServer
 
         List<NetIncomingMessage> PendingMessages = new List<NetIncomingMessage>();
 
-        public void UpdateInbound(double timestamp)
+        public void UpdateInbound()
         {
             SocketHost.ReadMessages(PendingMessages);
 
@@ -114,7 +114,9 @@ namespace ScenarioServer
                 if (im != null && im.SenderConnection != null)
                     id = im.SenderConnection.RemoteUniqueIdentifier;
 
-                Peer peer = FindPeer(im.SenderConnection.Peer.UniqueIdentifier);
+				Peer peer = null;
+				if (im.SenderConnection != null)
+					peer = FindPeer(im.SenderConnection.Peer.UniqueIdentifier);
 
                 switch (im.MessageType)
                 {

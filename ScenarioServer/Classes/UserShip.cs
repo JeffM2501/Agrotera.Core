@@ -118,7 +118,7 @@ namespace ScenarioServer.Classes
 
         public void SendSensorEntityUpdate(KnownEntity ent)
         {
-            if (ent.LastTrasmitUpdate < 0)
+            if (ent.LastTrasmitUpdate <= 0)
             {
                 SensorEntityDetails sd = new SensorEntityDetails();
 
@@ -128,7 +128,9 @@ namespace ScenarioServer.Classes
                 sd.TimeStamp = ent.LastTimestamp;
                 sd.Name = ent.BaseEntity.Name;
                 sd.VisualGraphics = ent.BaseEntity.VisualGraphics;
-            }
+
+				OutboundMessages.Add(sd);
+			}
             else
             {
                 SensorEntityUpdate sm = new SensorEntityUpdate();

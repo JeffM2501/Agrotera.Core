@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 using ShipClient;
 
@@ -19,6 +20,9 @@ public class HostConnection : MonoBehaviour
 
     public GameObject DefaultObject = null;
 
+
+	public GameObject ConnectingDialog = null;
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -30,12 +34,15 @@ public class HostConnection : MonoBehaviour
 
 	private void Connection_ShipAssigned(object sender, System.EventArgs e)
 	{
+		if(ConnectingDialog != null)
+			ConnectingDialog.SetActive(false);
+
 		StartupSceene();
 	}
 
 	private void Connection_Disconnected(object sender, System.EventArgs e)
 	{
-		throw new System.NotImplementedException();
+		
 	}
 
 	private void Connection_Connected(object sender, ShipConnection.ConnectedEventArgs e)
@@ -46,11 +53,16 @@ public class HostConnection : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
+		if(Connection == null)
+			return;
+
 		Connection.Update();
 
-        foreach (UserShip.ShipCentricSensorEntity sre in Connection.PlayerShip.KnownEntities.Values)
-            UpdateRealtiveEntities(sre);
-
+		if(Connection.PlayerShip != null)
+		{
+			foreach(UserShip.ShipCentricSensorEntity sre in Connection.PlayerShip.KnownEntities.Values)
+				UpdateRealtiveEntities(sre);
+		}
     }
 
 	void StartupSceene()
