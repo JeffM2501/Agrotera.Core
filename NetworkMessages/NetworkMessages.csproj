@@ -46,6 +46,7 @@
     <Compile Include="ShipMessages\SensorEntityDetails.cs" />
     <Compile Include="ShipMessages\SensorEntityUpdate.cs" />
     <Compile Include="ShipMessages\SetSelfPosition.cs" />
+    <Compile Include="ShipMessages\SetShipCourse.cs" />
     <Compile Include="ShipMessages\WantExistingShip.cs" />
     <Compile Include="ShipMessages\WantNewShip.cs" />
     <Compile Include="ShipOutboundMessage.cs" />
