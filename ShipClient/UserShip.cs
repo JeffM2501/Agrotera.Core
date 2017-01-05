@@ -49,6 +49,11 @@ namespace ShipClient
 			}
 		}
 
+		protected void Send(ShipOutboundMessage msg)
+		{
+			OutboundMessages.Add(msg);
+		}
+
 		public void UpdatePositions()
 		{
 			Position += (Velocity * Timer.Delta);
@@ -57,7 +62,7 @@ namespace ShipClient
 
 			foreach(var item in KnownEntities.Values)
 			{
-				item.BaseEntity.Position = item.LastPosition + (item.LastVelocity * (Timer.Now - item.LastTrasmitUpdate));
+				item.BaseEntity.Position = item.LastPosition + (item.LastVelocity * (Timer.Now - item.LastTimestamp));
 				item.BaseEntity.Velocity = item.LastVelocity;
                 item.BaseEntity.Orientation = item.LastOrientation;
 
@@ -94,6 +99,17 @@ namespace ShipClient
 			}
 		}
 
+		public override void RefreshEntity(KnownEntity ke, SensorEntityUpdate update)
+		{
+			ke.Refresh(update);
+
+			ShipCentricSensorEntity sce = ke as ShipCentricSensorEntity;
+			if(sce == null)
+				return;
+
+			sce.ShipRelativePosition = Vector3F.FromRelativeDobules(sce.BaseEntity.Position, Position);
+			sce.ShipRelativeVelocity = new Vector3F(sce.BaseEntity.Velocity);
+		}
 
 		protected override KnownEntity NewSensorEnity(Entity ent)
 		{
@@ -115,7 +131,10 @@ namespace ShipClient
 
         public void SetCourse(Vector3D velocity, QuaternionD orientation)
         {
-            Setc
-        }
+			SetShipCourse sc = new SetShipCourse();
+			sc.Velocity = velocity;
+			sc.Orientation = orientation;
+			Send(sc);
+		}
 	}
 }

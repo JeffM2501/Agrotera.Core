@@ -30,6 +30,11 @@ namespace ScenarioServer.Classes
 
         }
 
+		public void Send(ShipOutboundMessage msg)
+		{
+			OutboundMessages.Add(msg);
+		}
+
         private void UserShip_SensorEntityUpdated(object sender, KnownEntity e)
         {
             SendSensorEntityUpdate(e);
@@ -105,6 +110,8 @@ namespace ScenarioServer.Classes
             if (Velocity.Length() > 100)
                 Velocity = Vector3D.Normalize(Velocity) * 100;
 
+			Orientation = orientation;
+
             SendCourseAndPosition();
         }
 
@@ -113,9 +120,10 @@ namespace ScenarioServer.Classes
 			SetSelfPosition sm = new SetSelfPosition();
             sm.Position = Position;
             sm.Velocity = Velocity;
+			sm.Orientation = Orientation;
             sm.TimeStamp = Timer.Now;
 
-            OutboundMessages.Add(sm);
+			Send(sm);
 
             LastPositionUpdate = Timer.Now;
         }
@@ -129,11 +137,12 @@ namespace ScenarioServer.Classes
                 sd.ID = ent.BaseEntity.ID;
                 sd.Position = ent.LastPosition;
                 sd.Velocity = ent.LastVelocity;
+				sd.Orientation = ent.LastOrientation;
                 sd.TimeStamp = ent.LastTimestamp;
                 sd.Name = ent.BaseEntity.Name;
                 sd.VisualGraphics = ent.BaseEntity.VisualGraphics;
 
-				OutboundMessages.Add(sd);
+				Send(sd);
 			}
             else
             {
@@ -141,9 +150,10 @@ namespace ScenarioServer.Classes
                 sm.ID = ent.BaseEntity.ID;
                 sm.Position = ent.LastPosition;
                 sm.Velocity = ent.LastVelocity;
-                sm.TimeStamp = ent.LastTimestamp;
+				sm.Orientation = ent.LastOrientation;
+				sm.TimeStamp = ent.LastTimestamp;
 
-                OutboundMessages.Add(sm);
+				Send(sm);
             }
 
             ent.LastTrasmitUpdate = Timer.Now;

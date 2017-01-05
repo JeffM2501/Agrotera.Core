@@ -8,7 +8,7 @@ namespace Core.Types
 {
     public static class Timer
     {
-        private static readonly bool FixedTimeUpdates = false; 
+        private static readonly bool FixedTimeUpdates = true; 
 
         private static double LastTime = 0;
 

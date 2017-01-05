@@ -18,6 +18,20 @@ namespace ClientTester
 			while(true)
 			{
 				connection.Update();
+
+				if (connection.PlayerShip != null)
+				{
+					if (connection.PlayerShip.KnownEntities.Count > 0)
+					{
+						ShipClient.UserShip.ShipCentricSensorEntity sensorItem = connection.PlayerShip.KnownEntities[3] as ShipClient.UserShip.ShipCentricSensorEntity;
+
+						Console.WriteLine(string.Format("Item {0}", sensorItem.BaseEntity.Name));
+						Console.WriteLine(string.Format("Abs Position {0} {1} {2}", sensorItem.LastPosition.X, sensorItem.LastPosition.Y, sensorItem.LastPosition.Z));
+						Console.WriteLine(string.Format("Rell Position {0} {1} {2}", sensorItem.ShipRelativePosition.X, sensorItem.ShipRelativePosition.Y, sensorItem.ShipRelativePosition.Z));
+
+					}
+
+				}
 				System.Threading.Thread.Sleep(100);
 			}
 		}

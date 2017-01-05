@@ -12,6 +12,7 @@ namespace NetworkMessages.ShipMessages
 	{
 		public Vector3D Position = Vector3D.Zero;
 		public Vector3D Velocity = Vector3D.Zero;
+		public QuaternionD Orientation = QuaternionD.Identity;
 		public double TimeStamp = double.MinValue;
 
 		public SetSelfPosition() : base(MessageCodes.SetSelfPosition)
@@ -24,6 +25,7 @@ namespace NetworkMessages.ShipMessages
 			base.Pack(msg);
 			msg.Write(Position);
 			msg.Write(Velocity);
+			msg.Write(Orientation);
 			msg.Write(TimeStamp);
 		}
 
@@ -32,6 +34,7 @@ namespace NetworkMessages.ShipMessages
 			SetSelfPosition p = new SetSelfPosition();
 			p.Position = msg.ReadVector3D();
 			p.Velocity = msg.ReadVector3D();
+			p.Orientation = msg.ReadQuaternionD();
 			p.TimeStamp = msg.ReadDouble();
 			return p;
 		}

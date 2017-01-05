@@ -135,6 +135,9 @@ namespace ScenarioServer
                         if (status == NetConnectionStatus.Connected)
                         {
                             peer = new Peer(im.SenderConnection);
+							if(ConnectedPeers.ContainsKey(peer.ID))
+								ConnectedPeers.Remove(peer.ID);
+
                             ConnectedPeers.Add(peer.ID, peer);
                             if (PeerConnected != null)
                                 PeerConnected(this, peer);
