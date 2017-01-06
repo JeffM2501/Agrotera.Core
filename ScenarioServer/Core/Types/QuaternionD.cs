@@ -34,6 +34,11 @@ namespace Core.Types
         public Vector3D XYZ;
         public double W;
 
+        public double X { get { return XYZ.X; } }
+        public double Y { get { return XYZ.Y; } }
+        public double Z { get { return XYZ.Z; } }
+
+
         public QuaternionD(Vector3D v, double w)
         {
             XYZ = new Vector3D(v);
@@ -148,7 +153,7 @@ namespace Core.Types
                 // angle = 0.0f, so just return one input.
                 return q1;
             }
-            else if (cosHalfAngle < 0.0f)
+            else if (cosHalfAngle < 0.0)
             {
                 q2.XYZ = q2.XYZ * -1;
                 q2.W = -q2.W;
@@ -157,19 +162,19 @@ namespace Core.Types
 
             double blendA;
             double blendB;
-            if (cosHalfAngle < 0.999f)
+            if (cosHalfAngle < 0.9999)
             {
                 // do proper slerp for big angles
-                double halfAngle = (double)System.Math.Acos(cosHalfAngle);
-                double sinHalfAngle = (double)System.Math.Sin(halfAngle);
+                double halfAngle = Math.Acos(cosHalfAngle);
+                double sinHalfAngle = Math.Sin(halfAngle);
                 double oneOverSinHalfAngle = 1.0f / sinHalfAngle;
-                blendA = (double)System.Math.Sin(halfAngle * (1.0f - blend)) * oneOverSinHalfAngle;
-                blendB = (double)System.Math.Sin(halfAngle * blend) * oneOverSinHalfAngle;
+                blendA = Math.Sin(halfAngle * (1.0f - blend)) * oneOverSinHalfAngle;
+                blendB = Math.Sin(halfAngle * blend) * oneOverSinHalfAngle;
             }
             else
             {
                 // do lerp if angle is really small.
-                blendA = 1.0f - blend;
+                blendA = 1.0 - blend;
                 blendB = blend;
             }
 
@@ -193,6 +198,49 @@ namespace Core.Types
             double angle = Math.Acos(Vector3D.DotProduct(from, to));
 
             return QuaternionD.FromAxisAngle(axis, angle);
+        }
+
+        public static Vector3D operator *(QuaternionD quat, Vector3D vec)
+        {
+            double num = quat.X * 2.0;
+            double num2 = quat.Y * 2.0;
+            double num3 = quat.Z * 2.0;
+            double num4 = quat.X * num;
+            double num5 = quat.Y * num2;
+            double num6 = quat.Z * num3;
+            double num7 = quat.X * num2;
+            double num8 = quat.X * num3;
+            double num9 = quat.Y * num3;
+            double num10 = quat.W * num;
+            double num11 = quat.W * num2;
+            double num12 = quat.W * num3;
+
+            Vector3D result = new Vector3D();
+            result.X = (1.0 - (num5 + num6)) * vec.X + (num7 - num12) * vec.Y + (num8 + num11) * vec.Z;
+            result.Y = (num7 + num12) * vec.X + (1.0 - (num4 + num6)) * vec.Y + (num9 - num10) * vec.Z;
+            result.Z = (num8 - num11) * vec.X + (num9 + num10) * vec.Y + (1.0 - (num4 + num5)) * vec.Z;
+            return result;
+        }
+
+        public static QuaternionD LookAt(Vector3D sourcePoint, Vector3D destPoint, Vector3D up)
+        {
+            Vector3D forwardVector = Vector3D.Normalize(destPoint - sourcePoint);
+
+            double dot = Vector3D.DotProduct(Vector3D.UnitX, forwardVector);
+
+            if (Math.Abs(dot - (-1.0)) < 0.000001)
+            {
+                return new QuaternionD(up.X, up.Y, up.Z, Math.PI);
+            }
+            if (Math.Abs(dot - (1.0)) < 0.000001)
+            {
+                return QuaternionD.Identity;
+            }
+
+            double rotAngle = Math.Acos(dot);
+            Vector3D rotAxis = Vector3D.CrossProduct(Vector3D.UnitX, forwardVector);
+            rotAxis = Vector3D.Normalize(rotAxis);
+            return FromAxisAngle(rotAxis, rotAngle);
         }
 
         public readonly static QuaternionD Identity = new QuaternionD(0, 0, 0, 1);
