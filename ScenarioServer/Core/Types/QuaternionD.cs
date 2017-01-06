@@ -235,7 +235,11 @@ namespace Core.Types
         public static QuaternionD LookAt(Vector3D sourcePoint, Vector3D destPoint, Vector3D up)
         {
             Vector3D forwardVector = Vector3D.Normalize(destPoint - sourcePoint);
+            return LookAt(forwardVector, up);
+        }
 
+        public static QuaternionD LookAt(Vector3D forwardVector, Vector3D up)
+        {
             double dot = Vector3D.DotProduct(Vector3D.UnitX, forwardVector);
 
             if (Math.Abs(dot - (-1.0)) < 0.000001)
@@ -251,6 +255,42 @@ namespace Core.Types
             Vector3D rotAxis = Vector3D.CrossProduct(Vector3D.UnitX, forwardVector);
             rotAxis = Vector3D.Normalize(rotAxis);
             return FromAxisAngle(rotAxis, rotAngle);
+        }
+
+        public static QuaternionD FromEuler(double pitch, double roll, double yaw)
+        {
+            double t0 = Math.Cos(yaw * 0.5);
+            double t1 = Math.Sin(yaw * 0.5);
+            double t2 = Math.Cos(roll * 0.5);
+            double t3 = Math.Sin(roll * 0.5);
+            double t4 = Math.Cos(pitch * 0.5);
+            double t5 = Math.Sin(pitch * 0.5);
+
+           return new QuaternionD(  t0 * t3 * t4 - t1 * t2 * t5,
+                                    t0 * t2 * t5 + t1 * t3 * t4,
+                                    t1 * t2 * t4 - t0 * t3 * t5,
+                                    t0 * t2 * t4 + t1 * t3 * t5);
+        }
+
+        public static void ToEuler(QuaternionD q, out double roll, out double pitch, out double yaw)
+        {
+	        double ysqr = q.Y * q.Y;
+
+            // roll (x-axis rotation)
+            double t0 = 2.0 * (q.W * q.X + q.Y * q.Z);
+            double t1 = 1.0 - 2.0 * (q.X * q.X + ysqr);
+            roll = Math.Atan2(t0, t1);
+
+	        // pitch (y-axis rotation)
+	        double t2 = +2.0 * (q.W * q.Y - q.Z * q.X);
+            t2 = t2 > 1.0 ? 1.0 : t2;
+	        t2 = t2 < -1.0 ? -1.0 : t2;
+	        pitch = Math.Asin(t2);
+
+	        // yaw (z-axis rotation)
+	        double t3 = 2.0 * (q.W * q.Z + q.X * q.Y);
+            double t4 = 1.0 - 2.0 * (ysqr + q.Z * q.Z);
+            yaw = Math.Atan2(t3, t4);
         }
 
         public readonly static QuaternionD Identity = new QuaternionD(0, 0, 0, 1);
