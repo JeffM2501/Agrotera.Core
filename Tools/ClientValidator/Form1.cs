@@ -40,7 +40,10 @@ namespace ClientValidator
         public Form1()
         {
             InitializeComponent();
+            ViewType.SelectedIndex = 0;
+
             timer1.Start();
+
 
             //    Application.Idle += Application_Idle;
 
@@ -121,9 +124,10 @@ namespace ClientValidator
 
             double scale = 0.25;
 
-           
+            e.Graphics.DrawLine(Pens.DarkGreen, 0, Map.Height * 0.5f, 0, -Map.Height * 0.5f);
+            e.Graphics.DrawLine(Pens.DarkGreen, Map.Width * 0.5f,0, -Map.Width * 0.5f, 0);
 
-            foreach(var i in Connection.PlayerShip.KnownEntities.Values)
+            foreach (var i in Connection.PlayerShip.KnownEntities.Values)
             {
                 RectangleF rect = new RectangleF();
 
@@ -142,9 +146,27 @@ namespace ClientValidator
 
                     size = d.Size;
                 }
-   
-                rect.X = (float)(i.LastPosition.X * scale);
-                rect.Y = (float)(i.LastPosition.Y * scale);
+
+                if (ViewType.SelectedIndex == 2)
+                {
+                    UserShip.ShipCentricSensorEntity scs = i as UserShip.ShipCentricSensorEntity;
+                    rect.X = (float)(scs.ShipRelativePosition.X * scale);
+                    rect.Y = (float)(scs.ShipRelativePosition.Y * scale);
+
+//                     rect.X = (float)((i.LastPosition.X - Connection.PlayerShip.Position.X) * scale);
+//                     rect.Y = (float)((i.LastPosition.Y - Connection.PlayerShip.Position.Y) * scale);
+                }
+                else if (ViewType.SelectedIndex == 1)
+                {
+                    rect.X = (float)(i.BaseEntity.Position.X * scale);
+                    rect.Y = (float)(i.BaseEntity.Position.Y * scale);
+                }
+                else if (ViewType.SelectedIndex == 0)
+                {
+                    rect.X = (float)(i.LastPosition.X * scale);
+                    rect.Y = (float)(i.LastPosition.Y * scale);
+                }
+
 
                 rect.X -= size;
                 rect.Y -= size;
@@ -157,6 +179,11 @@ namespace ClientValidator
                 else
                     e.Graphics.FillRectangle(b, rect);
             }
+        }
+
+        private void ViewType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Map.Invalidate();
         }
     }
 }

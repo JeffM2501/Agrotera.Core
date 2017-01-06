@@ -33,9 +33,10 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.StatusText = new System.Windows.Forms.TextBox();
             this.ConnectButton = new System.Windows.Forms.Button();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.Map = new System.Windows.Forms.PictureBox();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+            this.ViewType = new System.Windows.Forms.ComboBox();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -50,6 +51,7 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.ViewType);
             this.splitContainer1.Panel1.Controls.Add(this.StatusText);
             this.splitContainer1.Panel1.Controls.Add(this.ConnectButton);
             // 
@@ -81,10 +83,6 @@
             this.ConnectButton.UseVisualStyleBackColor = true;
             this.ConnectButton.Click += new System.EventHandler(this.ConnectButton_Click);
             // 
-            // timer1
-            // 
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
             // Map
             // 
             this.Map.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -95,11 +93,29 @@
             this.Map.TabStop = false;
             this.Map.Paint += new System.Windows.Forms.PaintEventHandler(this.Map_Paint);
             // 
+            // timer1
+            // 
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
             // imageList1
             // 
             this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
             this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
             this.imageList1.Images.SetKeyName(0, "SS1.png");
+            // 
+            // ViewType
+            // 
+            this.ViewType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ViewType.FormattingEnabled = true;
+            this.ViewType.Items.AddRange(new object[] {
+            "World (last update)",
+            "World (extrapolated)",
+            "Ship Centric"});
+            this.ViewType.Location = new System.Drawing.Point(12, 121);
+            this.ViewType.Name = "ViewType";
+            this.ViewType.Size = new System.Drawing.Size(155, 21);
+            this.ViewType.TabIndex = 3;
+            this.ViewType.SelectedIndexChanged += new System.EventHandler(this.ViewType_SelectedIndexChanged);
             // 
             // Form1
             // 
@@ -126,6 +142,7 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.PictureBox Map;
         private System.Windows.Forms.ImageList imageList1;
+        private System.Windows.Forms.ComboBox ViewType;
     }
 }
 
