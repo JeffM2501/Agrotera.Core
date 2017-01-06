@@ -51,7 +51,7 @@ namespace Entities.Classes
 					LastPosition = new Vector3D(upd.Position);
 					LastVelocity = new Vector3D(upd.Velocity);
                     LastOrientation = new QuaternionD(upd.Orientation);
-                    LastTimestamp = upd.TimeStamp;
+                    LastTimestamp = Timer.Now;
 					return true;
 				}
 				return false;
