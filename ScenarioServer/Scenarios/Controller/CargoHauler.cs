@@ -18,13 +18,17 @@ namespace ScenarioServer.Scenarios.Controller
         public double DestinationDelay = 0;
         public double DestinationArivalRadius = 0;
 
-        public int AtDestKey { get; protected set; }
-        public int TimeWaitedKey { get; protected set; }
+        public class CargoHaulerDestinationData
+        {
+            public int NextDestination = -1;
+            public double TimeWaited = 0;
+        }
+
+        public int InfoKey { get; protected set; }
 
         void IEntityContorller.AddEntity(Entity ent)
         {
-            AtDestKey = ent.SetParam("CargoHauler.DestinationIndex", -1);
-            TimeWaitedKey = ent.SetParam("CargoHauler.TimeAtDestination", 0);
+            InfoKey = ent.SetParam("CargoHauler.Data", new CargoHaulerDestinationData());
         }
 
         void IEntityContorller.UpdateEntity(Entity ent)
@@ -32,25 +36,27 @@ namespace ScenarioServer.Scenarios.Controller
             if (Destinations.Count == 0)
                 return;
 
-            int destIndex = (int)ent.GetParam(AtDestKey);
-            if (destIndex < 0)
-                destIndex = 0;
+            CargoHaulerDestinationData info = ent.GetParam(InfoKey) as CargoHaulerDestinationData;
+            if (info == null)
+                return;
 
-            if (destIndex > Destinations.Count)
+            if (info.NextDestination < 0)
+                info.NextDestination = 0;
+
+            if (info.NextDestination > Destinations.Count)
             {
                 if (Loop)
-                    destIndex = 0;
+                    info.NextDestination = 0;
                 else
                     return;
             }
-            ent.SetParam(AtDestKey, destIndex);
 
-            double dist = Vector3D.Distance(ent.Position, Destinations[destIndex].Position);
+            double dist = Vector3D.Distance(ent.Position, Destinations[info.NextDestination].Position);
 
             ent.SetParam("CargoHauler.DistanceToDestination", dist);
             if (dist > DestinationArivalRadius)
             {
-                Vector3D targetVector = Destinations[destIndex].Position - ent.Position;
+                Vector3D targetVector = Destinations[info.NextDestination].Position - ent.Position;
                 targetVector.Normailize();
 
                 double speed = ent.Velocity.Length();
@@ -64,7 +70,7 @@ namespace ScenarioServer.Scenarios.Controller
                     ent.Velocity = targetVector * speed;
                 }
 
-                ent.Orientation = new QuaternionD(targetVector, 0);
+                ent.Orientation = QuaternionD.LookAt(targetVector, Vector3D.UnitZ);
             }
             else
             {
@@ -80,20 +86,16 @@ namespace ScenarioServer.Scenarios.Controller
                 }
                 else
                 {
-                    double timeWaited = ent.GetParam(TimeWaitedKey);
-                    if (timeWaited < DestinationDelay)
+                    if (info.TimeWaited < DestinationDelay)
                     {
-                        ent.SetParam(TimeWaitedKey, timeWaited + Timer.Delta);
+                        info.TimeWaited += Timer.Delta;
                     }
                     else // set off for the next location
                     {
-                        ent.SetParam(TimeWaitedKey, 0);
-                        destIndex++;
-                        if (destIndex >= Destinations.Count && Loop)
-                            destIndex = 0;
-
-                        ent.SetParam(AtDestKey, destIndex); 
-
+                        info.TimeWaited = 0;
+                        info.NextDestination++;
+                        if (info.NextDestination >= Destinations.Count && Loop)
+                            info.NextDestination = 0;
                     }
                 }
             }

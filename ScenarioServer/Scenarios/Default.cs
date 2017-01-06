@@ -84,7 +84,11 @@ namespace ScenarioServer.Scenarios
             cargoThree.Name = "Cargo Transport 2";
             cargoThree.VisualGraphics = "Shuttle";
             cargoThree.Position = RandomPostionRelativeTo(DefaultStation.Position, 50, 1000);
-            cargoThree.SetParam(haulerRoute.AtDestKey, 1); // you go to the station first
+
+            CargoHauler.CargoHaulerDestinationData data = new CargoHauler.CargoHaulerDestinationData();
+            data.NextDestination = 1;
+
+            cargoThree.SetParam(haulerRoute.InfoKey, data); // you go to the station first
             cargoThree.SetController(haulerRoute);
 
         }
