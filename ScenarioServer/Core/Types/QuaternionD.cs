@@ -79,6 +79,16 @@ namespace Core.Types
             XYZ = XYZ * -1;
         }
 
+        public static QuaternionD operator * (QuaternionD lhs, QuaternionD rhs)
+        {
+            double x = lhs.X * rhs.W + lhs.Y * rhs.Z - lhs.Z * rhs.Y + lhs.W * rhs.X;
+            double y = -lhs.X * rhs.Z + lhs.Y * rhs.W + lhs.Z * rhs.X + lhs.W * rhs.Y;
+            double z = lhs.X * rhs.Y - lhs.Y * rhs.X + lhs.Z * rhs.W + lhs.W * rhs.Z;
+            double w = -lhs.X * rhs.X - lhs.Y * rhs.Y - lhs.Z * rhs.Z + lhs.W * rhs.W;
+
+            return new QuaternionD(x, y, z, w);
+        }
+
         public static QuaternionD Invert(QuaternionD q)
         {
             QuaternionD result;
