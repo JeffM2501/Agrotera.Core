@@ -25,6 +25,11 @@ namespace NetworkMessages
             return new QuaternionD(msg.ReadDouble(), msg.ReadDouble(), msg.ReadDouble(), msg.ReadDouble());
         }
 
+        public static EulerAnglesD ReadEulerAnglesD(this NetIncomingMessage msg)
+        {
+            return new EulerAnglesD(msg.ReadDouble(), msg.ReadDouble(), msg.ReadDouble());
+        }
+
         public static void Write(this NetOutgoingMessage msg, Vector3D vec)
 		{
 			msg.Write(vec.X);
@@ -42,6 +47,13 @@ namespace NetworkMessages
         {
             msg.Write(q.XYZ);
             msg.Write(q.W);
+        }
+
+        public static void Write(this NetOutgoingMessage msg, EulerAnglesD q)
+        {
+            msg.Write(q.Pitch);
+            msg.Write(q.Roll);
+            msg.Write(q.Yaw);
         }
     }
 }

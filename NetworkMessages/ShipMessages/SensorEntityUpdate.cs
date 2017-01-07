@@ -14,7 +14,8 @@ namespace NetworkMessages.ShipMessages
 		public int ID = int.MinValue;
 		public Vector3D Position = Vector3D.Zero;
 		public Vector3D Velocity = Vector3D.Zero;
-        public QuaternionD Orientation = QuaternionD.Identity;
+        public EulerAnglesD Orientation = EulerAnglesD.Zero;
+        public EulerAnglesD Rotation = EulerAnglesD.Zero;
 		public double TimeStamp = double.MinValue;
 
 		public SensorEntityUpdate() : base(MessageCodes.UpdateEntity)
@@ -29,6 +30,7 @@ namespace NetworkMessages.ShipMessages
 			msg.Write(Position);
 			msg.Write(Velocity);
             msg.Write(Orientation);
+            msg.Write(Rotation);
             msg.Write(TimeStamp);
 		}
 
@@ -38,8 +40,9 @@ namespace NetworkMessages.ShipMessages
 			p.ID = msg.ReadInt32();
 			p.Position = msg.ReadVector3D();
 			p.Velocity = msg.ReadVector3D();
-            p.Orientation = msg.ReadQuaternionD();
-			p.TimeStamp = msg.ReadDouble();
+            p.Orientation = msg.ReadEulerAnglesD();
+            p.Rotation = msg.ReadEulerAnglesD();
+            p.TimeStamp = msg.ReadDouble();
 			return p;
 		}
 	}

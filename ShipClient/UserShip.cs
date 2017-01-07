@@ -62,9 +62,12 @@ namespace ShipClient
 
 			foreach(var item in KnownEntities.Values)
 			{
-				item.BaseEntity.Position = item.LastPosition + (item.LastVelocity * (Timer.Now - item.LastTimestamp));
+                double delta = (Timer.Now - item.LastTimestamp);
+
+                item.BaseEntity.Position = item.LastPosition + (item.LastVelocity * delta);
 				item.BaseEntity.Velocity = item.LastVelocity;
-                item.BaseEntity.Orientation = item.LastOrientation;
+
+                item.BaseEntity.Orientation = item.LastOrientation + (item.LastRotation * delta);
 
 				ShipCentricSensorEntity ent = item as ShipCentricSensorEntity;
 				if(ent == null)
@@ -72,9 +75,9 @@ namespace ShipClient
 
 				// for 32 bit rendering
 				ent.ShipRelativePosition = Vector3F.FromRelativeDobules(ent.BaseEntity.Position, Position);
-				ent.ShipRelativeVelocity = new Vector3F(item.BaseEntity.Velocity);
+				ent.ShipRelativeVelocity = Vector3F.FromRelativeDobules(ent.BaseEntity.Velocity, Velocity);
 
-				ent.Visible = ent.ShipRelativePosition.LengthSquared() <= visSquared;
+                ent.Visible = ent.ShipRelativePosition.LengthSquared() <= visSquared;
 			}
 		}
 
@@ -128,8 +131,7 @@ namespace ShipClient
 			Velocity = LastUpdateVelocity;
 		}
 
-
-        public void SetCourse(Vector3D velocity, QuaternionD orientation)
+        public void SetCourse(Vector3D velocity, EulerAnglesD orientation)
         {
 			SetShipCourse sc = new SetShipCourse();
 			sc.Velocity = velocity;

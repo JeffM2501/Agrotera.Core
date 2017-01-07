@@ -48,6 +48,7 @@ namespace ScenarioServer.Scenarios
 
 			DefaultStation.Name = "Default Station";
             DefaultStation.VisualGraphics = "Station";
+            DefaultStation.Rotation = new EulerAnglesD(0, 0, 90);
             DefaultStation.SetController(Fixed.Default);
 
             var cargo = State.MapItems.New<Entity>();

@@ -40,6 +40,8 @@ namespace ScenarioServer.Scenarios.Controller
             if (info == null)
                 return;
 
+        //    ent.Rotation = QuaternionD.FromAxisAngle(Vector3D.UnitZ, 10);
+
             if (info.NextDestination < 0)
                 info.NextDestination = 0;
 
@@ -69,8 +71,8 @@ namespace ScenarioServer.Scenarios.Controller
 
                     ent.Velocity = targetVector * speed;
                 }
-
-                ent.Orientation = QuaternionD.LookAt(targetVector, Vector3D.UnitZ);
+                
+            //    ent.Orientation = QuaternionD.LookAt(targetVector, Vector3D.UnitZ);
             }
             else
             {

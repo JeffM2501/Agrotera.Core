@@ -22,8 +22,10 @@ namespace Entities
         public string VisualGraphics = string.Empty;
 
         public Vector3D Position = Vector3D.Zero;
+        public EulerAnglesD Orientation = EulerAnglesD.Zero;
+
         public Vector3D Velocity = Vector3D.Zero;
-        public QuaternionD Orientation = QuaternionD.Identity;
+        public EulerAnglesD Rotation = EulerAnglesD.Zero;
 
         public object Tag = string.Empty;
         protected IEntityContorller Controller = null;

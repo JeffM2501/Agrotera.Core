@@ -21,7 +21,8 @@ namespace Entities.Classes
 
             public Vector3D LastPosition = Vector3D.Zero;
             public Vector3D LastVelocity = Vector3D.Zero;
-            public QuaternionD LastOrientation = QuaternionD.Identity;
+            public EulerAnglesD LastOrientation = EulerAnglesD.Zero;
+            public EulerAnglesD LastRotation = EulerAnglesD.Zero;
 
             public double LastTimestamp = 0;
             public double LastTrasmitUpdate = double.MinValue;
@@ -31,13 +32,18 @@ namespace Entities.Classes
                 BaseEntity = ent;
             }
 
+            protected double SmallAngle = (Math.PI / 180.0) * 1;
+
             public bool Refresh(double timeStamp)
             {
-                if (Vector3D.DistanceSquared(LastPosition, BaseEntity.Position) > 0.01 || Vector3D.DistanceSquared(LastVelocity, BaseEntity.Velocity) > 0.01)
+                double delta = EulerAnglesD.AngleBetween(LastOrientation,BaseEntity.Orientation);
+
+                if (Math.Acos(delta) > SmallAngle || Vector3D.DistanceSquared(LastPosition, BaseEntity.Position) > 0.01 || Vector3D.DistanceSquared(LastVelocity, BaseEntity.Velocity) > 0.01)
                 {
                     LastPosition = new Vector3D(BaseEntity.Position);
                     LastVelocity = new Vector3D(BaseEntity.Velocity);
-                    LastOrientation = new QuaternionD(BaseEntity.Orientation);
+                    LastOrientation = new EulerAnglesD(BaseEntity.Orientation);
+                    LastRotation = new EulerAnglesD(BaseEntity.Rotation);
                     LastTimestamp = timeStamp;
                     return true;
                 }
@@ -46,15 +52,12 @@ namespace Entities.Classes
 
 			public bool Refresh(SensorEntityUpdate upd)
 			{
-				if(Vector3D.DistanceSquared(LastPosition, upd.Position) > 0.01 || Vector3D.DistanceSquared(LastVelocity, upd.Velocity) > 0.01)
-				{
-					LastPosition = new Vector3D(upd.Position);
-					LastVelocity = new Vector3D(upd.Velocity);
-                    LastOrientation = new QuaternionD(upd.Orientation);
-                    LastTimestamp = Timer.Now;
-					return true;
-				}
-				return false;
+				LastPosition = new Vector3D(upd.Position);
+				LastVelocity = new Vector3D(upd.Velocity);
+                LastOrientation = new EulerAnglesD(upd.Orientation);
+                LastRotation = new EulerAnglesD(upd.Rotation);
+                LastTimestamp = Timer.Now;
+				return true;
 			}
 		}
 

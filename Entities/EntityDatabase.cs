@@ -74,6 +74,7 @@ namespace Entities
             foreach (var entity in Ents.Values)
 			{
 				entity.Position += entity.Velocity * delta;
+                entity.Orientation += entity.Rotation * delta;
 			}
         }
 
