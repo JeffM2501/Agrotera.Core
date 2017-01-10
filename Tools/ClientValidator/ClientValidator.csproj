@@ -90,6 +90,10 @@
       <Project>{dfc56a4a-ed95-41ff-8418-7802f5222fd0}</Project>
       <Name>Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\ScenarioServer\ScenarioServer.csproj">
+      <Project>{CA163AAF-7401-4EA2-9C97-4061885AB28C}</Project>
+      <Name>ScenarioServer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\ShipClient\ShipClient.csproj">
       <Project>{d9828e6e-11ae-4be6-8446-1310b1b6000d}</Project>
       <Name>ShipClient</Name>

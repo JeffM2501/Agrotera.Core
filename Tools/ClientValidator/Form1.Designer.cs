@@ -28,109 +28,147 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.StatusText = new System.Windows.Forms.TextBox();
-            this.ConnectButton = new System.Windows.Forms.Button();
-            this.Map = new System.Windows.Forms.PictureBox();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
-            this.ViewType = new System.Windows.Forms.ComboBox();
-            this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
-            this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Map)).BeginInit();
-            this.SuspendLayout();
-            // 
-            // splitContainer1
-            // 
-            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer1.Name = "splitContainer1";
-            // 
-            // splitContainer1.Panel1
-            // 
-            this.splitContainer1.Panel1.Controls.Add(this.ViewType);
-            this.splitContainer1.Panel1.Controls.Add(this.StatusText);
-            this.splitContainer1.Panel1.Controls.Add(this.ConnectButton);
-            // 
-            // splitContainer1.Panel2
-            // 
-            this.splitContainer1.Panel2.Controls.Add(this.Map);
-            this.splitContainer1.Size = new System.Drawing.Size(824, 494);
-            this.splitContainer1.SplitterDistance = 170;
-            this.splitContainer1.TabIndex = 0;
-            // 
-            // StatusText
-            // 
-            this.StatusText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.StatusText.Location = new System.Drawing.Point(13, 42);
-            this.StatusText.Multiline = true;
-            this.StatusText.Name = "StatusText";
-            this.StatusText.ReadOnly = true;
-            this.StatusText.Size = new System.Drawing.Size(154, 73);
-            this.StatusText.TabIndex = 1;
-            // 
-            // ConnectButton
-            // 
-            this.ConnectButton.Location = new System.Drawing.Point(12, 12);
-            this.ConnectButton.Name = "ConnectButton";
-            this.ConnectButton.Size = new System.Drawing.Size(75, 23);
-            this.ConnectButton.TabIndex = 0;
-            this.ConnectButton.Text = "Connect";
-            this.ConnectButton.UseVisualStyleBackColor = true;
-            this.ConnectButton.Click += new System.EventHandler(this.ConnectButton_Click);
-            // 
-            // Map
-            // 
-            this.Map.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Map.Location = new System.Drawing.Point(0, 0);
-            this.Map.Name = "Map";
-            this.Map.Size = new System.Drawing.Size(650, 494);
-            this.Map.TabIndex = 0;
-            this.Map.TabStop = false;
-            this.Map.Paint += new System.Windows.Forms.PaintEventHandler(this.Map_Paint);
-            // 
-            // timer1
-            // 
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // imageList1
-            // 
-            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
-            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageList1.Images.SetKeyName(0, "SS1.png");
-            // 
-            // ViewType
-            // 
-            this.ViewType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.ViewType.FormattingEnabled = true;
-            this.ViewType.Items.AddRange(new object[] {
+			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+			this.ViewType = new System.Windows.Forms.ComboBox();
+			this.StatusText = new System.Windows.Forms.TextBox();
+			this.ConnectButton = new System.Windows.Forms.Button();
+			this.Map = new System.Windows.Forms.PictureBox();
+			this.timer1 = new System.Windows.Forms.Timer(this.components);
+			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+			this.StartHost = new System.Windows.Forms.Button();
+			this.ZoomIn = new System.Windows.Forms.Button();
+			this.ZoomOut = new System.Windows.Forms.Button();
+			this.splitContainer1.Panel1.SuspendLayout();
+			this.splitContainer1.Panel2.SuspendLayout();
+			this.splitContainer1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.Map)).BeginInit();
+			this.SuspendLayout();
+			// 
+			// splitContainer1
+			// 
+			this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+			this.splitContainer1.Name = "splitContainer1";
+			// 
+			// splitContainer1.Panel1
+			// 
+			this.splitContainer1.Panel1.Controls.Add(this.ZoomOut);
+			this.splitContainer1.Panel1.Controls.Add(this.ZoomIn);
+			this.splitContainer1.Panel1.Controls.Add(this.StartHost);
+			this.splitContainer1.Panel1.Controls.Add(this.ViewType);
+			this.splitContainer1.Panel1.Controls.Add(this.StatusText);
+			this.splitContainer1.Panel1.Controls.Add(this.ConnectButton);
+			// 
+			// splitContainer1.Panel2
+			// 
+			this.splitContainer1.Panel2.Controls.Add(this.Map);
+			this.splitContainer1.Size = new System.Drawing.Size(824, 494);
+			this.splitContainer1.SplitterDistance = 170;
+			this.splitContainer1.TabIndex = 0;
+			// 
+			// ViewType
+			// 
+			this.ViewType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.ViewType.FormattingEnabled = true;
+			this.ViewType.Items.AddRange(new object[] {
             "World (last update)",
             "World (extrapolated)",
             "Ship Centric"});
-            this.ViewType.Location = new System.Drawing.Point(12, 121);
-            this.ViewType.Name = "ViewType";
-            this.ViewType.Size = new System.Drawing.Size(155, 21);
-            this.ViewType.TabIndex = 3;
-            this.ViewType.SelectedIndexChanged += new System.EventHandler(this.ViewType_SelectedIndexChanged);
-            // 
-            // Form1
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(824, 494);
-            this.Controls.Add(this.splitContainer1);
-            this.Name = "Form1";
-            this.Text = "Form1";
-            this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel1.PerformLayout();
-            this.splitContainer1.Panel2.ResumeLayout(false);
-            this.splitContainer1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.Map)).EndInit();
-            this.ResumeLayout(false);
+			this.ViewType.Location = new System.Drawing.Point(12, 121);
+			this.ViewType.Name = "ViewType";
+			this.ViewType.Size = new System.Drawing.Size(155, 21);
+			this.ViewType.TabIndex = 3;
+			this.ViewType.SelectedIndexChanged += new System.EventHandler(this.ViewType_SelectedIndexChanged);
+			// 
+			// StatusText
+			// 
+			this.StatusText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.StatusText.Location = new System.Drawing.Point(13, 42);
+			this.StatusText.Multiline = true;
+			this.StatusText.Name = "StatusText";
+			this.StatusText.ReadOnly = true;
+			this.StatusText.Size = new System.Drawing.Size(154, 73);
+			this.StatusText.TabIndex = 1;
+			// 
+			// ConnectButton
+			// 
+			this.ConnectButton.Location = new System.Drawing.Point(12, 12);
+			this.ConnectButton.Name = "ConnectButton";
+			this.ConnectButton.Size = new System.Drawing.Size(75, 23);
+			this.ConnectButton.TabIndex = 0;
+			this.ConnectButton.Text = "Connect";
+			this.ConnectButton.UseVisualStyleBackColor = true;
+			this.ConnectButton.Click += new System.EventHandler(this.ConnectButton_Click);
+			// 
+			// Map
+			// 
+			this.Map.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.Map.Location = new System.Drawing.Point(0, 0);
+			this.Map.Name = "Map";
+			this.Map.Size = new System.Drawing.Size(650, 494);
+			this.Map.TabIndex = 0;
+			this.Map.TabStop = false;
+			this.Map.Paint += new System.Windows.Forms.PaintEventHandler(this.Map_Paint);
+			// 
+			// timer1
+			// 
+			this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+			// 
+			// imageList1
+			// 
+			this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+			this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+			this.imageList1.Images.SetKeyName(0, "SS1.png");
+			// 
+			// StartHost
+			// 
+			this.StartHost.Location = new System.Drawing.Point(92, 13);
+			this.StartHost.Name = "StartHost";
+			this.StartHost.Size = new System.Drawing.Size(75, 23);
+			this.StartHost.TabIndex = 4;
+			this.StartHost.Text = "Host";
+			this.StartHost.UseVisualStyleBackColor = true;
+			this.StartHost.Click += new System.EventHandler(this.StartHost_Click);
+			// 
+			// ZoomIn
+			// 
+			this.ZoomIn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.ZoomIn.Location = new System.Drawing.Point(12, 459);
+			this.ZoomIn.Name = "ZoomIn";
+			this.ZoomIn.Size = new System.Drawing.Size(31, 23);
+			this.ZoomIn.TabIndex = 5;
+			this.ZoomIn.Text = "+";
+			this.ZoomIn.UseVisualStyleBackColor = true;
+			this.ZoomIn.Click += new System.EventHandler(this.ZoomIn_Click);
+			// 
+			// ZoomOut
+			// 
+			this.ZoomOut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.ZoomOut.Location = new System.Drawing.Point(49, 459);
+			this.ZoomOut.Name = "ZoomOut";
+			this.ZoomOut.Size = new System.Drawing.Size(31, 23);
+			this.ZoomOut.TabIndex = 6;
+			this.ZoomOut.Text = "-";
+			this.ZoomOut.UseVisualStyleBackColor = true;
+			this.ZoomOut.Click += new System.EventHandler(this.ZoomOut_Click);
+			// 
+			// Form1
+			// 
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.ClientSize = new System.Drawing.Size(824, 494);
+			this.Controls.Add(this.splitContainer1);
+			this.Name = "Form1";
+			this.Text = "Form1";
+			this.splitContainer1.Panel1.ResumeLayout(false);
+			this.splitContainer1.Panel1.PerformLayout();
+			this.splitContainer1.Panel2.ResumeLayout(false);
+			this.splitContainer1.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.Map)).EndInit();
+			this.ResumeLayout(false);
 
         }
 
@@ -143,6 +181,9 @@
         private System.Windows.Forms.PictureBox Map;
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.ComboBox ViewType;
-    }
+		private System.Windows.Forms.Button StartHost;
+		private System.Windows.Forms.Button ZoomOut;
+		private System.Windows.Forms.Button ZoomIn;
+	}
 }
 

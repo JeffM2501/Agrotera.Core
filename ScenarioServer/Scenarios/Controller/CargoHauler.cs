@@ -10,7 +10,18 @@ namespace ScenarioServer.Scenarios.Controller
     public class CargoHauler : IEntityContorller
     {
         public List<Entity> Destinations = new List<Entity>();
-        public bool Loop = false;
+
+		protected Random RNG = new Random();
+
+		public enum RepeatTypes
+		{
+			None,
+			Loop,
+			Reverse,
+		}
+        public RepeatTypes Repeat = RepeatTypes.None;
+
+		public double DestinationJitter = 0;
 
         public double MoveAcceleration = 0;
         public double MoveMaxSpeed = 0;
@@ -34,6 +45,12 @@ namespace ScenarioServer.Scenarios.Controller
 
             public int Destination = -1;
             public double TimeWaited = 0;
+
+			public bool Forward = true;
+
+			public Location DestinationOffset = Location.Zero;
+
+			public bool Inited = false;
         }
 
         public int InfoKey { get; protected set; }
@@ -42,6 +59,14 @@ namespace ScenarioServer.Scenarios.Controller
         {
             InfoKey = ent.SetParam("CargoHauler.Data", new CargoHaulerDestinationData());
         }
+
+		Location GetDestinationOffset(int destIndex)
+		{
+			if(DestinationJitter <= 0)
+				return Location.Zero;
+
+			return new Location((RNG.NextDouble() * DestinationJitter * 2) - DestinationJitter, (RNG.NextDouble() * DestinationJitter * 2) - DestinationJitter, 0);
+		}
 
         void IEntityContorller.UpdateEntity(Entity ent)
         {
@@ -55,24 +80,38 @@ namespace ScenarioServer.Scenarios.Controller
             if (info.State == CargoHaulerDestinationData.States.TravelingTo)
             {
                 if (info.Destination < 0)
-                    info.Destination = 0;
+					info.Destination = 0;
 
-                if (info.Destination > Destinations.Count)
+				if (info.Destination > Destinations.Count)
                 {
-                    if (Loop)
-                        info.Destination = 0;
+					if(Repeat == RepeatTypes.Loop && Destinations.Count > 1)
+						info.Destination = 0;
+					else if (Repeat == RepeatTypes.Reverse && Destinations.Count > 1)
+					{
+						info.Forward = false;
+						info.Destination = Destinations.Count - 2;
+					}
                     else
                         return;
                 }
+				if(!info.Inited)
+					info.DestinationOffset = GetDestinationOffset(info.Destination);
 
-                double dist = Location.Distance(ent.Position, Destinations[info.Destination].Position);
+				Location destPos = Destinations[info.Destination].Position + info.DestinationOffset;
+
+				double dist = Location.Distance(ent.Position, destPos);
 
                 if (dist > DestinationArivalRadius)
                 {
-                    Vector3D targetVector =Location.VectorTo(ent.Position, Destinations[info.Destination].Position);
+                    Vector3D targetVector =Location.VectorTo(ent.Position, destPos);
                     targetVector.Normailize();
 
-                    double speed = ent.Velocity.Length();
+					if (!info.Inited)
+						ent.Orientation = Rotation.FromVector3D(targetVector);
+
+					info.Inited = true;
+
+					double speed = ent.Velocity.Length();
 
                     if (speed < MoveMaxSpeed)
                     {
@@ -107,49 +146,56 @@ namespace ScenarioServer.Scenarios.Controller
                     {
                         info.State = CargoHaulerDestinationData.States.Offloading;
                         info.TimeWaited = 0;
-                    }
-                        
-                }
-                    
+                    } 
+                } 
             }
 
             if (info.State == CargoHaulerDestinationData.States.Offloading)
             {
                 if (info.TimeWaited >= DestinationDelay)
-                    info.State = CargoHaulerDestinationData.States.Orienting;
+				{
+					info.State = CargoHaulerDestinationData.States.Orienting;
+
+					info.Destination += info.Forward ? 1 : -1;
+					if(info.Destination >= Destinations.Count || info.Destination < 0)
+					{
+						if(Repeat == RepeatTypes.Loop && Destinations.Count > 1)
+							info.Destination = 0;
+						else if(Repeat == RepeatTypes.Reverse && Destinations.Count > 1)
+						{
+							info.Forward = !info.Forward;
+							if(!info.Forward)
+								info.Destination = Destinations.Count - 2;
+							else
+								info.Destination = 1;
+						}
+						else
+						{
+							info.State = CargoHaulerDestinationData.States.Idle;
+							return;
+						}
+					}
+
+					info.DestinationOffset = GetDestinationOffset(info.Destination);
+				}
                 else
                     info.TimeWaited += Timer.Delta;
             }
 
             if (info.State == CargoHaulerDestinationData.States.Orienting)
             {
-                info.Destination++;
-                if (info.Destination >= Destinations.Count)
-                {
-                    if (Loop)
-                        info.Destination = 0;
-                    else
-                    {
-                        info.State = CargoHaulerDestinationData.States.Idle;
-                        return;
-                    }
-                        
-                }
+				Location destPos = Destinations[info.Destination].Position + info.DestinationOffset;
 
-                Vector3D vecToTarget = Location.VectorTo(ent.Position,Destinations[info.Destination].Position);
+				Vector3D vecToTarget = Location.VectorTo(ent.Position, destPos);
                 Rotation targetRot = Rotation.FromVector3D(vecToTarget);
-                double traverseAngle = Rotation.AngleBetween(targetRot, ent.Orientation);
+				ent.AngularVelocity = Rotation.ShortRotationTo(ent.Orientation, targetRot);
+				ent.AngularVelocity.Clamp(MaxTurnSpeed);
 
-                if (traverseAngle <= (MaxTurnSpeed * Timer.Delta * 2))
+				if (Rotation.AngleBetween(ent.Orientation, targetRot) <= (MaxTurnSpeed * Timer.Delta * 2))
                 {
                     ent.Orientation = targetRot;
                     ent.AngularVelocity = Rotation.Zero;
                     info.State = CargoHaulerDestinationData.States.TravelingTo;
-                    return;
-                }
-                else
-                {
-                    ent.AngularVelocity = Rotation.ShortRotationTo(ent.Orientation, targetRot);
                 }
             }
         }

@@ -84,7 +84,7 @@ namespace Core.Types
         public static Rotation FromVector3D(Vector3D v)
         {
             var nv = Vector3D.Normalize(v);
-            return new Rotation(DegCon * Math.Atan2(nv.X, nv.Y));
+            return new Rotation(DegCon * Math.Atan2(nv.Y, nv.X));
         }
 
         public static Rotation FromLocation(Location v)

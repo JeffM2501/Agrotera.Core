@@ -60,10 +60,13 @@ namespace ScenarioServer.Scenarios
             CargoHauler haulerRoute = new CargoHauler();
             haulerRoute.Destinations.Add(cargo);
             haulerRoute.Destinations.Add(DefaultStation);
-            haulerRoute.Loop = true;
+            haulerRoute.Repeat = CargoHauler.RepeatTypes.Loop;
+			haulerRoute.DestinationJitter = 15;
             haulerRoute.MoveMaxSpeed = 50;
             haulerRoute.MoveAcceleration = 50;
-            haulerRoute.DestinationArivalRadius = 50;
+			haulerRoute.MaxTurnSpeed = 180;
+
+			haulerRoute.DestinationArivalRadius = 50;
             haulerRoute.DestinationDelay = 5;
 
             var cargoOne = AddRandomEntity<Ship>();

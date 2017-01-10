@@ -9,6 +9,10 @@ using System.Windows.Forms;
 
 using ShipClient;
 using Core.Types;
+using ScenarioServer;
+using ScenarioServer.Interfaces;
+using System.IO;
+using System.Reflection;
 
 namespace ClientValidator
 {
@@ -16,7 +20,10 @@ namespace ClientValidator
     {
         ShipConnection Connection = null;
 
-        public class GraphicInfo
+		ScenarioState State = null;
+
+
+		public class GraphicInfo
         {
             public Brush Color = Brushes.Magenta;
             public Image Pic = null;
@@ -107,86 +114,145 @@ namespace ClientValidator
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (Connection != null)
+			if(State != null)
+			{
+				State.Update();
+				Map.Invalidate();
+			}
+
+			if (Connection != null)
                 Connection.Update();
         }
+
+		private void DrawEntityShape(Entities.Entity ent, Graphics g, float x, float y)
+		{
+			float size = 5;
+			Brush b = Brushes.LightYellow;
+			Image pic = null;
+
+			if(MapElementColors.ContainsKey(ent.VisualGraphics))
+			{
+				var d = MapElementColors[ent.VisualGraphics];
+				if(d.Pic == null)
+					b = d.Color;
+				else
+					pic = d.Pic;
+
+				size = d.Size;
+			}
+
+			float halfSize = size * 0.5f;
+
+			RectangleF rect = new RectangleF(x - halfSize, y - halfSize, size, size);
+
+			if(pic != null)
+				g.DrawImage(pic, rect);
+			else
+				g.FillRectangle(b, rect);
+
+			double lineScale = 5.0 * (1.0 / ViewScale);
+			Vector3D orient = ent.Orientation.TransformVec(new Vector3D(lineScale, 0, 0));
+
+			g.DrawLine(Pens.Aqua, x, y, x + (float)orient.X, y + (float)orient.Y);
+		}
+
+		public double ViewScale = 0.5;
 
         private void Map_Paint(object sender, PaintEventArgs e)
         {
             e.Graphics.Clear(Color.Black);
 
-            if (Connection == null)
-                return;
-
-            if (Connection.PlayerShip == null)
+            if (Connection == null && State == null)
                 return;
 
             e.Graphics.TranslateTransform(Map.Width * 0.5f, Map.Height * 0.5f);
 
-            double scale = 0.25;
-
             e.Graphics.DrawLine(Pens.DarkGreen, 0, Map.Height * 0.5f, 0, -Map.Height * 0.5f);
             e.Graphics.DrawLine(Pens.DarkGreen, Map.Width * 0.5f,0, -Map.Width * 0.5f, 0);
 
-            foreach (var i in Connection.PlayerShip.KnownEntities.Values)
-            {
-                float size = 5;
-                Brush b = Brushes.LightYellow;
-                Image pic = null;
+			if (Connection != null && Connection.PlayerShip != null)
+			{
+				foreach(var i in Connection.PlayerShip.KnownEntities.Values)
+				{
 
-                if (MapElementColors.ContainsKey(i.BaseEntity.VisualGraphics))
-                {
-                    var d = MapElementColors[i.BaseEntity.VisualGraphics];
-                    if (d.Pic == null)
-                        b = d.Color;
-                    else
-                        pic = d.Pic;
+					if(ViewType.SelectedIndex == 2)
+					{
+						UserShip.ShipCentricSensorEntity scs = i as UserShip.ShipCentricSensorEntity;
 
-                    size = d.Size;
-                }
+						DrawEntityShape(i.BaseEntity, e.Graphics, (float)(scs.ShipRelativePosition.X * ViewScale), (float)(scs.ShipRelativePosition.Y * ViewScale));
 
-                float halfSize = size * 0.5f;
-
-                float x = 0;
-                float y = 0;
-
-                if (ViewType.SelectedIndex == 2)
-                {
-                    UserShip.ShipCentricSensorEntity scs = i as UserShip.ShipCentricSensorEntity;
-                    x = (float)(scs.ShipRelativePosition.X * scale);
-                    y = (float)(scs.ShipRelativePosition.Y * scale);
-
-//                     rect.X = (float)((i.LastPosition.X - Connection.PlayerShip.Position.X) * scale);
-//                     rect.Y = (float)((i.LastPosition.Y - Connection.PlayerShip.Position.Y) * scale);
-                }
-                else if (ViewType.SelectedIndex == 1)
-                {
-                    x = (float)(i.BaseEntity.Position.X * scale);
-                    y = (float)(i.BaseEntity.Position.Y * scale);
-                }
-                else if (ViewType.SelectedIndex == 0)
-                {
-                    x = (float)(i.LastPosition.X * scale);
-                    y = (float)(i.LastPosition.Y * scale);
-                }
-
-
-                RectangleF rect = new RectangleF(x- halfSize, y - halfSize, size,size);
-
-                if (pic != null)
-                    e.Graphics.DrawImage(pic, rect);
-                else
-                    e.Graphics.FillRectangle(b, rect);
-
-                Vector3D orient = i.BaseEntity.Orientation.TransformVec(new Vector3D(10,0,0));
-
-                e.Graphics.DrawLine(Pens.Aqua, x, y, x + (float)orient.X, y + (float)orient.Y);
-            }
+						//                     rect.X = (float)((i.LastPosition.X - Connection.PlayerShip.Position.X) * scale);
+						//                     rect.Y = (float)((i.LastPosition.Y - Connection.PlayerShip.Position.Y) * scale);
+					}
+					else if(ViewType.SelectedIndex == 1)
+					{
+						DrawEntityShape(i.BaseEntity, e.Graphics, (float)(i.BaseEntity.Position.X * ViewScale), (float)(i.BaseEntity.Position.Y * ViewScale));
+					}
+					else if(ViewType.SelectedIndex == 0)
+					{
+						DrawEntityShape(i.BaseEntity, e.Graphics, (float)(i.LastPosition.X * ViewScale), (float)(i.LastPosition.Y * ViewScale));
+					}
+				}
+			}
+			else if (State != null)
+			{
+				foreach(var ent in State.MapItems.Ents.Values)
+				{
+					DrawEntityShape(ent, e.Graphics, (float)(ent.Position.X * ViewScale), (float)(ent.Position.Y * ViewScale));
+				}
+			}    
         }
 
         private void ViewType_SelectedIndexChanged(object sender, EventArgs e)
         {
             Map.Invalidate();
         }
-    }
+
+		private void StartHost_Click(object sender, EventArgs e)
+		{
+			ScenarioControllerLoader loader = new ScenarioControllerLoader();
+			loader.Scan(Assembly.GetExecutingAssembly());   // aways add ourselves
+
+			var dir = ScenariosDir();
+			if(dir.Exists)
+				LoadScenarios(dir, loader);
+
+			State = new ScenarioState(loader.GetDefaultScenario());
+			State.Startup();
+		}
+
+		static void LoadScenarios(DirectoryInfo dir, ScenarioControllerLoader loader)
+		{
+			foreach(var f in dir.GetFiles("*.dll"))
+				loader.Scan(Assembly.LoadFile(f.FullName));
+
+			foreach(var d in dir.GetDirectories())
+				LoadScenarios(d, loader);
+		}
+
+		static DirectoryInfo ScenariosDir()
+		{
+			return new DirectoryInfo(Path.Combine(GetExeDir().FullName, "scenarios"));
+		}
+
+		static DirectoryInfo GetExeDir()
+		{
+			return new DirectoryInfo(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
+		}
+
+		private void ZoomIn_Click(object sender, EventArgs e)
+		{
+			ViewScale += 0.01;
+			Map.Invalidate();
+		}
+
+		private void ZoomOut_Click(object sender, EventArgs e)
+		{
+			ViewScale -= 0.01;
+			if(ViewScale < 0.001)
+				ViewScale = 0.001;
+
+			Map.Invalidate();
+		}
+	}
 }
