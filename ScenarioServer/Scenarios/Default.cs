@@ -19,7 +19,7 @@ namespace ScenarioServer.Scenarios
         public ScenarioState State = null;
 
         protected Vector3D ZoneSize = new Vector3D(10000, 10000, 10000);
-        protected Random RNG = new Random();
+       
 
         public bool Defaultable
         {
@@ -42,6 +42,7 @@ namespace ScenarioServer.Scenarios
         public void Init(ScenarioState state)
         {
             State = state;
+            ControllerTools.SetBounds(ZoneSize.X, ZoneSize.Y, ZoneSize.Z);
 
             DefaultStation = State.MapItems.New<Entity>();
 			DefaultStation.Position = new Location(0, 0, 0);
@@ -73,21 +74,21 @@ namespace ScenarioServer.Scenarios
             cargoOne.ClassName = "Simple Cargo Hauler";
             cargoOne.Name = "Cargo Transport 1";
             cargoOne.VisualGraphics = "Shuttle";
-            cargoOne.Position = RandomPostionRelativeTo(cargo.Position, 50, 1000);
+            cargoOne.Position = ControllerTools.RandomPostionRelativeTo(cargo.Position, 50, 1000);
             cargoOne.SetController(haulerRoute);
 
             var cargoTwo = AddRandomEntity<Ship>();
             cargoTwo.ClassName = cargoOne.ClassName;
             cargoTwo.Name = "Cargo Transport 2";
             cargoTwo.VisualGraphics = "Shuttle";
-            cargoTwo.Position = RandomPostionRelativeTo(cargo.Position, 50, 1000);
+            cargoTwo.Position = ControllerTools.RandomPostionRelativeTo(cargo.Position, 50, 1000);
             cargoTwo.SetController(haulerRoute);
 
             var cargoThree = AddRandomEntity<Ship>();
             cargoThree.ClassName = cargoOne.ClassName;
             cargoThree.Name = "Cargo Transport 2";
             cargoThree.VisualGraphics = "Shuttle";
-            cargoThree.Position = RandomPostionRelativeTo(DefaultStation.Position, 50, 1000);
+            cargoThree.Position = ControllerTools.RandomPostionRelativeTo(DefaultStation.Position, 50, 1000);
 
             CargoHauler.CargoHaulerDestinationData data = new CargoHauler.CargoHaulerDestinationData();
             data.Destination = 1;
@@ -95,57 +96,6 @@ namespace ScenarioServer.Scenarios
             cargoThree.SetParam(haulerRoute.InfoKey, data); // you go to the station first
             cargoThree.SetController(haulerRoute);
 
-        }
-
-        protected Location RandomPostion()
-        {
-            return new Location(RandomVectorParam() * ZoneSize.X,
-                                RandomVectorParam() * ZoneSize.Y, 0);
-        }
-
-        protected Vector3D RandomVector(double magitude)
-        {
-            return new Vector3D(RandomVectorParam() * magitude,
-                                RandomVectorParam() * magitude,
-                                0);
-        }
-
-        protected Location RandomPostionRelativeTo(Location position, double minDistance, double maxDistance)
-        {
-            return  position +  RandomVector(RandomInRange(minDistance,maxDistance));
-        }
-
-        protected double RandomVectorParam()
-        {
-            return (RNG.NextDouble() - 0.5) * 2.0;
-        }
-
-        protected double RandomInRange( double max)
-        {
-            return (RNG.NextDouble() * max);
-        }
-
-        protected double RandomInRange(double min, double max)
-        {
-            return min + RandomInRange(max - min);
-        }
-
-        protected T AddRandomEntity<T>() where T: Entity, new()
-        {
-            T e = State.NewEntity<T>();
-
-            e.Position = RandomPostion();
-
-            return e;
-        }
-
-        protected T AddRandomEntity<T>( double speed ) where T : Entity, new()
-        {
-            T e = AddRandomEntity<T>();
-
-            e.Velocity = RandomVector(speed);
-
-            return e;
         }
 
         public void Shutdown()
@@ -161,12 +111,30 @@ namespace ScenarioServer.Scenarios
         {
             UserShip ship = State.NewUserShip(playerID);
 
-            ship.Position = RandomPostionRelativeTo(DefaultStation.Position, 500, 800);
+            ship.Position = ControllerTools.RandomPostionRelativeTo(DefaultStation.Position, 500, 800);
             ship.VisualGraphics = "PlayerShip";
 
             ship.UpdateSensorEntity(DefaultStation); // add known locations
 
             return ship;
+        }
+
+        protected T AddRandomEntity<T>() where T : Entity, new()
+        {
+            T e = State.NewEntity<T>();
+
+            e.Position = ControllerTools.RandomPostion();
+
+            return e;
+        }
+
+        protected T AddRandomEntity<T>(double speed) where T : Entity, new()
+        {
+            T e = AddRandomEntity<T>();
+
+            e.Velocity = ControllerTools.RandomVector(speed);
+
+            return e;
         }
     }
 }
