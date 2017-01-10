@@ -44,16 +44,17 @@ namespace ScenarioServer.Scenarios
             State = state;
 
             DefaultStation = State.MapItems.New<Entity>();
-			DefaultStation.Position = new Vector3D(0, 0, 0);
+			DefaultStation.Position = new Location(0, 0, 0);
 
 			DefaultStation.Name = "Default Station";
             DefaultStation.VisualGraphics = "Station";
+            DefaultStation.AngularVelocity = new Rotation(90);
             DefaultStation.SetController(Fixed.Default);
 
             var cargo = State.MapItems.New<Entity>();
             cargo.Name = "Default Cargo Stack";
             cargo.VisualGraphics = "CargoStack";
-			cargo.Position = new Vector3D(800, 0, 0);
+			cargo.Position = new Location(800, 0, 0);
             cargo.SetController(Fixed.Default);
 
             CargoHauler haulerRoute = new CargoHauler();
@@ -84,26 +85,29 @@ namespace ScenarioServer.Scenarios
             cargoThree.Name = "Cargo Transport 2";
             cargoThree.VisualGraphics = "Shuttle";
             cargoThree.Position = RandomPostionRelativeTo(DefaultStation.Position, 50, 1000);
-            cargoThree.SetParam(haulerRoute.AtDestKey, 1); // you go to the station first
+
+            CargoHauler.CargoHaulerDestinationData data = new CargoHauler.CargoHaulerDestinationData();
+            data.Destination = 1;
+
+            cargoThree.SetParam(haulerRoute.InfoKey, data); // you go to the station first
             cargoThree.SetController(haulerRoute);
 
         }
 
-        protected Vector3D RandomPostion()
+        protected Location RandomPostion()
         {
-            return new Vector3D(RandomVectorParam() * ZoneSize.X,
-                                RandomVectorParam() * ZoneSize.Y,
-                                RandomVectorParam() * ZoneSize.Z);
+            return new Location(RandomVectorParam() * ZoneSize.X,
+                                RandomVectorParam() * ZoneSize.Y, 0);
         }
 
         protected Vector3D RandomVector(double magitude)
         {
             return new Vector3D(RandomVectorParam() * magitude,
                                 RandomVectorParam() * magitude,
-                                RandomVectorParam() * magitude);
+                                0);
         }
 
-        protected Vector3D RandomPostionRelativeTo(Vector3D position, double minDistance, double maxDistance)
+        protected Location RandomPostionRelativeTo(Location position, double minDistance, double maxDistance)
         {
             return  position +  RandomVector(RandomInRange(minDistance,maxDistance));
         }

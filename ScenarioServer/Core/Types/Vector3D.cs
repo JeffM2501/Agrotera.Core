@@ -105,6 +105,11 @@ namespace Core.Types
             return v;
         }
 
+        public Vector3D Clone()
+        {
+            return new Vector3D(this);
+        }
+
         public static double Distance(Vector3D p1, Vector3D p2)
         {
             return (p1 - p2).Length();

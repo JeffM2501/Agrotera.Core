@@ -21,9 +21,11 @@ namespace Entities
 
         public string VisualGraphics = string.Empty;
 
-        public Vector3D Position = Vector3D.Zero;
+        public Location Position = Location.Zero;
+        public Rotation Orientation = new Rotation();
+
         public Vector3D Velocity = Vector3D.Zero;
-        public QuaternionD Orientation = QuaternionD.Identity;
+        public Rotation AngularVelocity = new Rotation();
 
         public object Tag = string.Empty;
         protected IEntityContorller Controller = null;
@@ -48,16 +50,16 @@ namespace Entities
                 Controller.UpdateEntity(this);
         }
 
-        protected Dictionary<int, double> Paramaters = new Dictionary<int, double>();
+        protected Dictionary<int, object> Paramaters = new Dictionary<int, object>();
 
-        public int SetParam(string keyName, double val)
+        public int SetParam(string keyName, object val)
         {
             int key = keyName.GetHashCode();
             SetParam(key, val);
             return key;
         }
 
-        public void SetParam(int key, double val)
+        public void SetParam(int key, object val)
         {
             if (Paramaters.ContainsKey(key))
                 Paramaters[key] = val;
@@ -65,14 +67,14 @@ namespace Entities
                 Paramaters.Add(key, val);
         }
 
-        public double GetParam(int key)
+        public object GetParam(int key)
         {
             if (Paramaters.ContainsKey(key))
                 return Paramaters[key];
-            return 0;
+            return null;
         }
 
-        public double GetParam(string keyName)
+        public object GetParam(string keyName)
         {
             return GetParam(keyName.GetHashCode());
         }

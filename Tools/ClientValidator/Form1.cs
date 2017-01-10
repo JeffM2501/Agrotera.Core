@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using ShipClient;
+using Core.Types;
 
 namespace ClientValidator
 {
@@ -129,9 +130,6 @@ namespace ClientValidator
 
             foreach (var i in Connection.PlayerShip.KnownEntities.Values)
             {
-                RectangleF rect = new RectangleF();
-
-
                 float size = 5;
                 Brush b = Brushes.LightYellow;
                 Image pic = null;
@@ -147,37 +145,42 @@ namespace ClientValidator
                     size = d.Size;
                 }
 
+                float halfSize = size * 0.5f;
+
+                float x = 0;
+                float y = 0;
+
                 if (ViewType.SelectedIndex == 2)
                 {
                     UserShip.ShipCentricSensorEntity scs = i as UserShip.ShipCentricSensorEntity;
-                    rect.X = (float)(scs.ShipRelativePosition.X * scale);
-                    rect.Y = (float)(scs.ShipRelativePosition.Y * scale);
+                    x = (float)(scs.ShipRelativePosition.X * scale);
+                    y = (float)(scs.ShipRelativePosition.Y * scale);
 
 //                     rect.X = (float)((i.LastPosition.X - Connection.PlayerShip.Position.X) * scale);
 //                     rect.Y = (float)((i.LastPosition.Y - Connection.PlayerShip.Position.Y) * scale);
                 }
                 else if (ViewType.SelectedIndex == 1)
                 {
-                    rect.X = (float)(i.BaseEntity.Position.X * scale);
-                    rect.Y = (float)(i.BaseEntity.Position.Y * scale);
+                    x = (float)(i.BaseEntity.Position.X * scale);
+                    y = (float)(i.BaseEntity.Position.Y * scale);
                 }
                 else if (ViewType.SelectedIndex == 0)
                 {
-                    rect.X = (float)(i.LastPosition.X * scale);
-                    rect.Y = (float)(i.LastPosition.Y * scale);
+                    x = (float)(i.LastPosition.X * scale);
+                    y = (float)(i.LastPosition.Y * scale);
                 }
 
 
-                rect.X -= size;
-                rect.Y -= size;
-
-                rect.Width = size;
-                rect.Height = size;
+                RectangleF rect = new RectangleF(x- halfSize, y - halfSize, size,size);
 
                 if (pic != null)
                     e.Graphics.DrawImage(pic, rect);
                 else
                     e.Graphics.FillRectangle(b, rect);
+
+                Vector3D orient = i.BaseEntity.Orientation.TransformVec(new Vector3D(10,0,0));
+
+                e.Graphics.DrawLine(Pens.Aqua, x, y, x + (float)orient.X, y + (float)orient.Y);
             }
         }
 

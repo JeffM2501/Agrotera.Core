@@ -43,14 +43,14 @@ namespace Entities
             return null;
         }
 
-        public List<Entity> GetInSphere(Vector3D center, double radius)
+        public List<Entity> GetInSphere(Location center, double radius)
         {
             List<Entity> inRad = new List<Entity>();
 
             double rad2 = radius * radius;
             foreach(var e in Ents.Values)
             {
-                if (Vector3D.DistanceSquared(center, e.Position) <= rad2)
+                if (Location.DistanceSquared(center, e.Position) <= rad2)
                     inRad.Add(e);
             }
 
@@ -74,6 +74,7 @@ namespace Entities
             foreach (var entity in Ents.Values)
 			{
 				entity.Position += entity.Velocity * delta;
+                entity.Orientation += entity.AngularVelocity * delta;
 			}
         }
 

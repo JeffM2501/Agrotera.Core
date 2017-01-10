@@ -19,9 +19,10 @@ namespace Entities.Classes
 
             public Entity BaseEntity = null;
 
-            public Vector3D LastPosition = Vector3D.Zero;
+            public Location LastPosition = Location.Zero;
             public Vector3D LastVelocity = Vector3D.Zero;
-            public QuaternionD LastOrientation = QuaternionD.Identity;
+            public Rotation LastOrientation = Rotation.Zero;
+            public Rotation LastAngularVelocity = Rotation.Zero;
 
             public double LastTimestamp = 0;
             public double LastTrasmitUpdate = double.MinValue;
@@ -31,13 +32,18 @@ namespace Entities.Classes
                 BaseEntity = ent;
             }
 
+            protected double SmallAngle = (Math.PI / 180.0) * 1;
+
             public bool Refresh(double timeStamp)
             {
-                if (Vector3D.DistanceSquared(LastPosition, BaseEntity.Position) > 0.01 || Vector3D.DistanceSquared(LastVelocity, BaseEntity.Velocity) > 0.01)
+                double delta = Rotation.AngleBetween(LastOrientation,BaseEntity.Orientation);
+
+                if (Math.Acos(delta) > SmallAngle || Location.DistanceSquared(LastPosition, BaseEntity.Position) > 0.01 || Vector3D.DistanceSquared(LastVelocity, BaseEntity.Velocity) > 0.01)
                 {
-                    LastPosition = new Vector3D(BaseEntity.Position);
-                    LastVelocity = new Vector3D(BaseEntity.Velocity);
-                    LastOrientation = new QuaternionD(BaseEntity.Orientation);
+                    LastPosition = BaseEntity.Position.Clone();
+                    LastVelocity = BaseEntity.Velocity.Clone();
+                    LastOrientation = BaseEntity.Orientation.Clone();
+                    LastAngularVelocity = BaseEntity.AngularVelocity.Clone();
                     LastTimestamp = timeStamp;
                     return true;
                 }
@@ -46,15 +52,12 @@ namespace Entities.Classes
 
 			public bool Refresh(SensorEntityUpdate upd)
 			{
-				if(Vector3D.DistanceSquared(LastPosition, upd.Position) > 0.01 || Vector3D.DistanceSquared(LastVelocity, upd.Velocity) > 0.01)
-				{
-					LastPosition = new Vector3D(upd.Position);
-					LastVelocity = new Vector3D(upd.Velocity);
-                    LastOrientation = new QuaternionD(upd.Orientation);
-                    LastTimestamp = Timer.Now;
-					return true;
-				}
-				return false;
+				LastPosition = upd.Position.Clone();
+				LastVelocity = upd.Velocity.Clone();
+                LastOrientation = upd.Orientation.Clone();
+                LastAngularVelocity = upd.Rotation.Clone();
+                LastTimestamp = Timer.Now;
+				return true;
 			}
 		}
 
@@ -83,7 +86,7 @@ namespace Entities.Classes
                     SensorEntityUpdated.Invoke(this, KnownEntities[ent.ID]);
             }
 
-			if (Vector3D.Distance(ent.Position,Position) < SensorRadius())
+			if (Location.Distance(ent.Position,Position) < SensorRadius())
 			{
 				// detailed sensor info
 				

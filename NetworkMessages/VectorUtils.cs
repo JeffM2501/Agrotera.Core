@@ -15,7 +15,12 @@ namespace NetworkMessages
 			return new Vector3D(msg.ReadDouble(), msg.ReadDouble(), msg.ReadDouble());
 		}
 
-		public static Vector2D ReadVector2D(this NetIncomingMessage msg)
+        public static Location ReadLocation(this NetIncomingMessage msg)
+        {
+            return new Location(msg.ReadDouble(), msg.ReadDouble(), msg.ReadDouble());
+        }
+
+        public static Vector2D ReadVector2D(this NetIncomingMessage msg)
 		{
 			return new Vector2D(msg.ReadDouble(), msg.ReadDouble());
 		}
@@ -25,6 +30,16 @@ namespace NetworkMessages
             return new QuaternionD(msg.ReadDouble(), msg.ReadDouble(), msg.ReadDouble(), msg.ReadDouble());
         }
 
+        public static EulerAnglesD ReadEulerAnglesD(this NetIncomingMessage msg)
+        {
+            return new EulerAnglesD(msg.ReadDouble(), msg.ReadDouble(), msg.ReadDouble());
+        }
+
+        public static Rotation ReadRotation(this NetIncomingMessage msg)
+        {
+            return new Rotation(msg.ReadDouble());
+        }
+
         public static void Write(this NetOutgoingMessage msg, Vector3D vec)
 		{
 			msg.Write(vec.X);
@@ -32,7 +47,14 @@ namespace NetworkMessages
 			msg.Write(vec.Z);
 		}
 
-		public static void Write(this NetOutgoingMessage msg, Vector2D vec)
+        public static void Write(this NetOutgoingMessage msg, Location vec)
+        {
+            msg.Write(vec.X);
+            msg.Write(vec.Y);
+            msg.Write(vec.Z);
+        }
+
+        public static void Write(this NetOutgoingMessage msg, Vector2D vec)
 		{
 			msg.Write(vec.X);
 			msg.Write(vec.Y);
@@ -42,6 +64,18 @@ namespace NetworkMessages
         {
             msg.Write(q.XYZ);
             msg.Write(q.W);
+        }
+
+        public static void Write(this NetOutgoingMessage msg, EulerAnglesD q)
+        {
+            msg.Write(q.Pitch);
+            msg.Write(q.Roll);
+            msg.Write(q.Yaw);
+        }
+
+        public static void Write(this NetOutgoingMessage msg, Rotation q)
+        {
+            msg.Write(q.Angle);
         }
     }
 }

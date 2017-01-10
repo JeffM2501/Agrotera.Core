@@ -103,7 +103,7 @@ namespace ScenarioServer.Classes
 			SetCourse(msg.Velocity,msg.Orientation);
         }
 
-        public void SetCourse(Vector3D newHeading, QuaternionD orientation)
+        public void SetCourse(Vector3D newHeading, Rotation orientation)
         {
             Velocity = newHeading;
 
