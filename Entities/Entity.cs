@@ -21,11 +21,11 @@ namespace Entities
 
         public string VisualGraphics = string.Empty;
 
-        public Vector3D Position = Vector3D.Zero;
-        public EulerAnglesD Orientation = EulerAnglesD.Zero;
+        public Location Position = Location.Zero;
+        public Rotation Orientation = new Rotation();
 
         public Vector3D Velocity = Vector3D.Zero;
-        public EulerAnglesD Rotation = EulerAnglesD.Zero;
+        public Rotation AngularVelocity = new Rotation();
 
         public object Tag = string.Empty;
         protected IEntityContorller Controller = null;

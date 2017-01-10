@@ -13,7 +13,10 @@ namespace Core.Types
 
 		public Vector3F() { }
 		public Vector3F(float x, float y, float z) { X = x; Y = y; Z = z; }
-		public Vector3F(Vector2D v) { X = (float)v.X; Y = (float)v.Y; }
+
+        public Vector3F(double x, double y, double z) { X = (float)x; Y = (float)y; Z = (float)z; }
+
+        public Vector3F(Vector2D v) { X = (float)v.X; Y = (float)v.Y; }
 		public Vector3F(Vector3D v) { X = (float)v.X; Y = (float)v.Y; Z = (float)v.Z; }
 
 		public Vector3F(Vector3F v) { X = v.X; Y = v.Y; Z = v.Z; }

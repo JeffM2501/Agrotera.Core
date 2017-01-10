@@ -13,7 +13,7 @@ namespace ShipClient
 {
 	public class UserShip : Entities.Classes.Ship
 	{
-		protected Vector3D LastUpdatePosition = Vector3D.Zero;
+		protected Location LastUpdatePosition = Location.Zero;
 		protected Vector3D LastUpdateVelocity = Vector3D.Zero;
 		public double LastPositionUpdate = double.MinValue;
 
@@ -67,14 +67,14 @@ namespace ShipClient
                 item.BaseEntity.Position = item.LastPosition + (item.LastVelocity * delta);
 				item.BaseEntity.Velocity = item.LastVelocity;
 
-                item.BaseEntity.Orientation = item.LastOrientation + (item.LastRotation * delta);
+                item.BaseEntity.Orientation = item.LastOrientation + (item.LastAngularVelocity * delta);
 
 				ShipCentricSensorEntity ent = item as ShipCentricSensorEntity;
 				if(ent == null)
 					continue;
 
 				// for 32 bit rendering
-				ent.ShipRelativePosition = Vector3F.FromRelativeDobules(ent.BaseEntity.Position, Position);
+				ent.ShipRelativePosition = Location.FromRelativeDobules(ent.BaseEntity.Position, Position);
 				ent.ShipRelativeVelocity = Vector3F.FromRelativeDobules(ent.BaseEntity.Velocity, Velocity);
 
                 ent.Visible = ent.ShipRelativePosition.LengthSquared() <= visSquared;
@@ -110,8 +110,8 @@ namespace ShipClient
 			if(sce == null)
 				return;
 
-			sce.ShipRelativePosition = Vector3F.FromRelativeDobules(sce.BaseEntity.Position, Position);
-			sce.ShipRelativeVelocity = new Vector3F(sce.BaseEntity.Velocity);
+			sce.ShipRelativePosition = Location.FromRelativeDobules(sce.BaseEntity.Position, Position);
+			sce.ShipRelativeVelocity = new Vector3F(sce.BaseEntity.Velocity.X, sce.BaseEntity.Velocity.Y, sce.BaseEntity.Velocity.Z);
 		}
 
 		protected override KnownEntity NewSensorEnity(Entity ent)
@@ -131,7 +131,7 @@ namespace ShipClient
 			Velocity = LastUpdateVelocity;
 		}
 
-        public void SetCourse(Vector3D velocity, EulerAnglesD orientation)
+        public void SetCourse(Vector3D velocity, Rotation orientation)
         {
 			SetShipCourse sc = new SetShipCourse();
 			sc.Velocity = velocity;

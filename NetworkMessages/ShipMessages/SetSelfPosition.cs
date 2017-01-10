@@ -10,9 +10,9 @@ namespace NetworkMessages.ShipMessages
 {
 	public class SetSelfPosition : ShipOutboundMessage
 	{
-		public Vector3D Position = Vector3D.Zero;
+		public Location Position = Location.Zero;
 		public Vector3D Velocity = Vector3D.Zero;
-		public EulerAnglesD Orientation = EulerAnglesD.Zero;
+		public Rotation Orientation = Rotation.Zero;
 		public double TimeStamp = double.MinValue;
 
 		public SetSelfPosition() : base(MessageCodes.SetSelfPosition)
@@ -32,9 +32,9 @@ namespace NetworkMessages.ShipMessages
 		public static SetSelfPosition Unpack(NetIncomingMessage msg)
 		{
 			SetSelfPosition p = new SetSelfPosition();
-			p.Position = msg.ReadVector3D();
+			p.Position = msg.ReadLocation();
 			p.Velocity = msg.ReadVector3D();
-			p.Orientation = msg.ReadEulerAnglesD();
+			p.Orientation = msg.ReadRotation();
 			p.TimeStamp = msg.ReadDouble();
 			return p;
 		}

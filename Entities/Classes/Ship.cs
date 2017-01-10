@@ -19,10 +19,10 @@ namespace Entities.Classes
 
             public Entity BaseEntity = null;
 
-            public Vector3D LastPosition = Vector3D.Zero;
+            public Location LastPosition = Location.Zero;
             public Vector3D LastVelocity = Vector3D.Zero;
-            public EulerAnglesD LastOrientation = EulerAnglesD.Zero;
-            public EulerAnglesD LastRotation = EulerAnglesD.Zero;
+            public Rotation LastOrientation = Rotation.Zero;
+            public Rotation LastAngularVelocity = Rotation.Zero;
 
             public double LastTimestamp = 0;
             public double LastTrasmitUpdate = double.MinValue;
@@ -36,14 +36,14 @@ namespace Entities.Classes
 
             public bool Refresh(double timeStamp)
             {
-                double delta = EulerAnglesD.AngleBetween(LastOrientation,BaseEntity.Orientation);
+                double delta = Rotation.AngleBetween(LastOrientation,BaseEntity.Orientation);
 
-                if (Math.Acos(delta) > SmallAngle || Vector3D.DistanceSquared(LastPosition, BaseEntity.Position) > 0.01 || Vector3D.DistanceSquared(LastVelocity, BaseEntity.Velocity) > 0.01)
+                if (Math.Acos(delta) > SmallAngle || Location.DistanceSquared(LastPosition, BaseEntity.Position) > 0.01 || Vector3D.DistanceSquared(LastVelocity, BaseEntity.Velocity) > 0.01)
                 {
-                    LastPosition = new Vector3D(BaseEntity.Position);
-                    LastVelocity = new Vector3D(BaseEntity.Velocity);
-                    LastOrientation = new EulerAnglesD(BaseEntity.Orientation);
-                    LastRotation = new EulerAnglesD(BaseEntity.Rotation);
+                    LastPosition = BaseEntity.Position.Clone();
+                    LastVelocity = BaseEntity.Velocity.Clone();
+                    LastOrientation = BaseEntity.Orientation.Clone();
+                    LastAngularVelocity = BaseEntity.AngularVelocity.Clone();
                     LastTimestamp = timeStamp;
                     return true;
                 }
@@ -52,10 +52,10 @@ namespace Entities.Classes
 
 			public bool Refresh(SensorEntityUpdate upd)
 			{
-				LastPosition = new Vector3D(upd.Position);
-				LastVelocity = new Vector3D(upd.Velocity);
-                LastOrientation = new EulerAnglesD(upd.Orientation);
-                LastRotation = new EulerAnglesD(upd.Rotation);
+				LastPosition = upd.Position.Clone();
+				LastVelocity = upd.Velocity.Clone();
+                LastOrientation = upd.Orientation.Clone();
+                LastAngularVelocity = upd.Rotation.Clone();
                 LastTimestamp = Timer.Now;
 				return true;
 			}
@@ -86,7 +86,7 @@ namespace Entities.Classes
                     SensorEntityUpdated.Invoke(this, KnownEntities[ent.ID]);
             }
 
-			if (Vector3D.Distance(ent.Position,Position) < SensorRadius())
+			if (Location.Distance(ent.Position,Position) < SensorRadius())
 			{
 				// detailed sensor info
 				

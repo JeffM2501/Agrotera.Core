@@ -10,8 +10,8 @@ namespace NetworkMessages.ShipMessages
 {
     public class SetShipCourse : ShipOutboundMessage
     {
-        public Vector3D Velocity = Vector3D.UnitX;
-        public EulerAnglesD Orientation = EulerAnglesD.Zero;
+        public Vector3D Velocity = Vector3D.Zero;
+        public Rotation Orientation = Rotation.Zero;
 
         public SetShipCourse() : base(MessageCodes.SetCourse)
 		{
@@ -29,7 +29,7 @@ namespace NetworkMessages.ShipMessages
         {
             SetShipCourse p = new SetShipCourse();
             p.Velocity = msg.ReadVector3D();
-            p.Orientation = msg.ReadEulerAnglesD();
+            p.Orientation = msg.ReadRotation();
 
             return p;
         }

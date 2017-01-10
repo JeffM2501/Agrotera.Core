@@ -29,10 +29,10 @@ namespace NetworkMessages.ShipMessages
             SensorEntityDetails p = new SensorEntityDetails();
             p.ID = msg.ReadInt32();
 
-            p.Position = msg.ReadVector3D();
+            p.Position = msg.ReadLocation();
             p.Velocity = msg.ReadVector3D();
-			p.Orientation = msg.ReadEulerAnglesD();
-            p.Rotation = msg.ReadEulerAnglesD();
+			p.Orientation = msg.ReadRotation();
+            p.Rotation = msg.ReadRotation();
             p.TimeStamp = msg.ReadDouble();
             p.Name = msg.ReadString();
             p.VisualGraphics = msg.ReadString();
