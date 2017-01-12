@@ -128,7 +128,7 @@ namespace Core.Types
             double delta = to.Angle - from.Angle;
             if (Math.Abs(delta) > 180.0 + AngularTolerance * DegCon)
                 result -= RoundTo(delta, 360.0);
-            return new Rotation(result);
+            return new Rotation(result - from.Angle);
         }
 
         public static readonly Rotation Zero = new Rotation(0);

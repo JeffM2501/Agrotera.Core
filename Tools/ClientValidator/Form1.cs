@@ -124,8 +124,21 @@ namespace ClientValidator
                 Connection.Update();
         }
 
+		private void AddEntityDetails(Entities.Entity ent)
+		{
+			if(UpdateCount != 10)
+				return;
+
+			var item = ElementList.Items.Add(ent.ID.ToString());
+			item.SubItems.Add(ent.Name);
+			item.SubItems.Add(ent.Orientation.Angle.ToString());
+			item.SubItems.Add(ent.AngularVelocity.Angle.ToString());
+		}
+
 		private void DrawEntityShape(Entities.Entity ent, Graphics g, float x, float y)
 		{
+			AddEntityDetails(ent);
+
 			float size = 5;
 			Brush b = Brushes.LightYellow;
 			Image pic = null;
@@ -158,6 +171,8 @@ namespace ClientValidator
 
 		public double ViewScale = 0.5;
 
+		int UpdateCount = 0;
+
         private void Map_Paint(object sender, PaintEventArgs e)
         {
             e.Graphics.Clear(Color.Black);
@@ -165,7 +180,11 @@ namespace ClientValidator
             if (Connection == null && State == null)
                 return;
 
-            e.Graphics.TranslateTransform(Map.Width * 0.5f, Map.Height * 0.5f);
+			UpdateCount++;
+			if (UpdateCount == 10)
+				ElementList.Items.Clear();
+
+			e.Graphics.TranslateTransform(Map.Width * 0.5f, Map.Height * 0.5f);
 
             e.Graphics.DrawLine(Pens.DarkGreen, 0, Map.Height * 0.5f, 0, -Map.Height * 0.5f);
             e.Graphics.DrawLine(Pens.DarkGreen, Map.Width * 0.5f,0, -Map.Width * 0.5f, 0);
@@ -200,8 +219,12 @@ namespace ClientValidator
 				{
 					DrawEntityShape(ent, e.Graphics, (float)(ent.Position.X * ViewScale), (float)(ent.Position.Y * ViewScale));
 				}
-			}    
-        }
+			}
+
+			if(UpdateCount == 10)
+				UpdateCount = 0;
+
+		}
 
         private void ViewType_SelectedIndexChanged(object sender, EventArgs e)
         {

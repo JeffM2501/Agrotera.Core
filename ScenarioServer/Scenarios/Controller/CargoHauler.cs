@@ -188,10 +188,19 @@ namespace ScenarioServer.Scenarios.Controller
 
 				Vector3D vecToTarget = Location.VectorTo(ent.Position, destPos);
                 Rotation targetRot = Rotation.FromVector3D(vecToTarget);
-				ent.AngularVelocity = Rotation.ShortRotationTo(ent.Orientation, targetRot);
+
+				ent.Orientation.Normailzie();
+
+				double delta = targetRot.Angle - ent.Orientation.Angle;
+				if(delta > 180)
+					delta = 360 - delta;
+				if(delta < -180)
+					delta = 360 + delta;
+
+				ent.AngularVelocity.Angle = delta;
 				ent.AngularVelocity.Clamp(MaxTurnSpeed);
 
-				if (Rotation.AngleBetween(ent.Orientation, targetRot) <= (MaxTurnSpeed * Timer.Delta * 2))
+				if (Math.Abs(delta) <= (MaxTurnSpeed * Timer.Delta * 2))
                 {
                     ent.Orientation = targetRot;
                     ent.AngularVelocity = Rotation.Zero;
