@@ -11,6 +11,7 @@ using ScenarioServer.Interfaces;
 using Core.Types;
 using ScenarioServer.Scenarios.Controller;
 using ScenarioServer.Classes;
+using ScenarioServer.Classes.Templates;
 
 namespace ScenarioServer.Scenarios
 {
@@ -19,7 +20,19 @@ namespace ScenarioServer.Scenarios
         public ScenarioState State = null;
 
         protected Vector3D ZoneSize = new Vector3D(10000, 10000, 10000);
-       
+
+        protected ShipTemplate CargoShipTemplate = null;
+
+        public Default()
+        {
+            CargoShipTemplate = new ShipTemplate();
+            CargoShipTemplate.MaxAcceleration = 50;
+            CargoShipTemplate.MaxSpeed = 100;
+            CargoShipTemplate.MaxTurn = 45;
+            CargoShipTemplate.PerformanceRand = 0.75;
+            CargoShipTemplate.DefaultGraphics = "Shuttle";
+            CargoShipTemplate.ClassName = "Simple Cargo Hauler"; 
+        }
 
         public bool Defaultable
         {
@@ -44,58 +57,31 @@ namespace ScenarioServer.Scenarios
             State = state;
             ControllerTools.SetBounds(ZoneSize.X, ZoneSize.Y, ZoneSize.Z);
 
-            DefaultStation = State.MapItems.New<Entity>();
-			DefaultStation.Position = new Location(0, 0, 0);
-
+            DefaultStation = AddEntity<Entity>(new Location(0, 0, 0));
 			DefaultStation.Name = "Default Station";
             DefaultStation.VisualGraphics = "Station";
             DefaultStation.AngularVelocity = new Rotation(90);
             DefaultStation.SetController(Fixed.Default);
 
-            var cargo = State.MapItems.New<Entity>();
+            var cargo = AddEntity<Entity>(new Location(800, 0, 0));
             cargo.Name = "Default Cargo Stack";
             cargo.VisualGraphics = "CargoStack";
-			cargo.Position = new Location(800, 0, 0);
-            cargo.SetController(Fixed.Default);
+			cargo.SetController(Fixed.Default);
 
             CargoHauler haulerRoute = new CargoHauler();
-            haulerRoute.Destinations.Add(cargo);
-            haulerRoute.Destinations.Add(DefaultStation);
-            haulerRoute.Repeat = CargoHauler.RepeatTypes.Loop;
-			haulerRoute.DestinationJitter = 15;
-            haulerRoute.MoveMaxSpeed = 50;
-            haulerRoute.MoveAcceleration = 50;
-			haulerRoute.MaxTurnSpeed = 180;
 
-			haulerRoute.DestinationArivalRadius = 50;
-            haulerRoute.DestinationDelay = 5;
+            haulerRoute.AddDesitnation(DefaultStation, 2, 25, 25,new Vector3D(0,100,0));
+            haulerRoute.AddDesitnation(DefaultStation, 0, 25, 25, new Vector3D(400, 200, 0));
+            haulerRoute.AddDesitnation(cargo,5,50,25);
+            haulerRoute.AddDesitnation(DefaultStation, 0, 25, 25, new Vector3D(400, -200, 0));
+            haulerRoute.AddDesitnation(DefaultStation,2,25,25, new Vector3D(0, -100, 0));
 
-            var cargoOne = AddRandomEntity<Ship>();
-            cargoOne.ClassName = "Simple Cargo Hauler";
-            cargoOne.Name = "Cargo Transport 1";
-            cargoOne.VisualGraphics = "Shuttle";
-            cargoOne.Position = ControllerTools.RandomPostionRelativeTo(cargo.Position, 50, 1000);
-            cargoOne.SetController(haulerRoute);
+            haulerRoute.Repeat = CargoHauler.RepeatTypes.Reverse;
+            haulerRoute.RadndomInitalDestination = true;
 
-            var cargoTwo = AddRandomEntity<Ship>();
-            cargoTwo.ClassName = cargoOne.ClassName;
-            cargoTwo.Name = "Cargo Transport 2";
-            cargoTwo.VisualGraphics = "Shuttle";
-            cargoTwo.Position = ControllerTools.RandomPostionRelativeTo(cargo.Position, 50, 1000);
-            cargoTwo.SetController(haulerRoute);
-
-            var cargoThree = AddRandomEntity<Ship>();
-            cargoThree.ClassName = cargoOne.ClassName;
-            cargoThree.Name = "Cargo Transport 2";
-            cargoThree.VisualGraphics = "Shuttle";
-            cargoThree.Position = ControllerTools.RandomPostionRelativeTo(DefaultStation.Position, 50, 1000);
-
-            CargoHauler.CargoHaulerDestinationData data = new CargoHauler.CargoHaulerDestinationData();
-            data.Destination = 1;
-
-            cargoThree.SetParam(haulerRoute.InfoKey, data); // you go to the station first
-            cargoThree.SetController(haulerRoute);
-
+            CargoShipTemplate.SetupShip(AddEntity<Ship>(ControllerTools.RandomPostionRelativeTo(cargo.Position, 50, 500)), "Cargo Transport 1").SetController(haulerRoute);
+            CargoShipTemplate.SetupShip(AddEntity<Ship>(ControllerTools.RandomPostionRelativeTo(cargo.Position, 100, 500)), "Cargo Transport 2").SetController(haulerRoute);
+            CargoShipTemplate.SetupShip(AddEntity<Ship>(ControllerTools.RandomPostionRelativeTo(DefaultStation.Position, 300, 1000)), "Cargo Transport 3").SetController(haulerRoute);
         }
 
         public void Shutdown()
@@ -121,9 +107,14 @@ namespace ScenarioServer.Scenarios
 
         protected T AddRandomEntity<T>() where T : Entity, new()
         {
+            return AddEntity<T>(ControllerTools.RandomPostion());
+        }
+
+        protected T AddEntity<T>(Location pos) where T : Entity, new()
+        {
             T e = State.NewEntity<T>();
 
-            e.Position = ControllerTools.RandomPostion();
+            e.Position = pos;
 
             return e;
         }

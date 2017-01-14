@@ -105,7 +105,13 @@ namespace Core.Types
 
         private static double NormAngle(double angle)
         {
-            return angle - Math.Floor(angle / 360.0) * 360.0;
+            //    return angle - Math.Floor(angle / 360.0) * 360.0;
+
+            while (angle > 180)
+                angle -= 360;
+            while (angle < -180)
+                angle += 360;
+            return angle;
         }
 
         public void Normailzie()
@@ -120,15 +126,8 @@ namespace Core.Types
 
         public static Rotation ShortRotationTo(Rotation from, Rotation to)
         {
-            from.Normailzie();
-            to.Normailzie();
-
-            double result = to.Angle;
-
-            double delta = to.Angle - from.Angle;
-            if (Math.Abs(delta) > 180.0 + AngularTolerance * DegCon)
-                result -= RoundTo(delta, 360.0);
-            return new Rotation(result - from.Angle);
+            double diff = (to.Angle - from.Angle + 180) % 360 - 180;
+            return new Rotation(diff < -180 ? diff + 360 : diff);
         }
 
         public static readonly Rotation Zero = new Rotation(0);

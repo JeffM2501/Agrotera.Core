@@ -13,6 +13,10 @@ namespace Entities.Classes
     {
         public string ClassName = string.Empty;
 
+        public double MoveAcceleration = 5;
+        public double MoveMaxSpeed = 25;
+        public double MaxTurnSpeed = 45;
+
         public class KnownEntity : EventArgs
         {
 			public object Tag = null;

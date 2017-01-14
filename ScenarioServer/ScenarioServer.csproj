@@ -53,6 +53,7 @@
     <Compile Include="Scenarios\Controller\Fixed.cs" />
     <Compile Include="Scenarios\Default.cs" />
     <Compile Include="ShipListener.cs" />
+    <Compile Include="Classes\Templates\ShipTemplate.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
