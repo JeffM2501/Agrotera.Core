@@ -204,5 +204,10 @@ namespace Entities.Classes
 		{
 			return 5000;
 		}
+
+		public virtual double CurrentSpeed()
+		{
+			return Velocity.Length();
+		}
 	}
 }

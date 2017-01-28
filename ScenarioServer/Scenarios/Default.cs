@@ -71,9 +71,9 @@ namespace ScenarioServer.Scenarios
             CargoHauler haulerRoute = new CargoHauler();
 
             haulerRoute.AddDesitnation(DefaultStation, 2, 25, 25,new Vector3D(0,100,0));
-            haulerRoute.AddDesitnation(DefaultStation, 0, 25, 25, new Vector3D(400, 200, 0));
+           // haulerRoute.AddDesitnation(DefaultStation, 0, 25, 25, new Vector3D(400, 200, 0));
             haulerRoute.AddDesitnation(cargo,5,50,25);
-            haulerRoute.AddDesitnation(DefaultStation, 0, 25, 25, new Vector3D(400, -200, 0));
+         //   haulerRoute.AddDesitnation(DefaultStation, 0, 25, 25, new Vector3D(400, -200, 0));
             haulerRoute.AddDesitnation(DefaultStation,2,25,25, new Vector3D(0, -100, 0));
 
             haulerRoute.Repeat = CargoHauler.RepeatTypes.Reverse;

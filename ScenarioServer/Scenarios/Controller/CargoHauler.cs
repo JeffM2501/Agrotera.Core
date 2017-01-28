@@ -99,6 +99,7 @@ namespace ScenarioServer.Scenarios.Controller
 
             info.Runs++;
             info.State = CargoHaulerDestinationData.States.Offloading;
+			info.Destination = e.Tag as DestinationInfo;
             info.TimeWaited = 0;
             ship.NaviComp.AllStop();
         }
@@ -111,6 +112,7 @@ namespace ScenarioServer.Scenarios.Controller
                 return;
 
             info.State = CargoHaulerDestinationData.States.Offloading;
+			info.Destination = e.Tag as DestinationInfo;
             info.TimeWaited = 0;
             ship.NaviComp.AllStop();
         }
@@ -158,7 +160,7 @@ namespace ScenarioServer.Scenarios.Controller
 			return dest.TargetEnt.Position + dest.Offset +  new Location((RNG.NextDouble() * dest.Jitter * 2) - dest.Jitter, (RNG.NextDouble() * dest.Jitter * 2) - dest.Jitter, 0);
 		}
 
-        public static bool UseCourses = false;
+        public static bool UseCourses = true;
 
         void IEntityContorller.UpdateEntity(Entity ent)
         {
@@ -217,10 +219,14 @@ namespace ScenarioServer.Scenarios.Controller
                     waypoints.Reverse();
 
                 ship.NaviComp.PlotCourse(waypoints, ship.MoveMaxSpeed, true);
+				info.Destination = ship.NaviComp.Waypoints[0].Tag as DestinationInfo;
             }
 
             if (info.State == CargoHaulerDestinationData.States.Offloading)
             {
+				if(ship.CurrentSpeed() > 0.01)
+					return;
+
                 info.TimeWaited += Timer.Delta;
 
                 DestinationInfo dest = null;
@@ -232,7 +238,7 @@ namespace ScenarioServer.Scenarios.Controller
                     dest = info.Forward ? Destinations[Destinations.Count - 1] : Destinations[0];
 
 
-                if (info.TimeWaited < info.Destination.Delay)
+                if (info.TimeWaited > info.Destination.Delay)
                 {
                     if (ship.NaviComp.Waypoints.Count == 0)
                         info.State = CargoHaulerDestinationData.States.Idle;
@@ -240,7 +246,8 @@ namespace ScenarioServer.Scenarios.Controller
                     {
                         info.State = CargoHaulerDestinationData.States.Traveling;
                         ship.NaviComp.ResumeCoursePlot();
-                    }
+						info.Destination = ship.NaviComp.Waypoints[0].Tag as DestinationInfo;
+					}
                 }
             }
         }
