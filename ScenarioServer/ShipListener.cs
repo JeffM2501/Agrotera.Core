@@ -208,7 +208,7 @@ namespace ScenarioServer
                         }
                         else
                         {
-                            peer.Ship.InboundMessages.Add(new ShipInboundMessage(im));
+                            peer.Ship.InboundMessages.Add(msg);
                         }
                         break;
                 }

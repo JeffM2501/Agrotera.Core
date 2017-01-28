@@ -6,6 +6,7 @@ using System.Text;
 using NetworkMessages.ShipMessages;
 using Entities;
 using Core.Types;
+using Entities.Classes.Components;
 
 namespace Entities.Classes
 {
@@ -16,6 +17,8 @@ namespace Entities.Classes
         public double MoveAcceleration = 5;
         public double MoveMaxSpeed = 25;
         public double MaxTurnSpeed = 45;
+
+        public NavigationComputer NaviComp = null;
 
         public class KnownEntity : EventArgs
         {
@@ -70,6 +73,18 @@ namespace Entities.Classes
         public event EventHandler<KnownEntity> SensorEntityRemoved = null;
 
         public Dictionary<int, KnownEntity> KnownEntities = new Dictionary<int, KnownEntity>();
+
+
+        public Ship()
+        {
+            NaviComp = new NavigationComputer(this);
+        }
+
+        public override void UpdateController()
+        {
+            base.UpdateController();
+            NaviComp.Update();
+        }
 
         public void UpdateSensorEntity(Entity ent)
         {

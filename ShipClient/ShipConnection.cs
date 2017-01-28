@@ -17,7 +17,6 @@ namespace ShipClient
 
 		public UserShip PlayerShip = null;
 
-
 		public class ConnectedEventArgs : EventArgs
 		{
 			public int ShipID = -1;
@@ -46,7 +45,8 @@ namespace ShipClient
 			if (PlayerShip != null)
 			{
 				PlayerShip.ProcessMessages();
-				PlayerShip.UpdatePositions();
+                PlayerShip.UpdateSelfDR();
+                PlayerShip.UpdatePositions();
 			}
 
 			UpdateOutbound();

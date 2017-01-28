@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\Components\NavigationComputer.cs" />
     <Compile Include="Classes\Ship.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="EntityDatabase.cs" />

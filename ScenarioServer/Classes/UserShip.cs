@@ -70,7 +70,7 @@ namespace ScenarioServer.Classes
 
         protected ShipInboundMessage[] PopOffNInbound(int count)
         {
-            if (count <= InboundMessages.Count)
+            if (count > InboundMessages.Count)
             {
 				ShipInboundMessage[] t = InboundMessages.ToArray();
                 InboundMessages.Clear();
@@ -113,6 +113,12 @@ namespace ScenarioServer.Classes
 			Orientation = orientation;
 
             SendCourseAndPosition();
+        }
+
+        public void SendUpdatedPostion()
+        {
+            if (Timer.Now - LastPositionUpdate > 0.05)
+                SendCourseAndPosition();
         }
 
         public void SendCourseAndPosition()

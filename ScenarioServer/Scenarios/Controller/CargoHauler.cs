@@ -1,10 +1,11 @@
-﻿using Core.Types;
-using Entities;
-using Entities.Classes;
+﻿
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
+using Core.Types;
+using Entities;
+using Entities.Classes;
+using Entities.Classes.Components;
 
 namespace ScenarioServer.Scenarios.Controller
 {
@@ -39,13 +40,12 @@ namespace ScenarioServer.Scenarios.Controller
         {
             public enum States
             {
-                TravelingTo,
+                Traveling,
                 Offloading,
-                Orienting,
                 Idle,
             }
 
-            public States State = States.TravelingTo;
+            public States State = States.Idle;
 
             public DestinationInfo Destination = null;
             public double TimeWaited = 0;
@@ -55,18 +55,64 @@ namespace ScenarioServer.Scenarios.Controller
 			public Location DestinationTarget = Location.Zero;
 
             public double TargetAngle = 0;
+
+            public int Runs = 0;
         }
 
         public int InfoKey { get; protected set; }
 
         void IEntityContorller.AddEntity(Entity ent)
         {
-            InfoKey = ent.SetParam("CargoHauler.Data", new CargoHaulerDestinationData());
+            Ship ship = ent as Ship;
+            if (ship == null)
+                return;
 
-            if (RadndomInitalDestination)
-                SetEntityDestination(ent, RNG.Next(Destinations.Count));
+            SetupShip(ship);
+        }
+
+        protected void SetupShip(Ship ship)
+        {
+            InfoKey = ship.SetParam("CargoHauler.Data", new CargoHaulerDestinationData());
+
+            ship.NaviComp.ArrivedAtWaypoint += NaviComp_ArrivedAtWaypoint;
+            ship.NaviComp.CourseComplete += NaviComp_CourseComplete;
+        }
+
+        public void RedoCourse(Ship ship)
+        {
+            if (ship == null)
+                return;
+
+            CargoHaulerDestinationData info = ship.GetParam(InfoKey) as CargoHaulerDestinationData;
+            if (info == null)
+                SetupShip(ship);
             else
-                SetEntityDestination(ent, 0);
+                info.State = CargoHaulerDestinationData.States.Idle;
+        }
+
+        private void NaviComp_CourseComplete(object sender, NavigationComputer.CourseWaypoint e)
+        {
+            Ship ship = sender as Ship;
+            CargoHaulerDestinationData info = ship.GetParam(InfoKey) as CargoHaulerDestinationData;
+            if (info == null || ship == null)
+                return;
+
+            info.Runs++;
+            info.State = CargoHaulerDestinationData.States.Offloading;
+            info.TimeWaited = 0;
+            ship.NaviComp.AllStop();
+        }
+
+        private void NaviComp_ArrivedAtWaypoint(object sender, NavigationComputer.CourseWaypoint e)
+        {
+            Ship ship = sender as Ship;
+            CargoHaulerDestinationData info = ship.GetParam(InfoKey) as CargoHaulerDestinationData;
+            if (info == null || ship == null)
+                return;
+
+            info.State = CargoHaulerDestinationData.States.Offloading;
+            info.TimeWaited = 0;
+            ship.NaviComp.AllStop();
         }
 
         public int AddDesitnation(Entity ent)
@@ -112,7 +158,94 @@ namespace ScenarioServer.Scenarios.Controller
 			return dest.TargetEnt.Position + dest.Offset +  new Location((RNG.NextDouble() * dest.Jitter * 2) - dest.Jitter, (RNG.NextDouble() * dest.Jitter * 2) - dest.Jitter, 0);
 		}
 
+        public static bool UseCourses = false;
+
         void IEntityContorller.UpdateEntity(Entity ent)
+        {
+            if (!UseCourses)
+            {
+                UpdateEntityManual(ent);
+                return;
+            }
+
+            Ship ship = ent as Ship;
+            CargoHaulerDestinationData info = ent.GetParam(InfoKey) as CargoHaulerDestinationData;
+            if (info == null || ship == null)
+                return;
+
+            if (info.State == CargoHaulerDestinationData.States.Idle)
+            {
+                info.State = CargoHaulerDestinationData.States.Traveling;   // it's ok to leave dead ended ships at traveling, they will stay at all stop until set to idle
+
+                if (Destinations.Count == 0)
+                {
+                    ship.NaviComp.AllStop();
+                    return;
+                }
+
+                if (ship.NaviComp.Waypoints.Count == 0 || ship.NaviComp.Mode != NavigationComputer.NavigationModes.Course)
+                {
+                    if (Repeat == RepeatTypes.None && info.Runs > 0)
+                    {
+                        ship.NaviComp.AllStop();
+                        return;
+                    }
+                }
+
+                // we need a course
+
+                if (info.Runs > 0 && Repeat == RepeatTypes.Reverse)
+                    info.Forward = !info.Forward;
+
+                List<NavigationComputer.CourseWaypoint> waypoints = new List<NavigationComputer.CourseWaypoint>();
+
+                int start = 0;
+                if (info.Runs == 0 && RadndomInitalDestination)
+                    start = RNG.Next(Destinations.Count);
+
+                for (int i = start; i < Destinations.Count; i++)
+                {
+                    var dest = Destinations[i];
+                    NavigationComputer.CourseWaypoint wp = new NavigationComputer.CourseWaypoint();
+                    wp.AcceptableDistance = dest.ArivalRadius;
+                    wp.TargetPosition = GetDestinationTarget(dest);
+                    wp.Tag = dest;
+                    waypoints.Add(wp);
+                }
+
+                if (!info.Forward)
+                    waypoints.Reverse();
+
+                ship.NaviComp.PlotCourse(waypoints, ship.MoveMaxSpeed, true);
+            }
+
+            if (info.State == CargoHaulerDestinationData.States.Offloading)
+            {
+                info.TimeWaited += Timer.Delta;
+
+                DestinationInfo dest = null;
+               
+                if (ship.NaviComp.Waypoints.Count > 0)
+                    dest = ship.NaviComp.Waypoints[0].Tag as DestinationInfo;
+
+                if (dest == null)
+                    dest = info.Forward ? Destinations[Destinations.Count - 1] : Destinations[0];
+
+
+                if (info.TimeWaited < info.Destination.Delay)
+                {
+                    if (ship.NaviComp.Waypoints.Count == 0)
+                        info.State = CargoHaulerDestinationData.States.Idle;
+                    else
+                    {
+                        info.State = CargoHaulerDestinationData.States.Traveling;
+                        ship.NaviComp.ResumeCoursePlot();
+                    }
+                }
+            }
+        }
+
+        protected void UpdateEntityManual(Entity ent)
         {
             if (Destinations.Count == 0)
                 return;
@@ -123,7 +256,7 @@ namespace ScenarioServer.Scenarios.Controller
                 return;
 
             bool needInit = info.Destination == null;
-            if (info.State == CargoHaulerDestinationData.States.TravelingTo)
+            if (info.State == CargoHaulerDestinationData.States.Traveling)
             {
                 if (info.Destination == null)
                     SetEntityDestination(ent, 0);
@@ -180,7 +313,7 @@ namespace ScenarioServer.Scenarios.Controller
             {
                 if (info.TimeWaited >= info.Destination.Delay)
 				{
-					info.State = CargoHaulerDestinationData.States.Orienting;
+					info.State = CargoHaulerDestinationData.States.Idle;
 
                     int destIndex = info.Destination.Index;
 
@@ -217,7 +350,7 @@ namespace ScenarioServer.Scenarios.Controller
                     info.TimeWaited += Timer.Delta;
             }
 
-            if (info.State == CargoHaulerDestinationData.States.Orienting && info.Destination != null)
+            if (info.State == CargoHaulerDestinationData.States.Idle && info.Destination != null)
             {
                 Rotation targetRot = new Rotation(info.TargetAngle);
 
@@ -227,7 +360,7 @@ namespace ScenarioServer.Scenarios.Controller
                 {
                     ent.Orientation = targetRot;
                     ent.AngularVelocity = Rotation.Zero;
-                    info.State = CargoHaulerDestinationData.States.TravelingTo;
+                    info.State = CargoHaulerDestinationData.States.Traveling;
                 }
             }
         }

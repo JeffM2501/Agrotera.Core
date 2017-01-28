@@ -9,8 +9,8 @@ namespace Core.Types
     {
         public double Angle = 0;
 
-        protected static readonly double RadCon = Math.PI / 180;
-        protected static readonly double DegCon = 1 / RadCon;
+        public static readonly double RadCon = Math.PI / 180;
+        public static readonly double DegCon = 1 / RadCon;
 
         protected static readonly double AngularTolerance = 2.6e-7;
 
@@ -131,5 +131,6 @@ namespace Core.Types
         }
 
         public static readonly Rotation Zero = new Rotation(0);
+        public static readonly Rotation Invalid = new Rotation(double.MinValue);
     }
 }

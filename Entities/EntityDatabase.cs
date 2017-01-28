@@ -43,6 +43,14 @@ namespace Entities
             return null;
         }
 
+        public Entity GetByID(int id)
+        {
+            if (Ents.ContainsKey(id))
+                return Ents[id];
+
+            return null;
+        }
+
         public List<Entity> GetInSphere(Location center, double radius)
         {
             List<Entity> inRad = new List<Entity>();

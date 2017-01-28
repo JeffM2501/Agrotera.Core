@@ -80,8 +80,16 @@ namespace ScenarioServer
             MapItems.ThinkEntityControllers();
             MapItems.InterpMotion();
 
+            UpdatePlayerShips();
             ProcessShipSensors();
+           
 			Listener.UpdateOutbound();
+        }
+
+        protected void UpdatePlayerShips()
+        {
+            foreach (var ship in PlayerShips)
+                ship.SendUpdatedPostion();
         }
 
         protected void ProcessShipSensors()

@@ -44,7 +44,7 @@ namespace Entities
             ctl.AddEntity(this);
         }
 
-        public void UpdateController()
+        public virtual void UpdateController()
         {
             if (Controller != null)
                 Controller.UpdateEntity(this);

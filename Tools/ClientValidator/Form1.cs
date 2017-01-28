@@ -22,7 +22,6 @@ namespace ClientValidator
 
 		ScenarioState State = null;
 
-
 		public class GraphicInfo
         {
             public Brush Color = Brushes.Magenta;
@@ -64,8 +63,11 @@ namespace ClientValidator
         private void Application_Idle(object sender, EventArgs e)
         {
             if (Connection != null)
-                Connection.Update();
+            {
+                Connection.Update(); 
+            }
         }
+
 
         private void ConnectButton_Click(object sender, EventArgs e)
         {
@@ -73,6 +75,7 @@ namespace ClientValidator
             Connection.Connected += Connection_Connected;
             Connection.Disconnected += Connection_Disconnected;
             Connection.ShipAssigned += Connection_ShipAssigned;
+
         }
 
         private void Connection_ShipAssigned(object sender, EventArgs e)
@@ -121,7 +124,18 @@ namespace ClientValidator
 			}
 
 			if (Connection != null)
+            {
                 Connection.Update();
+
+                if (Connection.PlayerShip != null)
+                {
+                    ShipSpeed = Connection.PlayerShip.Velocity.Length();
+                    var dir = Vector3D.Normalize(Connection.PlayerShip.Velocity);
+
+                    ShipDirection = Math.Atan2(dir.Y, dir.X) * Rotation.DegCon;
+                }
+            }
+   
         }
 
 		private void AddEntityDetails(Entities.Entity ent)
@@ -131,8 +145,18 @@ namespace ClientValidator
 
 			var item = ElementList.Items.Add(ent.ID.ToString());
 			item.SubItems.Add(ent.Name);
-			item.SubItems.Add(ent.Orientation.Angle.ToString());
-			item.SubItems.Add(ent.AngularVelocity.Angle.ToString());
+            if (Connection != null && State != null)
+            {
+                var serverEnt = State.MapItems.GetByID(ent.ID);
+                double error = Core.Types.Location.Distance(ent.Position, serverEnt.Position);
+                item.SubItems.Add(error.ToString());
+                item.SubItems.Add(ent.Velocity.ToString());
+            }
+            else
+            {
+                item.SubItems.Add(ent.Orientation.Angle.ToString());
+                item.SubItems.Add(ent.AngularVelocity.Angle.ToString());
+            }
 		}
 
 		private void DrawEntityShape(Entities.Entity ent, Graphics g, float x, float y)
@@ -175,6 +199,8 @@ namespace ClientValidator
 
         private void Map_Paint(object sender, PaintEventArgs e)
         {
+            UpdateStatusMarker();
+
             e.Graphics.Clear(Color.Black);
 
             if (Connection == null && State == null)
@@ -277,5 +303,54 @@ namespace ClientValidator
 
 			Map.Invalidate();
 		}
-	}
+
+        protected void SetCourse()
+        {
+            if (Connection == null || Connection.PlayerShip == null)
+                return;
+
+            Rotation rot = new Rotation(ShipNavDirection);
+
+            Vector3D movement = rot.ToVector3D() * ShipEngineSpeed;
+
+            Connection.PlayerShip.SetCourse(movement, rot);
+        }
+
+        protected double ShipSpeed = 0;
+        protected double ShipDirection = 0;
+
+        protected double ShipEngineSpeed = 0;
+        protected double ShipNavDirection = 0;
+
+        private void UpdateStatusMarker()
+        {
+            this.StatusLabel.Text = String.Format("Speed {0} Heading {1}", ShipSpeed, ShipDirection);
+        }
+
+        private void Forward_Click(object sender, EventArgs e)
+        {
+            ShipEngineSpeed += 1;
+            SetCourse();
+        }
+
+        private void Backwards_Click(object sender, EventArgs e)
+        {
+            ShipEngineSpeed -= 1;
+            SetCourse();
+        }
+
+        private void Left_Click(object sender, EventArgs e)
+        {
+            ShipNavDirection -= 3;
+            SetCourse();
+        }
+
+        private void Right_Click(object sender, EventArgs e)
+        {
+            ShipNavDirection += 3;
+            SetCourse();
+        }
+
+
+    }
 }

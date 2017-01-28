@@ -131,6 +131,11 @@ namespace ShipClient
 			Velocity = LastUpdateVelocity;
 		}
 
+        public void UpdateSelfDR()
+        {
+            Position = LastUpdatePosition + (LastUpdateVelocity * (Timer.Now - LastPositionUpdate));
+        }
+
         public void SetCourse(Vector3D velocity, Rotation orientation)
         {
 			SetShipCourse sc = new SetShipCourse();
