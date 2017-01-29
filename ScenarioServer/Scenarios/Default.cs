@@ -27,8 +27,8 @@ namespace ScenarioServer.Scenarios
         {
             CargoShipTemplate = new ShipTemplate();
             CargoShipTemplate.MaxAcceleration = 50;
-            CargoShipTemplate.MaxSpeed = 100;
-            CargoShipTemplate.MaxTurn = 45;
+            CargoShipTemplate.MaxSpeed = 200;
+            CargoShipTemplate.MaxTurn = 100;
             CargoShipTemplate.PerformanceRand = 0.75;
             CargoShipTemplate.DefaultGraphics = "Shuttle";
             CargoShipTemplate.ClassName = "Simple Cargo Hauler"; 
@@ -71,18 +71,27 @@ namespace ScenarioServer.Scenarios
             CargoHauler haulerRoute = new CargoHauler();
 
             haulerRoute.AddDesitnation(DefaultStation, 2, 25, 25,new Vector3D(0,100,0));
-           // haulerRoute.AddDesitnation(DefaultStation, 0, 25, 25, new Vector3D(400, 200, 0));
+			haulerRoute.AddDesitnation(DefaultStation, 0, 25, 25, new Vector3D(400, 200, 0));
             haulerRoute.AddDesitnation(cargo,5,50,25);
-         //   haulerRoute.AddDesitnation(DefaultStation, 0, 25, 25, new Vector3D(400, -200, 0));
+			haulerRoute.AddDesitnation(DefaultStation, 0, 25, 25, new Vector3D(400, -200, 0));
             haulerRoute.AddDesitnation(DefaultStation,2,25,25, new Vector3D(0, -100, 0));
 
             haulerRoute.Repeat = CargoHauler.RepeatTypes.Reverse;
             haulerRoute.RadndomInitalDestination = true;
 
-            CargoShipTemplate.SetupShip(AddEntity<Ship>(ControllerTools.RandomPostionRelativeTo(cargo.Position, 50, 500)), "Cargo Transport 1").SetController(haulerRoute);
-            CargoShipTemplate.SetupShip(AddEntity<Ship>(ControllerTools.RandomPostionRelativeTo(cargo.Position, 100, 500)), "Cargo Transport 2").SetController(haulerRoute);
-            CargoShipTemplate.SetupShip(AddEntity<Ship>(ControllerTools.RandomPostionRelativeTo(DefaultStation.Position, 300, 1000)), "Cargo Transport 3").SetController(haulerRoute);
+			for(int i = 0; i < 10; i++)
+			{
+				AddCargoShip(i + 1, i % 3 == 1 ? DefaultStation.Position : cargo.Position, 500, 1000, haulerRoute);
+			}
+//             CargoShipTemplate.SetupShip(AddEntity<Ship>(ControllerTools.RandomPostionRelativeTo(cargo.Position, 50, 500)), "Cargo Transport 1").SetController(haulerRoute);
+//             CargoShipTemplate.SetupShip(AddEntity<Ship>(ControllerTools.RandomPostionRelativeTo(cargo.Position, 100, 500)), "Cargo Transport 2").SetController(haulerRoute);
+//             CargoShipTemplate.SetupShip(AddEntity<Ship>(ControllerTools.RandomPostionRelativeTo(DefaultStation.Position, 300, 1000)), "Cargo Transport 3").SetController(haulerRoute);
         }
+
+		protected void AddCargoShip(int index, Location origin, double min, double max, IEntityContorller ctl)
+		{
+			CargoShipTemplate.SetupShip(AddEntity<Ship>(ControllerTools.RandomPostionRelativeTo(origin, min, max)), "Cargo Transport " + index.ToString()).SetController(ctl);
+		}
 
         public void Shutdown()
         {

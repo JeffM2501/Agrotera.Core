@@ -29,15 +29,19 @@ namespace ScenarioServer.Classes.Templates
                 ship.MaxTurnSpeed = MaxTurn;
                 ship.MoveAcceleration = MaxAcceleration;
                 ship.MoveMaxSpeed = MaxSpeed;
-
-                if (PerformanceRand != 0)
-                {
-                    ship.MaxTurnSpeed *= (1.0 - (RNG.NextDouble() * PerformanceRand));
-                    ship.MoveAcceleration *= (1.0 - (RNG.NextDouble() * PerformanceRand));
-                    ship.MoveMaxSpeed *= (1.0 - (RNG.NextDouble() * PerformanceRand));
-                }
-            }
+				ApplyRandomizations(ship);
+			}
             return ship;
         }
+
+		public virtual void ApplyRandomizations(Entities.Classes.Ship ship)
+		{
+			if(PerformanceRand != 0)
+			{
+				ship.MaxTurnSpeed *= (1.0 - (RNG.NextDouble() * PerformanceRand));
+				ship.MoveAcceleration *= (1.0 - (RNG.NextDouble() * PerformanceRand));
+				ship.MoveMaxSpeed *= (1.0 - (RNG.NextDouble() * PerformanceRand));
+			}
+		}
     }
 }

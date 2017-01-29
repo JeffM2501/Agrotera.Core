@@ -34,6 +34,7 @@ namespace ScenarioServer.Scenarios.Controller
         public RepeatTypes Repeat = RepeatTypes.None;
 
         public bool RadndomInitalDestination = false;
+		public bool RotateFirst = false;
 
 
         public class CargoHaulerDestinationData
@@ -41,6 +42,7 @@ namespace ScenarioServer.Scenarios.Controller
             public enum States
             {
                 Traveling,
+				Orienting,
                 Offloading,
                 Idle,
             }
@@ -76,9 +78,24 @@ namespace ScenarioServer.Scenarios.Controller
 
             ship.NaviComp.ArrivedAtWaypoint += NaviComp_ArrivedAtWaypoint;
             ship.NaviComp.CourseComplete += NaviComp_CourseComplete;
+			ship.NaviComp.HeadingReached += NaviComp_HeadingReached;
         }
 
-        public void RedoCourse(Ship ship)
+		private void NaviComp_HeadingReached(object sender, EventArgs e)
+		{
+			if(!RotateFirst)
+				return;
+
+			Ship ship = sender as Ship;
+			CargoHaulerDestinationData info = ship.GetParam(InfoKey) as CargoHaulerDestinationData;
+			if(info == null || ship == null)
+				return;
+
+			ship.NaviComp.ResumeCoursePlot();
+			info.State = CargoHaulerDestinationData.States.Traveling;
+		}
+
+		public void RedoCourse(Ship ship)
         {
             if (ship == null)
                 return;
@@ -93,8 +110,11 @@ namespace ScenarioServer.Scenarios.Controller
         private void NaviComp_CourseComplete(object sender, NavigationComputer.CourseWaypoint e)
         {
             Ship ship = sender as Ship;
+			if(ship == null)
+				return;
+
             CargoHaulerDestinationData info = ship.GetParam(InfoKey) as CargoHaulerDestinationData;
-            if (info == null || ship == null)
+            if (info == null)
                 return;
 
             info.Runs++;
@@ -107,8 +127,11 @@ namespace ScenarioServer.Scenarios.Controller
         private void NaviComp_ArrivedAtWaypoint(object sender, NavigationComputer.CourseWaypoint e)
         {
             Ship ship = sender as Ship;
-            CargoHaulerDestinationData info = ship.GetParam(InfoKey) as CargoHaulerDestinationData;
-            if (info == null || ship == null)
+			if(ship == null)
+				return;
+
+			CargoHaulerDestinationData info = ship.GetParam(InfoKey) as CargoHaulerDestinationData;
+            if (info == null)
                 return;
 
             info.State = CargoHaulerDestinationData.States.Offloading;
@@ -218,7 +241,16 @@ namespace ScenarioServer.Scenarios.Controller
                 if (!info.Forward)
                     waypoints.Reverse();
 
-                ship.NaviComp.PlotCourse(waypoints, ship.MoveMaxSpeed, true);
+				ship.NaviComp.PlotCourse(waypoints, ship.MoveMaxSpeed, !RotateFirst);
+
+
+				if(RotateFirst)
+				{
+					info.State = CargoHaulerDestinationData.States.Orienting;
+					ship.NaviComp.SteerToWaypoint(ship.NaviComp.Waypoints[0], 0);
+				}
+				else
+					info.State = CargoHaulerDestinationData.States.Traveling;
 				info.Destination = ship.NaviComp.Waypoints[0].Tag as DestinationInfo;
             }
 
@@ -244,8 +276,16 @@ namespace ScenarioServer.Scenarios.Controller
                         info.State = CargoHaulerDestinationData.States.Idle;
                     else
                     {
-                        info.State = CargoHaulerDestinationData.States.Traveling;
-                        ship.NaviComp.ResumeCoursePlot();
+						if (RotateFirst)
+						{
+							info.State = CargoHaulerDestinationData.States.Orienting;
+							ship.NaviComp.SteerToWaypoint(ship.NaviComp.Waypoints[0], 0);
+						}
+						else
+						{
+							info.State = CargoHaulerDestinationData.States.Traveling;
+							ship.NaviComp.ResumeCoursePlot();
+						}
 						info.Destination = ship.NaviComp.Waypoints[0].Tag as DestinationInfo;
 					}
                 }

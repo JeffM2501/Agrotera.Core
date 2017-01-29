@@ -25,11 +25,12 @@ namespace Entities.Classes.Components
 
         protected Rotation DesiredHeading = Rotation.Invalid;
 
+		protected bool AtHeading = false;
+
         public class CourseWaypoint : EventArgs
         {
             public Location TargetPosition = Location.Zero;
             public double AcceptableDistance = 0;
-
             public object Tag = null;
         }
 
@@ -40,6 +41,8 @@ namespace Entities.Classes.Components
 
         public event EventHandler<CourseWaypoint> ArrivedAtWaypoint;
         public event EventHandler<CourseWaypoint> CourseComplete;
+
+		public event EventHandler HeadingReached = null;
 
         public NavigationComputer(Ship host)
         {
@@ -69,7 +72,9 @@ namespace Entities.Classes.Components
             DesiredSpeed = speed;
 
             SteerToCourse = false;
-        }
+
+			AtHeading = false;
+		}
 
         public void PlotCourse(List<CourseWaypoint> waypoints, double speed, bool startNow)
         {
@@ -88,7 +93,7 @@ namespace Entities.Classes.Components
             Waypoints.AddRange(waypoints.ToArray());
             SteerToCourse = startNow;
 
-            if (SteerToCourse)
+			if (SteerToCourse)
                 SteerTo(Waypoints[0]);
         }
 
@@ -98,14 +103,23 @@ namespace Entities.Classes.Components
             Mode = NavigationModes.Heading;
         }
 
-        public void SteerTooWaypoint(CourseWaypoint waypoint, double speed)
+        public void SteerToWaypoint(CourseWaypoint waypoint, double speed)
         {
             Mode = NavigationModes.Heading;
             DesiredSpeed = Math.Abs(speed);
+			AtHeading = false;
             SteerTo(waypoint);
         }
 
-        public void PauseCoursePlot()
+		public void SteerToLocation(Location waypoint, double speed)
+		{
+			Mode = NavigationModes.Heading;
+			DesiredSpeed = Math.Abs(speed);
+			AtHeading = false;
+			SteerTo(waypoint);
+		}
+
+		public void PauseCoursePlot()
         {
             SteerToCourse = false;
             DesiredTurnSpeed = 0;
@@ -113,9 +127,10 @@ namespace Entities.Classes.Components
 
         public void ResumeCoursePlot()
         {
-            if (Mode == NavigationModes.Course)
+            if (Waypoints.Count > 0)
             {
-                SteerToCourse = true;
+				Mode = NavigationModes.Course;
+				SteerToCourse = true;
                 DesiredSpeed = CourseSpeed;
             }
         }
@@ -138,10 +153,15 @@ namespace Entities.Classes.Components
             DesiredSpeed = 0;
         }
 
+		protected void SteerTo(Location position)
+		{
+			Vector3D vecToTarget = Location.VectorTo(Host.Position, position);
+			DesiredHeading = Rotation.FromVector3D(vecToTarget);
+		}
+
         protected void SteerTo(CourseWaypoint waypoint)
         {
-            Vector3D vecToTarget = Location.VectorTo(Host.Position, waypoint.TargetPosition);
-            DesiredHeading = Rotation.FromVector3D(vecToTarget);
+			SteerTo(waypoint.TargetPosition);
         }
 
         protected void UpdateCourse()
@@ -157,7 +177,7 @@ namespace Entities.Classes.Components
             else
             {
                 Waypoints.RemoveAt(0);
-
+	
                 if (ArrivedAtWaypoint != null)
                     ArrivedAtWaypoint.Invoke(Host, waypoint);
 
@@ -202,9 +222,14 @@ namespace Entities.Classes.Components
 
                 if (Math.Abs(delta.Angle) <= (Host.MaxTurnSpeed * Timer.Delta * 2))
                 {
-                    Host.Orientation = targetHeading;
-                    Host.AngularVelocity = Rotation.Zero;
-                }
+					Host.Orientation = targetHeading;
+					Host.AngularVelocity = Rotation.Zero;
+
+					if(!AtHeading && HeadingReached != null)
+						HeadingReached.Invoke(Host, EventArgs.Empty);
+
+					AtHeading = true;
+				}
                 else
                     Host.AngularVelocity = new Rotation(Host.MaxTurnSpeed * Math.Sign(delta.Angle));
             }
