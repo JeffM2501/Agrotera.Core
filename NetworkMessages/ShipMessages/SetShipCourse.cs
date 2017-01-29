@@ -10,8 +10,20 @@ namespace NetworkMessages.ShipMessages
 {
     public class SetShipCourse : ShipOutboundMessage
     {
-        public Vector3D Velocity = Vector3D.Zero;
-        public Rotation Orientation = Rotation.Zero;
+        public enum CourseTypes
+        {
+            Manual = 0,
+            Heading,
+            Waypoints,
+        }
+
+        public CourseTypes CourseType = CourseTypes.Manual;
+
+        public double Speed = 0;
+        public double TurnSpeed = 0;
+        public double DesiredHeading = 0;
+
+        public List<Location> Waypoints = new List<Location>();
 
         public SetShipCourse() : base(MessageCodes.SetCourse)
 		{
@@ -21,16 +33,54 @@ namespace NetworkMessages.ShipMessages
         public override void Pack(NetOutgoingMessage msg)
         {
             base.Pack(msg);
-            msg.Write(Velocity);
-            msg.Write(Orientation);
+            msg.Write((byte)CourseType);
+            msg.Write(Speed);
+
+            switch (CourseType)
+            {
+                case CourseTypes.Manual:
+                    msg.Write(TurnSpeed);
+                    break;
+
+                case CourseTypes.Heading:
+                    msg.Write(DesiredHeading);
+                    break;
+
+                case CourseTypes.Waypoints:
+                    msg.Write((Int32)Waypoints.Count);
+                    foreach (var w in Waypoints)
+                        msg.Write(w);
+                    break;
+            }
         }
 
         public static SetShipCourse Unpack(NetIncomingMessage msg)
         {
             SetShipCourse p = new SetShipCourse();
-            p.Velocity = msg.ReadVector3D();
-            p.Orientation = msg.ReadRotation();
 
+            byte t = msg.ReadByte();
+            p.CourseType = (CourseTypes)t;
+            p.Speed = msg.ReadDouble();
+
+            switch (p.CourseType)
+            {
+                case CourseTypes.Manual:
+                    p.TurnSpeed = msg.ReadDouble();
+                    break;
+
+                case CourseTypes.Heading:
+                    p.DesiredHeading = msg.ReadDouble();
+                    break;
+
+                case CourseTypes.Waypoints:
+                    {
+                        int count = msg.ReadInt32();
+
+                        for (int i = 0; i < count; i++)
+                            p.Waypoints.Add(msg.ReadLocation());
+                    }
+                    break;
+            }
             return p;
         }
     }

@@ -9,6 +9,7 @@ using Entities.Classes;
 using Entities;
 using NetworkMessages;
 using NetworkMessages.ShipMessages;
+using Entities.Classes.Components;
 
 namespace ScenarioServer.Classes
 {
@@ -100,17 +101,32 @@ namespace ScenarioServer.Classes
 
         protected void SetCourse(SetShipCourse msg)
         {
-			SetCourse(msg.Velocity,msg.Orientation);
-        }
+			switch(msg.CourseType)
+            {
+                case SetShipCourse.CourseTypes.Manual:
+                    NaviComp.SetDirectNavigation(msg.TurnSpeed, msg.Speed);
+                    break;
 
-        public void SetCourse(Vector3D newHeading, Rotation orientation)
-        {
-            Velocity = newHeading;
+                case SetShipCourse.CourseTypes.Heading:
+                    NaviComp.SteerTo(msg.DesiredHeading, msg.Speed);
+                    break;
 
-            if (Velocity.Length() > 100)
-                Velocity = Vector3D.Normalize(Velocity) * 100;
+                case SetShipCourse.CourseTypes.Waypoints:
+                    {
+                        List<NavigationComputer.CourseWaypoint> waypoints = new List<NavigationComputer.CourseWaypoint>();
 
-			Orientation = orientation;
+                        foreach(var loc in msg.Waypoints)
+                        {
+                            NavigationComputer.CourseWaypoint wp = new NavigationComputer.CourseWaypoint();
+                            wp.TargetPosition = loc;
+                            wp.AcceptableDistance = 25;
+                            waypoints.Add(wp);
+                        }
+                        NaviComp.PlotCourse(waypoints, msg.Speed, true);
+                    }
+                    break;
+            }
+
 
             SendCourseAndPosition();
         }

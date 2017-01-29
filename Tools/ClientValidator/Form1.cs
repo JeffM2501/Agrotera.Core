@@ -309,11 +309,7 @@ namespace ClientValidator
             if (Connection == null || Connection.PlayerShip == null)
                 return;
 
-            Rotation rot = new Rotation(ShipNavDirection);
-
-            Vector3D movement = rot.ToVector3D() * ShipEngineSpeed;
-
-            Connection.PlayerShip.SetCourse(movement, rot);
+            Connection.PlayerShip.SetCourseManual(ShipEngineSpeed, ShipNavDirection);
         }
 
         protected double ShipSpeed = 0;

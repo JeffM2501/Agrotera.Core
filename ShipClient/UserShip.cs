@@ -136,12 +136,31 @@ namespace ShipClient
             Position = LastUpdatePosition + (LastUpdateVelocity * (Timer.Now - LastPositionUpdate));
         }
 
-        public void SetCourse(Vector3D velocity, Rotation orientation)
+        public void SetCourseManual(double speed, double turn)
         {
 			SetShipCourse sc = new SetShipCourse();
-			sc.Velocity = velocity;
-			sc.Orientation = orientation;
+            sc.CourseType = SetShipCourse.CourseTypes.Manual;
+            sc.Speed = speed;
+            sc.TurnSpeed = turn;
 			Send(sc);
 		}
-	}
+
+        public void SetCourseHeading(double speed, double heading)
+        {
+            SetShipCourse sc = new SetShipCourse();
+            sc.CourseType = SetShipCourse.CourseTypes.Heading;
+            sc.Speed = speed;
+            sc.DesiredHeading = heading;
+            Send(sc);
+        }
+
+        public void SetCourseWaypoints(double speed, List<Location> waypoints)
+        {
+            SetShipCourse sc = new SetShipCourse();
+            sc.CourseType = SetShipCourse.CourseTypes.Waypoints;
+            sc.Speed = speed;
+            sc.Waypoints = waypoints;
+            Send(sc);
+        }
+    }
 }
