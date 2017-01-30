@@ -8,9 +8,11 @@ namespace NetworkMessages
 	public static class ProtocollDefinition
 	{
 		public static readonly string ProtoString = "Simple Ship Net.0.0.1";
-	}
 
-	public enum MessageCodes
+        public static readonly string ConsoleProtoString = "Simple Ship Console Net.0.0.1";
+    }
+
+	public enum ShipMessageCodes
 	{
 		Unknown = 0,
 
@@ -30,4 +32,12 @@ namespace NetworkMessages
 		UpdateEntity,
         UpdateEnityDetails,
 	}
+
+    public enum ConsoleMessageCodes
+    {
+        Unknown = 0,
+
+        // setup message
+        ConnectToShip,
+    }
 }

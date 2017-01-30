@@ -156,7 +156,7 @@ namespace ShipClient
 
 						if(PlayerShip == null)
 						{
-							if (msg.Code == MessageCodes.AssignShip)
+							if (msg.Code == ShipMessageCodes.AssignShip)
 							{
 								AssignShip s = AssignShip.Unpack(im);
 								PlayerShip = new UserShip();

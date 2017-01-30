@@ -24,7 +24,7 @@ namespace NetworkMessages.ShipMessages
 		public bool AtTargetHeading = false;
 		public bool AtTargetWaypoint = false;
 
-		public ShipNavigationStatus() : base(MessageCodes.ShipNavigationStatus)
+		public ShipNavigationStatus() : base(ShipMessageCodes.ShipNavigationStatus)
 		{
 		}
 

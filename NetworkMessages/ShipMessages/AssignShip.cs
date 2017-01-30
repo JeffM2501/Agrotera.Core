@@ -13,7 +13,7 @@ namespace NetworkMessages.ShipMessages
 		public string Name = string.Empty;
 		public string ClassName = string.Empty;
 
-		public AssignShip() : base(MessageCodes.AssignShip)
+		public AssignShip() : base(ShipMessageCodes.AssignShip)
 		{
 
 		}

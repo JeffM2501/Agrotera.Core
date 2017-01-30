@@ -12,7 +12,7 @@ namespace NetworkMessages.ShipMessages
 	{
 		public List<string> Requirements = new List<string>();
 
-		public WantNewShip() : base(MessageCodes.NewShip)
+		public WantNewShip() : base(ShipMessageCodes.NewShip)
 		{
 
 		}

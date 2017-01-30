@@ -105,7 +105,7 @@ namespace ScenarioServer.Classes
             {
                 switch(msg.Code)
                 {
-                    case MessageCodes.SetCourse:
+                    case ShipMessageCodes.SetCourse:
                         SetCourse(SetShipCourse.Unpack(msg.Payload));
                         break;
                 } 

@@ -22,10 +22,11 @@ namespace ShipClient
 
         public event EventHandler NavCompModeChanged = null;
 
-        public UserShip(): base()
+        public UserShip() : base()
         {
             NaviComp.ReadOnly = true;
         }
+
 
         public class ShipCentricSensorEntity : KnownEntity
 		{
@@ -61,6 +62,8 @@ namespace ShipClient
 			OutboundMessages.Add(msg);
 		}
 
+        public event EventHandler PostionsUpdated = null;
+
 		public void UpdatePositions()
 		{
 			Position += (Velocity * Timer.Delta);
@@ -86,7 +89,13 @@ namespace ShipClient
 
                 ent.Visible = ent.ShipRelativePosition.LengthSquared() <= visSquared;
 			}
-		}
+
+            if (PostionsUpdated != null)
+                PostionsUpdated.Invoke(this, EventArgs.Empty);
+
+        }
+
+        public event EventHandler MessagesProcessed = null;
 
 		public void ProcessMessages()
 		{
@@ -98,18 +107,22 @@ namespace ShipClient
 				if(msg.Processed)
 					continue;
 
-                if (msg.Code == MessageCodes.SetSelfPosition)
+                if (msg.Code == ShipMessageCodes.SetSelfPosition)
                     UpdateSelfPosition(SetSelfPosition.Unpack(msg.Payload));
-                else if (msg.Code == MessageCodes.UpdateEntity)
+                else if (msg.Code == ShipMessageCodes.UpdateEntity)
                     UpdateSensorEntity(SensorEntityUpdate.Unpack(msg.Payload));
-                else if (msg.Code == MessageCodes.UpdateEnityDetails)
+                else if (msg.Code == ShipMessageCodes.UpdateEnityDetails)
                     UpdateSensorEntity(SensorEntityDetails.UnpackDeets(msg.Payload));
-                else if (msg.Code == MessageCodes.ShipNavigationStatus)
+                else if (msg.Code == ShipMessageCodes.ShipNavigationStatus)
                     UpdateNavStatus(ShipNavigationStatus.Unpack(msg.Payload));
 
 				msg.Processed = true;
 			}
-		}
+
+            if (MessagesProcessed != null)
+                MessagesProcessed.Invoke(this, EventArgs.Empty);
+
+        }
 
 		public override void RefreshEntity(KnownEntity ke, SensorEntityUpdate update)
 		{

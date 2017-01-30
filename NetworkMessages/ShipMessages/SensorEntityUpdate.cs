@@ -18,7 +18,7 @@ namespace NetworkMessages.ShipMessages
         public Rotation Rotation = Rotation.Zero;
 		public double TimeStamp = double.MinValue;
 
-		public SensorEntityUpdate() : base(MessageCodes.UpdateEntity)
+		public SensorEntityUpdate() : base(ShipMessageCodes.UpdateEntity)
 		{
 
 		}

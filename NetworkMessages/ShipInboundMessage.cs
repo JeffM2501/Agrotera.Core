@@ -13,7 +13,7 @@ namespace NetworkMessages
 		public bool Processed = false;
 
 		public double Timestamp = double.MinValue;
-		public MessageCodes Code = MessageCodes.Unknown;
+		public ShipMessageCodes Code = ShipMessageCodes.Unknown;
 		public NetIncomingMessage Payload = null;
 
 		public ShipInboundMessage(NetIncomingMessage msg)
@@ -23,7 +23,7 @@ namespace NetworkMessages
 			
 			try
 			{
-				Code = (MessageCodes)c;
+				Code = (ShipMessageCodes)c;
 			}
 			catch (System.Exception /*ex*/)
 			{

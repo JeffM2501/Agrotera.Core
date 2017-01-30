@@ -14,7 +14,7 @@ namespace NetworkMessages.ShipMessages
 
         public SensorEntityDetails()
 		{
-            Code = MessageCodes.UpdateEnityDetails;
+            Code = ShipMessageCodes.UpdateEnityDetails;
         }
 
         public override void Pack(NetOutgoingMessage msg)

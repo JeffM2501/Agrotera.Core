@@ -8,10 +8,10 @@ namespace NetworkMessages
 {
 	public class ShipOutboundMessage
 	{
-		public MessageCodes Code = MessageCodes.Unknown;
+		public ShipMessageCodes Code = ShipMessageCodes.Unknown;
 		public NetOutgoingMessage Payload = null;
 
-		public ShipOutboundMessage(MessageCodes code)
+		public ShipOutboundMessage(ShipMessageCodes code)
 		{
 			Code = code;
 		}

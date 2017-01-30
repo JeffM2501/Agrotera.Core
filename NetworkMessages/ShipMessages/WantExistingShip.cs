@@ -13,7 +13,7 @@ namespace NetworkMessages.ShipMessages
 		public int ShipID = int.MinValue;
 		public List<string> Requirements = new List<string>();
 
-		public WantExistingShip() : base(MessageCodes.ExistingShip)
+		public WantExistingShip() : base(ShipMessageCodes.ExistingShip)
 		{
 
 		}

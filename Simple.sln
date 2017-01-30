@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lidgren.Network", "lidgren-
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetworkMessages", "NetworkMessages\NetworkMessages.csproj", "{87D87573-776F-4F83-9AFA-4DA6AAEE9C91}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleServer", "ConsoleServer\ConsoleServer.csproj", "{6DE5002C-1F81-43F8-B9F3-82702E0631F3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{87D87573-776F-4F83-9AFA-4DA6AAEE9C91}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87D87573-776F-4F83-9AFA-4DA6AAEE9C91}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87D87573-776F-4F83-9AFA-4DA6AAEE9C91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DE5002C-1F81-43F8-B9F3-82702E0631F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DE5002C-1F81-43F8-B9F3-82702E0631F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DE5002C-1F81-43F8-B9F3-82702E0631F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DE5002C-1F81-43F8-B9F3-82702E0631F3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

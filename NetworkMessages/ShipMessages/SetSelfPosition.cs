@@ -15,7 +15,7 @@ namespace NetworkMessages.ShipMessages
 		public Rotation Orientation = Rotation.Zero;
 		public double TimeStamp = double.MinValue;
 
-		public SetSelfPosition() : base(MessageCodes.SetSelfPosition)
+		public SetSelfPosition() : base(ShipMessageCodes.SetSelfPosition)
 		{
 
 		}

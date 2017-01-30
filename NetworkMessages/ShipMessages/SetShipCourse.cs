@@ -25,7 +25,7 @@ namespace NetworkMessages.ShipMessages
 
         public List<Location> Waypoints = new List<Location>();
 
-        public SetShipCourse() : base(MessageCodes.SetCourse)
+        public SetShipCourse() : base(ShipMessageCodes.SetCourse)
 		{
 
         }
