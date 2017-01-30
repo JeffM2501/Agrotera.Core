@@ -7,7 +7,7 @@ using Entities;
 using Core.Types;
 using NetworkMessages;
 using NetworkMessages.ShipMessages;
-using Entities.Classes;
+using Entities.Classes.Components;
 
 namespace ShipClient
 {
@@ -20,7 +20,14 @@ namespace ShipClient
 		public List<ShipInboundMessage> InboundMessages = new List<ShipInboundMessage>();
 		public List<ShipOutboundMessage> OutboundMessages = new List<ShipOutboundMessage>();
 
-		public class ShipCentricSensorEntity : KnownEntity
+        public event EventHandler NavCompModeChanged = null;
+
+        public UserShip(): base()
+        {
+            NaviComp.ReadOnly = true;
+        }
+
+        public class ShipCentricSensorEntity : KnownEntity
 		{
 			public Vector3F ShipRelativePosition = Vector3F.Zero;
 			public Vector3F ShipRelativeVelocity = Vector3F.Zero;
@@ -91,12 +98,14 @@ namespace ShipClient
 				if(msg.Processed)
 					continue;
 
-				if(msg.Code == MessageCodes.SetSelfPosition)
-					UpdateSelfPosition(SetSelfPosition.Unpack(msg.Payload));
-				else if(msg.Code == MessageCodes.UpdateEntity)
-					UpdateSensorEntity(SensorEntityUpdate.Unpack(msg.Payload));
+                if (msg.Code == MessageCodes.SetSelfPosition)
+                    UpdateSelfPosition(SetSelfPosition.Unpack(msg.Payload));
+                else if (msg.Code == MessageCodes.UpdateEntity)
+                    UpdateSensorEntity(SensorEntityUpdate.Unpack(msg.Payload));
                 else if (msg.Code == MessageCodes.UpdateEnityDetails)
                     UpdateSensorEntity(SensorEntityDetails.UnpackDeets(msg.Payload));
+                else if (msg.Code == MessageCodes.ShipNavigationStatus)
+                    UpdateNavStatus(ShipNavigationStatus.Unpack(msg.Payload));
 
 				msg.Processed = true;
 			}
@@ -119,7 +128,49 @@ namespace ShipClient
 			return new ShipCentricSensorEntity(ent);
 		}
 
-		protected void UpdateSelfPosition(SetSelfPosition sp)
+        protected void UpdateNavStatus(ShipNavigationStatus status)
+        {
+            NaviComp.DesiredSpeed = status.TargetSpeed;
+            NaviComp.DesiredTurnSpeed = status.TurnSpeed;
+
+            bool lastAtHeading = NaviComp.AtHeading;
+
+            NavigationComputer.NavigationModes lastMode = NaviComp.Mode;
+
+            switch (status.CurrentMode)
+            {
+                default:
+                case SetShipCourse.CourseTypes.Manual:
+                    NaviComp.Mode = Entities.Classes.Components.NavigationComputer.NavigationModes.Direct;
+     
+                    break;
+
+                case SetShipCourse.CourseTypes.Heading:
+                    NaviComp.Mode = Entities.Classes.Components.NavigationComputer.NavigationModes.Heading;
+                    NaviComp.DesiredHeading.Angle = status.TargetHeading;
+                    break;
+
+                case SetShipCourse.CourseTypes.Waypoints:
+                    NaviComp.Mode = Entities.Classes.Components.NavigationComputer.NavigationModes.Course;
+                    NaviComp.DesiredHeading.Angle = status.TargetHeading;
+                    NaviComp.Waypoints.Clear();
+                    NaviComp.Waypoints.Add(new Entities.Classes.Components.NavigationComputer.CourseWaypoint(status.TargetWaypoint));
+                    break;
+            }
+
+            if (lastMode != NaviComp.Mode && NavCompModeChanged != null)
+                NavCompModeChanged.Invoke(this, EventArgs.Empty);
+
+            NaviComp.AtHeading = status.AtTargetHeading;
+
+            if (status.AtTargetHeading && !lastAtHeading)
+                NaviComp.CallAtTargetHeading();
+
+            if (status.AtTargetWaypoint)
+                NaviComp.CallAtWaypoint(NaviComp.Waypoints[0]);
+        }
+
+        protected void UpdateSelfPosition(SetSelfPosition sp)
 		{
 			LastPositionUpdate = Timer.Now; // update to use synced clock and sp.TimeStamp;
 

@@ -31,6 +31,11 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.StatusLabel = new System.Windows.Forms.Label();
+            this.TurnRight = new System.Windows.Forms.Button();
+            this.TurnLeft = new System.Windows.Forms.Button();
+            this.Backwards = new System.Windows.Forms.Button();
+            this.Forward = new System.Windows.Forms.Button();
             this.ElementList = new System.Windows.Forms.ListView();
             this.IDCol = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.NameCol = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -42,18 +47,17 @@
             this.ViewType = new System.Windows.Forms.ComboBox();
             this.StatusText = new System.Windows.Forms.TextBox();
             this.ConnectButton = new System.Windows.Forms.Button();
+            this.Map = new System.Windows.Forms.PictureBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
-            this.TurnRight = new System.Windows.Forms.Button();
-            this.TurnLeft = new System.Windows.Forms.Button();
-            this.Backwards = new System.Windows.Forms.Button();
-            this.Forward = new System.Windows.Forms.Button();
-            this.Map = new System.Windows.Forms.PictureBox();
-            this.StatusLabel = new System.Windows.Forms.Label();
+            this.ManualRB = new System.Windows.Forms.RadioButton();
+            this.HeadingRB = new System.Windows.Forms.RadioButton();
+            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Map)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -64,6 +68,9 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.numericUpDown1);
+            this.splitContainer1.Panel1.Controls.Add(this.HeadingRB);
+            this.splitContainer1.Panel1.Controls.Add(this.ManualRB);
             this.splitContainer1.Panel1.Controls.Add(this.StatusLabel);
             this.splitContainer1.Panel1.Controls.Add(this.TurnRight);
             this.splitContainer1.Panel1.Controls.Add(this.TurnLeft);
@@ -83,6 +90,63 @@
             this.splitContainer1.Size = new System.Drawing.Size(1213, 589);
             this.splitContainer1.SplitterDistance = 213;
             this.splitContainer1.TabIndex = 0;
+            // 
+            // StatusLabel
+            // 
+            this.StatusLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.StatusLabel.Location = new System.Drawing.Point(13, 384);
+            this.StatusLabel.Name = "StatusLabel";
+            this.StatusLabel.Size = new System.Drawing.Size(188, 17);
+            this.StatusLabel.TabIndex = 12;
+            this.StatusLabel.Text = "ShipStatus:";
+            // 
+            // TurnRight
+            // 
+            this.TurnRight.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.TurnRight.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.TurnRight.Image = global::ClientValidator.Properties.Resources._1rightarrow;
+            this.TurnRight.Location = new System.Drawing.Point(99, 404);
+            this.TurnRight.Name = "TurnRight";
+            this.TurnRight.Size = new System.Drawing.Size(23, 43);
+            this.TurnRight.TabIndex = 11;
+            this.TurnRight.UseVisualStyleBackColor = true;
+            this.TurnRight.Click += new System.EventHandler(this.Right_Click);
+            // 
+            // TurnLeft
+            // 
+            this.TurnLeft.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.TurnLeft.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.TurnLeft.Image = global::ClientValidator.Properties.Resources._1leftarrow;
+            this.TurnLeft.Location = new System.Drawing.Point(74, 404);
+            this.TurnLeft.Name = "TurnLeft";
+            this.TurnLeft.Size = new System.Drawing.Size(23, 43);
+            this.TurnLeft.TabIndex = 10;
+            this.TurnLeft.UseVisualStyleBackColor = true;
+            this.TurnLeft.Click += new System.EventHandler(this.Left_Click);
+            // 
+            // Backwards
+            // 
+            this.Backwards.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.Backwards.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.Backwards.Image = global::ClientValidator.Properties.Resources._1downarrow1;
+            this.Backwards.Location = new System.Drawing.Point(158, 433);
+            this.Backwards.Name = "Backwards";
+            this.Backwards.Size = new System.Drawing.Size(43, 23);
+            this.Backwards.TabIndex = 9;
+            this.Backwards.UseVisualStyleBackColor = true;
+            this.Backwards.Click += new System.EventHandler(this.Backwards_Click);
+            // 
+            // Forward
+            // 
+            this.Forward.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.Forward.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.Forward.Image = global::ClientValidator.Properties.Resources._1downarrow;
+            this.Forward.Location = new System.Drawing.Point(158, 404);
+            this.Forward.Name = "Forward";
+            this.Forward.Size = new System.Drawing.Size(43, 23);
+            this.Forward.TabIndex = 8;
+            this.Forward.UseVisualStyleBackColor = true;
+            this.Forward.Click += new System.EventHandler(this.Forward_Click);
             // 
             // ElementList
             // 
@@ -187,64 +251,6 @@
             this.ConnectButton.UseVisualStyleBackColor = true;
             this.ConnectButton.Click += new System.EventHandler(this.ConnectButton_Click);
             // 
-            // timer1
-            // 
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // imageList1
-            // 
-            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
-            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageList1.Images.SetKeyName(0, "SS1.png");
-            // 
-            // TurnRight
-            // 
-            this.TurnRight.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.TurnRight.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.TurnRight.Image = global::ClientValidator.Properties.Resources._1rightarrow;
-            this.TurnRight.Location = new System.Drawing.Point(93, 418);
-            this.TurnRight.Name = "TurnRight";
-            this.TurnRight.Size = new System.Drawing.Size(23, 43);
-            this.TurnRight.TabIndex = 11;
-            this.TurnRight.UseVisualStyleBackColor = true;
-            this.TurnRight.Click += new System.EventHandler(this.Right_Click);
-            // 
-            // TurnLeft
-            // 
-            this.TurnLeft.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.TurnLeft.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.TurnLeft.Image = global::ClientValidator.Properties.Resources._1leftarrow;
-            this.TurnLeft.Location = new System.Drawing.Point(15, 418);
-            this.TurnLeft.Name = "TurnLeft";
-            this.TurnLeft.Size = new System.Drawing.Size(23, 43);
-            this.TurnLeft.TabIndex = 10;
-            this.TurnLeft.UseVisualStyleBackColor = true;
-            this.TurnLeft.Click += new System.EventHandler(this.Left_Click);
-            // 
-            // Backwards
-            // 
-            this.Backwards.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.Backwards.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.Backwards.Image = global::ClientValidator.Properties.Resources._1downarrow1;
-            this.Backwards.Location = new System.Drawing.Point(44, 454);
-            this.Backwards.Name = "Backwards";
-            this.Backwards.Size = new System.Drawing.Size(43, 23);
-            this.Backwards.TabIndex = 9;
-            this.Backwards.UseVisualStyleBackColor = true;
-            this.Backwards.Click += new System.EventHandler(this.Backwards_Click);
-            // 
-            // Forward
-            // 
-            this.Forward.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.Forward.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.Forward.Image = global::ClientValidator.Properties.Resources._1downarrow;
-            this.Forward.Location = new System.Drawing.Point(44, 404);
-            this.Forward.Name = "Forward";
-            this.Forward.Size = new System.Drawing.Size(43, 23);
-            this.Forward.TabIndex = 8;
-            this.Forward.UseVisualStyleBackColor = true;
-            this.Forward.Click += new System.EventHandler(this.Forward_Click);
-            // 
             // Map
             // 
             this.Map.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -255,14 +261,62 @@
             this.Map.TabStop = false;
             this.Map.Paint += new System.Windows.Forms.PaintEventHandler(this.Map_Paint);
             // 
-            // StatusLabel
+            // timer1
             // 
-            this.StatusLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.StatusLabel.Location = new System.Drawing.Point(13, 384);
-            this.StatusLabel.Name = "StatusLabel";
-            this.StatusLabel.Size = new System.Drawing.Size(188, 17);
-            this.StatusLabel.TabIndex = 12;
-            this.StatusLabel.Text = "ShipStatus:";
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // imageList1
+            // 
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "SS1.png");
+            // 
+            // ManualRB
+            // 
+            this.ManualRB.AutoSize = true;
+            this.ManualRB.Location = new System.Drawing.Point(8, 404);
+            this.ManualRB.Name = "ManualRB";
+            this.ManualRB.Size = new System.Drawing.Size(60, 17);
+            this.ManualRB.TabIndex = 13;
+            this.ManualRB.TabStop = true;
+            this.ManualRB.Text = "Manual";
+            this.ManualRB.UseVisualStyleBackColor = true;
+            this.ManualRB.CheckedChanged += new System.EventHandler(this.ManualRB_CheckedChanged);
+            // 
+            // HeadingRB
+            // 
+            this.HeadingRB.AutoSize = true;
+            this.HeadingRB.Location = new System.Drawing.Point(7, 461);
+            this.HeadingRB.Name = "HeadingRB";
+            this.HeadingRB.Size = new System.Drawing.Size(65, 17);
+            this.HeadingRB.TabIndex = 14;
+            this.HeadingRB.TabStop = true;
+            this.HeadingRB.Text = "Heading";
+            this.HeadingRB.UseVisualStyleBackColor = true;
+            this.HeadingRB.CheckedChanged += new System.EventHandler(this.HeadingRB_CheckedChanged);
+            // 
+            // numericUpDown1
+            // 
+            this.numericUpDown1.Increment = new decimal(new int[] {
+            45,
+            0,
+            0,
+            0});
+            this.numericUpDown1.Location = new System.Drawing.Point(74, 462);
+            this.numericUpDown1.Maximum = new decimal(new int[] {
+            180,
+            0,
+            0,
+            0});
+            this.numericUpDown1.Minimum = new decimal(new int[] {
+            180,
+            0,
+            0,
+            -2147483648});
+            this.numericUpDown1.Name = "numericUpDown1";
+            this.numericUpDown1.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDown1.TabIndex = 15;
+            this.numericUpDown1.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
             // 
             // Form1
             // 
@@ -277,6 +331,7 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Map)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -303,6 +358,9 @@
         private System.Windows.Forms.Button TurnLeft;
         private System.Windows.Forms.Button TurnRight;
         private System.Windows.Forms.Label StatusLabel;
+        private System.Windows.Forms.RadioButton ManualRB;
+        private System.Windows.Forms.RadioButton HeadingRB;
+        private System.Windows.Forms.NumericUpDown numericUpDown1;
     }
 }
 

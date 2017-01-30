@@ -320,7 +320,11 @@ namespace ClientValidator
 
         private void UpdateStatusMarker()
         {
-            this.StatusLabel.Text = String.Format("Speed {0} Heading {1}", ShipSpeed, ShipDirection);
+            string mode = "";
+            if (Connection != null && Connection.PlayerShip != null)
+                mode = Connection.PlayerShip.NaviComp.Mode.ToString();
+
+            this.StatusLabel.Text = String.Format("Speed {0} Heading {1} {2}", ShipSpeed, ShipDirection, mode);
         }
 
         private void Forward_Click(object sender, EventArgs e)
@@ -347,6 +351,28 @@ namespace ClientValidator
             SetCourse();
         }
 
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+            if (Connection == null || Connection.PlayerShip == null || Connection.PlayerShip.NaviComp.Mode != Entities.Classes.Components.NavigationComputer.NavigationModes.Heading)
+                return;
 
+            Connection.PlayerShip.SetCourseHeading(ShipEngineSpeed, (double)numericUpDown1.Value);
+        }
+
+        private void ManualRB_CheckedChanged(object sender, EventArgs e)
+        {
+            if (Connection == null || Connection.PlayerShip == null || Connection.PlayerShip.NaviComp.Mode == Entities.Classes.Components.NavigationComputer.NavigationModes.Direct)
+                return;
+
+            Connection.PlayerShip.SetCourseManual(ShipEngineSpeed, ShipNavDirection);
+        }
+
+        private void HeadingRB_CheckedChanged(object sender, EventArgs e)
+        {
+            if (Connection == null || Connection.PlayerShip == null || Connection.PlayerShip.NaviComp.Mode == Entities.Classes.Components.NavigationComputer.NavigationModes.Heading)
+                return;
+
+            Connection.PlayerShip.SetCourseHeading(ShipEngineSpeed, (double)numericUpDown1.Value);
+        }
     }
 }

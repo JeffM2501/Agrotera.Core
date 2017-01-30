@@ -11,6 +11,8 @@ namespace Entities.Classes.Components
     {
         protected Ship Host = null;
 
+        public bool ReadOnly = false;
+
         public enum NavigationModes
         {
             Drift,
@@ -25,13 +27,16 @@ namespace Entities.Classes.Components
 
 		public Rotation DesiredHeading = Rotation.Invalid;
 
-		protected bool AtHeading = false;
+        public bool AtHeading = false;
 
         public class CourseWaypoint : EventArgs
         {
             public Location TargetPosition = Location.Zero;
             public double AcceptableDistance = 0;
             public object Tag = null;
+
+            public CourseWaypoint() { }
+            public CourseWaypoint(Location l) { TargetPosition = l; }
         }
 
         public List<CourseWaypoint> Waypoints = new List<CourseWaypoint>();
@@ -176,10 +181,9 @@ namespace Entities.Classes.Components
                 SteerTo(waypoint);
             else
             {
-                if (ArrivedAtWaypoint != null)
-                    ArrivedAtWaypoint.Invoke(Host, waypoint);
+                CallAtWaypoint(waypoint);
 
-				Waypoints.RemoveAt(0);
+                Waypoints.RemoveAt(0);
 
 				if (Waypoints.Count == 0)
                 {
@@ -197,9 +201,21 @@ namespace Entities.Classes.Components
             return Mode == NavigationModes.Direct || (Mode == NavigationModes.Course && !SteerToCourse);
         }
 
+        public void CallAtWaypoint(CourseWaypoint wp)
+        {
+            if (ArrivedAtWaypoint != null)
+                ArrivedAtWaypoint.Invoke(Host, wp);
+        }
+
+        public void CallAtTargetHeading()
+        {
+            if (HeadingReached != null)
+                HeadingReached.Invoke(Host, EventArgs.Empty);
+        }
+
         public void Update()
         {
-            if (Mode == NavigationModes.Drift)
+            if (Mode == NavigationModes.Drift || ReadOnly)
                 return;
 
             UpdateCourse();
@@ -225,10 +241,10 @@ namespace Entities.Classes.Components
 					Host.Orientation = targetHeading;
 					Host.AngularVelocity = Rotation.Zero;
 
-					if(!AtHeading && HeadingReached != null)
-						HeadingReached.Invoke(Host, EventArgs.Empty);
+                    if (!AtHeading)
+                        CallAtTargetHeading();
 
-					AtHeading = true;
+                    AtHeading = true;
 				}
                 else
                     Host.AngularVelocity = new Rotation(Host.MaxTurnSpeed * Math.Sign(delta.Angle));
