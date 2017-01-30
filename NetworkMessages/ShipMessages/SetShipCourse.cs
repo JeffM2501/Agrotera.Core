@@ -54,34 +54,38 @@ namespace NetworkMessages.ShipMessages
             }
         }
 
-        public static SetShipCourse Unpack(NetIncomingMessage msg)
+		protected static void Unpack(NetIncomingMessage msg, SetShipCourse p)
+		{
+			byte t = msg.ReadByte();
+			p.CourseType = (CourseTypes)t;
+			p.Speed = msg.ReadDouble();
+
+			switch(p.CourseType)
+			{
+				case CourseTypes.Manual:
+					p.TurnSpeed = msg.ReadDouble();
+					break;
+
+				case CourseTypes.Heading:
+					p.DesiredHeading = msg.ReadDouble();
+					break;
+
+				case CourseTypes.Waypoints:
+					{
+						int count = msg.ReadInt32();
+
+						for(int i = 0; i < count; i++)
+							p.Waypoints.Add(msg.ReadLocation());
+					}
+					break;
+			}
+		}
+
+		public static SetShipCourse Unpack(NetIncomingMessage msg)
         {
             SetShipCourse p = new SetShipCourse();
-
-            byte t = msg.ReadByte();
-            p.CourseType = (CourseTypes)t;
-            p.Speed = msg.ReadDouble();
-
-            switch (p.CourseType)
-            {
-                case CourseTypes.Manual:
-                    p.TurnSpeed = msg.ReadDouble();
-                    break;
-
-                case CourseTypes.Heading:
-                    p.DesiredHeading = msg.ReadDouble();
-                    break;
-
-                case CourseTypes.Waypoints:
-                    {
-                        int count = msg.ReadInt32();
-
-                        for (int i = 0; i < count; i++)
-                            p.Waypoints.Add(msg.ReadLocation());
-                    }
-                    break;
-            }
-            return p;
-        }
+			Unpack(msg, p);
+			return p;
+		}
     }
 }

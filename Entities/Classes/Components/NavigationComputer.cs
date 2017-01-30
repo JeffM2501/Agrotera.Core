@@ -20,10 +20,10 @@ namespace Entities.Classes.Components
         }
         public NavigationModes Mode = NavigationModes.Drift;
 
-        protected double DesiredTurnSpeed = 0;
-        protected double DesiredSpeed = 0;
+		public double DesiredTurnSpeed = 0;
+		public double DesiredSpeed = 0;
 
-        protected Rotation DesiredHeading = Rotation.Invalid;
+		public Rotation DesiredHeading = Rotation.Invalid;
 
 		protected bool AtHeading = false;
 
@@ -176,12 +176,12 @@ namespace Entities.Classes.Components
                 SteerTo(waypoint);
             else
             {
-                Waypoints.RemoveAt(0);
-	
                 if (ArrivedAtWaypoint != null)
                     ArrivedAtWaypoint.Invoke(Host, waypoint);
 
-                if (Waypoints.Count == 0)
+				Waypoints.RemoveAt(0);
+
+				if (Waypoints.Count == 0)
                 {
                     Mode = NavigationModes.Heading;
                     if (CourseComplete != null)

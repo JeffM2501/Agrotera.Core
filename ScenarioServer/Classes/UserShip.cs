@@ -22,14 +22,27 @@ namespace ScenarioServer.Classes
 
         public double LastPositionUpdate = double.MinValue;
  
-        public UserShip()
+        public UserShip() : base()
         {
             Controller = this;
 
             SensorEntityUpdated += UserShip_SensorEntityUpdated;
             SensorEntityAppeared += UserShip_SensorEntityUpdated;
 
+			NaviComp.ArrivedAtWaypoint += NaviComp_ArrivedAtWaypoint;
+			NaviComp.HeadingReached += NaviComp_HeadingReached;
+			NaviComp.CourseComplete += NaviComp_ArrivedAtWaypoint;
         }
+
+		private void NaviComp_HeadingReached(object sender, EventArgs e)
+		{
+			SendNavStatusUpdate(false);
+		}
+
+		private void NaviComp_ArrivedAtWaypoint(object sender, NavigationComputer.CourseWaypoint e)
+		{
+			SendNavStatusUpdate(true);
+		}
 
 		public void Send(ShipOutboundMessage msg)
 		{
@@ -127,8 +140,10 @@ namespace ScenarioServer.Classes
                     break;
             }
 
+			SendNavStatusUpdate(false);
 
-            SendCourseAndPosition();
+
+			SendCourseAndPosition();
         }
 
         public void SendUpdatedPostion()
@@ -149,6 +164,44 @@ namespace ScenarioServer.Classes
 
             LastPositionUpdate = Timer.Now;
         }
+
+		protected SetShipCourse.CourseTypes ConvertNavType(NavigationComputer.NavigationModes t)
+		{
+			switch(t)
+			{
+				case NavigationComputer.NavigationModes.Course:
+					return SetShipCourse.CourseTypes.Waypoints;
+
+				case NavigationComputer.NavigationModes.Heading:
+					return SetShipCourse.CourseTypes.Heading;
+			}
+
+			return SetShipCourse.CourseTypes.Manual;
+		}
+
+		public void SendNavStatusUpdate(bool atWaypoint)
+		{
+			ShipNavigationStatus status = new ShipNavigationStatus();
+
+			status.CurrentMode = ConvertNavType(NaviComp.Mode);
+			status.TargetHeading = status.CurrentMode == SetShipCourse.CourseTypes.Manual ? double.MinValue : NaviComp.DesiredHeading.Angle;
+			status.TargetSpeed = NaviComp.DesiredSpeed;
+
+			status.MovementSpeed = Velocity.Length();
+			status.TurnSpeed = AngularVelocity.Angle;
+
+			status.CurrentHeading = Orientation.Angle;
+
+			status.AtTargetHeading = Rotation.AngleBetween(Orientation, NaviComp.DesiredHeading) < 0.01;
+
+			status.AtTargetWaypoint = atWaypoint;
+
+			status.WaypointCount = NaviComp.Waypoints.Count;
+			if (NaviComp.Mode == NavigationComputer.NavigationModes.Course && NaviComp.Waypoints.Count > 0)
+				status.TargetWaypoint = NaviComp.Waypoints[0].TargetPosition;
+
+			Send(status);
+		}
 
         public void SendSensorEntityUpdate(KnownEntity ent)
         {

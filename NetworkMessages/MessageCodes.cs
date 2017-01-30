@@ -24,6 +24,7 @@ namespace NetworkMessages
 
 		// ship Update messages
 		SetSelfPosition,
+		ShipNavigationStatus,
 
 		// sensor update messages
 		UpdateEntity,
