@@ -16,6 +16,8 @@ namespace NetworkMessages
         public ConsoleMessageCodes Code = ConsoleMessageCodes.Unknown;
         public NetIncomingMessage Payload = null;
 
+        public List<int> AffectedConsoles = new List<int>();
+
         public ConsoleInboundMessage(NetIncomingMessage msg)
         {
             Timestamp = Timer.Now;

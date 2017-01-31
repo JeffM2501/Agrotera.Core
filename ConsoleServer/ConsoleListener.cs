@@ -106,6 +106,17 @@ namespace ConsoleServer
                 for (int i = 0; i < count; i++)
                 {
                     NetOutgoingMessage msg = p.SocketPeer.Peer.CreateMessage();
+
+                    var c = p.OutboundMessages[i];
+                    if (c.AffectedConsoles.Count == 0)
+                        msg.Write((int)0);
+                    else
+                    {
+                        msg.Write((int)c.AffectedConsoles.Count);
+                        foreach (int a in c.AffectedConsoles)
+                            msg.Write(a);
+                    }
+
                     p.OutboundMessages[i].Pack(msg);
                     p.SocketPeer.SendMessage(msg, NetDeliveryMethod.ReliableOrdered, 0);
                 }

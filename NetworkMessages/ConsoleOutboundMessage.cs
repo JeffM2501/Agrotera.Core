@@ -13,6 +13,8 @@ namespace NetworkMessages
         public ConsoleMessageCodes Code = ConsoleMessageCodes.Unknown;
         public NetOutgoingMessage Payload = null;
 
+        public List<int> AffectedConsoles = new List<int>();
+
         public ConsoleOutboundMessage(ConsoleMessageCodes code)
         {
             Code = code;

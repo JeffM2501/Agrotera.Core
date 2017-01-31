@@ -39,5 +39,6 @@ namespace NetworkMessages
 
         // setup message
         ConnectToShip,
+        SetupConsoles,
     }
 }
